@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for the Gallery extension</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_spgallery_domain_model_gallery">Image gallery</label>
+			<label index="tx_spgallery_domain_model_gallery.name">Name of the gallery</label>
+			<label index="tx_spgallery_domain_model_gallery.description">Description of the gallery</label>
+			<label index="tx_spgallery_domain_model_gallery.image_directory">Image directory in filesystem</label>
+			<label index="no_gallery_found">Extension sp_gallery: No gallery found</label>
+			<label index="no_galleries_found">Extension sp_gallery: No galleries found</label>
+			<label index="Tx_SpGallery_Task_DirectoryListener.name">Gallery Image Directory Listener</label>
+			<label index="Tx_SpGallery_Task_DirectoryListener.description">Finds changed gallery datasets and genereates images from defined directories.</label>
+			<label index="newContentElement.wizardItem.title">Image gallery</label>
+			<label index="newContentElement.wizardItem.description">Adds an image gallery to current page.</label>
+		</languageKey>
+	</data>
+</T3locallang>

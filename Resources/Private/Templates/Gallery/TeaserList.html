@@ -1,0 +1,23 @@
+{namespace spgallery=Tx_SpGallery_ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="main">
+  <f:flashMessages />
+  <f:if condition="{galleries}">
+    <f:then>
+      <ul class="gallery-teasers">
+        <f:for each="{galleries}" as="gallery">
+          <li class="teaser-images">
+            <h3>{gallery.name}</h3>
+            <f:format.html>{gallery.description}</f:format.html>
+            <p><f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}"><spgallery:teaserImages>{gallery}</spgallery:teaserImages></f:link.action></p>
+          </li>
+        </f:for>
+      </ul>
+    </f:then>
+    <f:else>
+      <p><f:translate key="no_galleries_found"/></p>
+    </f:else>
+  </f:if>
+</f:section>

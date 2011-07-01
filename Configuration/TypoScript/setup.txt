@@ -1,0 +1,115 @@
+# ======================================================================
+# Default configuration of the extension "sp_gallery"
+# ======================================================================
+plugin.tx_spgallery {
+	## General settings
+	settings {
+		themesPath                = {$plugin.tx_spgallery.settings.themesPath}
+		theme                     = {$plugin.tx_spgallery.settings.theme}
+		pages                     = {$plugin.tx_spgallery.settings.pages}
+		width                     = {$plugin.tx_spgallery.settings.width}
+		height                    = {$plugin.tx_spgallery.settings.height}
+		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
+
+		thumbImage {
+			maxW                    = {$plugin.tx_spgallery.settings.thumbImage.maxW}
+			maxH                    = {$plugin.tx_spgallery.settings.thumbImage.maxH}
+			quality                 = {$plugin.tx_spgallery.settings.thumbImage.quality}
+			ext                     = {$plugin.tx_spgallery.settings.thumbImage.ext}
+		}
+
+		smallImage {
+			maxW                    = {$plugin.tx_spgallery.settings.smallImage.maxW}
+			maxH                    = {$plugin.tx_spgallery.settings.smallImage.maxH}
+			quality                 = {$plugin.tx_spgallery.settings.smallImage.quality}
+			ext                     = {$plugin.tx_spgallery.settings.smallImage.ext}
+		}
+
+		largeImage {
+			maxW                    = {$plugin.tx_spgallery.settings.largeImage.maxW}
+			maxH                    = {$plugin.tx_spgallery.settings.largeImage.maxH}
+			quality                 = {$plugin.tx_spgallery.settings.largeImage.quality}
+			ext                     = {$plugin.tx_spgallery.settings.largeImage.ext}
+		}
+
+		teaserImage {
+			maxW                    = {$plugin.tx_spgallery.settings.teaserImage.maxW}
+			maxH                    = {$plugin.tx_spgallery.settings.teaserImage.maxH}
+			quality                 = {$plugin.tx_spgallery.settings.teaserImage.quality}
+			ext                     = {$plugin.tx_spgallery.settings.teaserImage.ext}
+		}
+
+		## Galleria-Plugin options
+		galleria {
+			autoplay                = {$plugin.tx_spgallery.settings.galleria.autoplay}
+			carousel                = {$plugin.tx_spgallery.settings.galleria.carousel}
+			carouselFollow          = {$plugin.tx_spgallery.settings.galleria.carouselFollow}
+			carouselSpeed           = {$plugin.tx_spgallery.settings.galleria.carouselSpeed}
+			carouselSteps           = {$plugin.tx_spgallery.settings.galleria.carouselSteps}
+			clicknext               = {$plugin.tx_spgallery.settings.galleria.clicknext}
+			dataConfig              = {$plugin.tx_spgallery.settings.galleria.dataConfig}
+			dataSelector            = {$plugin.tx_spgallery.settings.galleria.dataSelector}
+			dataSource              = {$plugin.tx_spgallery.settings.galleria.dataSource}
+			debug                   = {$plugin.tx_spgallery.settings.galleria.debug}
+			easing                  = {$plugin.tx_spgallery.settings.galleria.easing}
+			extend                  = {$plugin.tx_spgallery.settings.galleria.extend}
+			fullscreenDoubleTap     = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
+			height                  = {$plugin.tx_spgallery.settings.galleria.height}
+			idleMode                = {$plugin.tx_spgallery.settings.galleria.idleMode}
+			idleSpeed               = {$plugin.tx_spgallery.settings.galleria.idleSpeed}
+			idleTime                = {$plugin.tx_spgallery.settings.galleria.idleTime}
+			imageCrop               = {$plugin.tx_spgallery.settings.galleria.imageCrop}
+			imageMargin             = {$plugin.tx_spgallery.settings.galleria.imageMargin}
+			imagePan                = {$plugin.tx_spgallery.settings.galleria.imagePan}
+			imagePanSmoothness      = {$plugin.tx_spgallery.settings.galleria.imagePanSmoothness}
+			imagePosition           = {$plugin.tx_spgallery.settings.galleria.imagePosition}
+			initialTransition       = {$plugin.tx_spgallery.settings.galleria.initialTransition}
+			keepSource              = {$plugin.tx_spgallery.settings.galleria.keepSource}
+			lightbox                = {$plugin.tx_spgallery.settings.galleria.lightbox}
+			lightboxFadeSpeed       = {$plugin.tx_spgallery.settings.galleria.lightboxFadeSpeed}
+			lightboxTransitionSpeed = {$plugin.tx_spgallery.settings.galleria.lightboxTransitionSpeed}
+			maxScaleRatio           = {$plugin.tx_spgallery.settings.galleria.maxScaleRatio}
+			minScaleRatio           = {$plugin.tx_spgallery.settings.galleria.minScaleRatio}
+			overlayBackground       = {$plugin.tx_spgallery.settings.galleria.overlayBackground}
+			overlayOpacity          = {$plugin.tx_spgallery.settings.galleria.overlayOpacity}
+			pauseOnInteraction      = {$plugin.tx_spgallery.settings.galleria.pauseOnInteraction}
+			popupLinks              = {$plugin.tx_spgallery.settings.galleria.popupLinks}
+			preload                 = {$plugin.tx_spgallery.settings.galleria.preload}
+			queue                   = {$plugin.tx_spgallery.settings.galleria.queue}
+			show                    = {$plugin.tx_spgallery.settings.galleria.show}
+			showCounter             = {$plugin.tx_spgallery.settings.galleria.showCounter}
+			showImagenav            = {$plugin.tx_spgallery.settings.galleria.showImagenav}
+			showInfo                = {$plugin.tx_spgallery.settings.galleria.showInfo}
+			fullscreenDoubleTap     = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
+			thumbCrop               = {$plugin.tx_spgallery.settings.galleria.thumbCrop}
+			thumbFit                = {$plugin.tx_spgallery.settings.galleria.thumbFit}
+			thumbMargin             = {$plugin.tx_spgallery.settings.galleria.thumbMargin}
+			thumbQuality            = {$plugin.tx_spgallery.settings.galleria.thumbQuality}
+			thumbnails              = {$plugin.tx_spgallery.settings.galleria.thumbnails}
+			transition              = {$plugin.tx_spgallery.settings.galleria.transition}
+			transitionSpeed         = {$plugin.tx_spgallery.settings.galleria.transitionSpeed}
+			width                   = {$plugin.tx_spgallery.settings.galleria.width}
+		}
+	}
+
+	## View specific settings
+	view {
+		templateRootPath          = {$plugin.tx_spgallery.view.templateRootPath}
+		layoutRootPath            = {$plugin.tx_spgallery.view.layoutRootPath}
+	}
+}
+
+
+## Include jQuery library
+[globalVar = LIT:1 = {$plugin.tx_spgallery.settings.loadJQuery}]
+  page.includeJSlibs.jquery = EXT:sp_gallery/Resources/Public/Javascript/jquery-1.6.1.min.js
+[global]
+
+
+## Include Galleria library
+page {
+	includeJSlibs.galleria = EXT:sp_gallery/Resources/Public/Javascript/galleria-1.2.4.min.js
+
+	includeCSS.galleria = EXT:sp_gallery/Resources/Public/Stylesheet/gallery.css
+	includeCSS.galleria.compress = 1
+}

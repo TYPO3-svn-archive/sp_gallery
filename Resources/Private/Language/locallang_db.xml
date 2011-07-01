@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables and fields belonging to Gallery extension</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_spgallery_domain_model_gallery">Image gallery</label>
+			<label index="tx_spgallery_domain_model_gallery.name">Name</label>
+			<label index="tx_spgallery_domain_model_gallery.description">Description</label>
+			<label index="tx_spgallery_domain_model_gallery.image_directory">Images</label>
+			<label index="tx_spgallery_domain_model_gallery.image_directory_hash">Image directory content hash</label>
+			<label index="tt_content.flexform_pi1.s_def">General</label>
+			<label index="tt_content.flexform_pi1.s_def.type">View type</label>
+			<label index="tt_content.flexform_pi1.s_def.type.show">Show single</label>
+			<label index="tt_content.flexform_pi1.s_def.type.list">List</label>
+			<label index="tt_content.flexform_pi1.s_def.type.teaser">Teaser</label>
+			<label index="tt_content.flexform_pi1.s_def.type.teaserList">Teaser list</label>
+			<label index="tt_content.flexform_pi1.s_def.pages">Image galleries</label>
+		</languageKey>
+	</data>
+</T3locallang>

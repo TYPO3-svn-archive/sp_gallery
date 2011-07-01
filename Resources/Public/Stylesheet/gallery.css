@@ -1,0 +1,25 @@
+div.tx-sp-gallery div.teaser-images :focus,
+div.tx-sp-gallery li.teaser-images :focus {
+	outline: none;
+}
+
+div.tx-sp-gallery div.teaser-images a,
+div.tx-sp-gallery li.teaser-images a {
+	border-bottom: none;
+	text-decoration: none;
+}
+
+div.tx-sp-gallery div.teaser-images img,
+div.tx-sp-gallery li.teaser-images img {
+	border: 9px solid #ffffff;
+	box-shadow: 0 2px 5px rgba(128,128,128,0.5);
+	margin: 0 9px 0 0;
+}
+
+div.tx-sp-gallery li.teaser-images {
+	margin: 0 0 24px 0;
+}
+
+div.tx-sp-gallery ul {
+	list-style-type: none;
+}
