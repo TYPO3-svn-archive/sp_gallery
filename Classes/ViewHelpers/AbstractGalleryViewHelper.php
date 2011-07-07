@@ -124,12 +124,12 @@
 				// Get data source
 			$dataSource = array();
 			foreach ($images as $image) {
-				$dataSource[] = "    {image: '/" . $image['small'] . "', thumb: '/" . $image['thumb'] . "', big:'/" . $image['large'] . "'}";
+				$dataSource[] = "      {image: '" . $image['small'] . "', thumb: '" . $image['thumb'] . "', big:'" . $image['large'] . "'}";
 			}
 
 				// Get Galleria options
 			$options = array(
-				"  dataSource: [ " . LF . implode(',' . LF, $dataSource) . LF . "  ]",
+				"    dataSource: [ " . LF . implode(',' . LF, $dataSource) . LF . "    ]",
 			);
 			if (!empty($this->settings['galleria'])) {
 				foreach ($this->settings['galleria'] as $option => $value) {
@@ -139,12 +139,14 @@
 					}
 				}
 			}
-			$options = implode(',' . LF . '  ', $options);
+			$options = implode(',' . LF . '    ', $options);
 
 				// Load theme and initialize galleria
 			$script = array(
-				"Galleria.loadTheme('/" . $themeFile . "');",
-				"$('#" . trim($element) . "').galleria({" . LF . $options . LF . "});"
+				"jQuery(document).ready(function($) {",
+				"  Galleria.loadTheme('" . $themeFile . "');",
+				"  $('#" . trim($element) . "').galleria({" . LF . $options . LF . "  });",
+				"});"
 			);
 
 			return LF . implode(LF, $script) . LF;
