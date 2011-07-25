@@ -7,7 +7,18 @@
   <f:if condition="{gallery}">
     <f:then>
       <div class="teaser-images">
-        <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}"><spgallery:teaserImages>{gallery}</spgallery:teaserImages></f:link.action>
+        <f:if condition="{singlePage}">
+          <f:then>
+            <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}" pageUid="{singlePage}">
+              <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
+            </f:link.action>
+          </f:then>
+          <f:else>
+            <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}">
+              <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
+            </f:link.action>
+          </f:else>
+        </f:if>
       </div>
     </f:then>
     <f:else>

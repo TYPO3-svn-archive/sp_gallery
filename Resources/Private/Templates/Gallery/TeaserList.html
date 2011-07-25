@@ -11,7 +11,20 @@
           <li class="teaser-images">
             <h3>{gallery.name}</h3>
             <f:format.html>{gallery.description}</f:format.html>
-            <p><f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}"><spgallery:teaserImages>{gallery}</spgallery:teaserImages></f:link.action></p>
+            <p>
+              <f:if condition="{singlePage}">
+                <f:then>
+                  <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}" pageUid="{singlePage}">
+                    <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
+                  </f:link.action>
+                </f:then>
+                <f:else>
+                  <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}">
+                    <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
+                  </f:link.action>
+                </f:else>
+              </f:if>
+            </p>
           </li>
         </f:for>
       </ul>

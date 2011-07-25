@@ -24,6 +24,12 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/160; type=int+; label=Default teaser image count
 		teaserImageCount = 5
 
+		# cat=Gallery: General/settings/162; type=int+; label=Page ID of the list view page
+		listPage = 0
+
+		# cat=Gallery: General/settings/164; type=int+; label=Page ID of the single view page
+		singlePage = 0
+
 		thumbImage {
 			# cat=Gallery: General/settings/170; type=int+; label=Maximal thumbnail width
 			maxW = 100c

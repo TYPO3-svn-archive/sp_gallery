@@ -88,14 +88,15 @@
 				$gallery = $this->ids['uids'][0];
 			}
 
-			if(!empty($gallery)) {
-				$this->view->assign('gallery',  $this->galleryRepository->findByUid($gallery));
+			if (!empty($gallery)) {
+				$this->view->assign('gallery', $this->galleryRepository->findByUid($gallery));
 			} else {
 				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
 			}
 
 			$this->view->assign('settings', $this->settings);
 			$this->view->assign('plugin',   $this->plugin);
+			$this->view->assign('listPage', $this->getPageId('listPage'));
 		}
 
 
@@ -105,7 +106,7 @@
 		 * @return void
 		 */
 		public function listAction() {
-			if(empty($this->ids['uids']) && empty($this->ids['pids'])) {
+			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
 				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
 			}
 
@@ -113,9 +114,10 @@
 			$pids = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
 			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids);
 
-			$this->view->assign('galleries', $galleries);
-			$this->view->assign('settings',  $this->settings);
-			$this->view->assign('plugin',    $this->plugin);
+			$this->view->assign('galleries',  $galleries);
+			$this->view->assign('settings',   $this->settings);
+			$this->view->assign('plugin',     $this->plugin);
+			$this->view->assign('singlePage', $this->getPageId('singlePage'));
 		}
 
 
@@ -126,6 +128,7 @@
 		 */
 		public function teaserAction() {
 			$this->showAction();
+			$this->view->assign('singlePage', $this->getPageId('singlePage'));
 		}
 
 
@@ -162,6 +165,21 @@
 			}
 
 			return $ids;
+		}
+
+
+		/**
+		 * Returns the ID of configured page
+		 * 
+		 * @param string $setting Name of the page in settings
+		 * @return integer PID of the page
+		 */
+		protected function getPageId($setting) {
+			if (!empty($setting) && !empty($this->settings[$setting])) {
+				return (int) str_replace('pages_', '', $this->settings[$setting]);
+			}
+
+			return 0;
 		}
 
 	}

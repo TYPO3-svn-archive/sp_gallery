@@ -10,6 +10,8 @@ plugin.tx_spgallery {
 		width                     = {$plugin.tx_spgallery.settings.width}
 		height                    = {$plugin.tx_spgallery.settings.height}
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
+		listPage                  = {$plugin.tx_spgallery.settings.listPage}
+		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
 
 		thumbImage {
 			maxW                    = {$plugin.tx_spgallery.settings.thumbImage.maxW}

@@ -6,11 +6,17 @@
 		<csh_table>tx_spgallery_domain_model_gallery</csh_table>
 	</meta>
 	<data type="array">
-	<languageKey index="default" type="array">
+		<languageKey index="default" type="array">
 			<label index="name.description">Name of the gallery</label>
 			<label index="description.description">Description of the gallery</label>
 			<label index="image_directory.description">Image directory in filesystem</label>
 			<label index="image_directory_hash.description">Hash of the image directory content</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="name.description">Name der Galerie</label>
+			<label index="description.description">Beschreibung der Galerie</label>
+			<label index="image_directory.description">Bilderzeichnis im Dateisystem</label>
+			<label index="image_directory_hash.description">Hash des Verzeichnisinhalts der Galerie</label>
 		</languageKey>
 	</data>
 </T3locallang>
