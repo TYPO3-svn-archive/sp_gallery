@@ -10,8 +10,8 @@
 			<label index="tx_spgallery_domain_model_gallery.name">Name of the gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Description of the gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Image directory in filesystem</label>
-			<label index="Tx_SpGallery_Task_DirectoryListener.name">Gallery Image Directory Listener</label>
-			<label index="Tx_SpGallery_Task_DirectoryListener.description">Finds changed gallery datasets and genereates images from defined directories.</label>
+			<label index="Tx_SpGallery_Task_DirectoryObserver.name">Image Gallery Directory Observer</label>
+			<label index="Tx_SpGallery_Task_DirectoryObserver.description">Finds changed gallery datasets and genereates images from defined directories.</label>
 			<label index="newContentElement.wizardItem.title">Image gallery</label>
 			<label index="newContentElement.wizardItem.description">Adds an image gallery to current page.</label>
 
@@ -20,12 +20,12 @@
 			<label index="return_to_list">Return to previous page</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="tx_spgallery_domain_model_gallery">Image gallery</label>
+			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
 			<label index="tx_spgallery_domain_model_gallery.name">Name der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Beschreibung der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Bilderzeichnis im Dateisystem</label>
-			<label index="Tx_SpGallery_Task_DirectoryListener.name">Gallery Bildverzeichnis-Überwacher</label>
-			<label index="Tx_SpGallery_Task_DirectoryListener.description">Erkennt geänderte Galerie-Datensätze und generiert Bilder aus den angegebenen Verzeichnissen.</label>
+			<label index="Tx_SpGallery_Task_DirectoryObserver.name">Bildergalerie Verzeichnis-Überwacher</label>
+			<label index="Tx_SpGallery_Task_DirectoryObserver.description">Erkennt geänderte Galerie-Datensätze und generiert Bilder aus den angegebenen Verzeichnissen.</label>
 			<label index="newContentElement.wizardItem.title">Bildergalerie</label>
 			<label index="newContentElement.wizardItem.description">Fügt der aktuellen Seite eine Bildergalerie hinzu.</label>
 

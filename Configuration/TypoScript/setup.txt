@@ -70,6 +70,7 @@ plugin.tx_spgallery {
 			lightbox                = {$plugin.tx_spgallery.settings.galleria.lightbox}
 			lightboxFadeSpeed       = {$plugin.tx_spgallery.settings.galleria.lightboxFadeSpeed}
 			lightboxTransitionSpeed = {$plugin.tx_spgallery.settings.galleria.lightboxTransitionSpeed}
+			linkSourceTmages        = {$plugin.tx_spgallery.settings.galleria.linkSourceTmages}
 			maxScaleRatio           = {$plugin.tx_spgallery.settings.galleria.maxScaleRatio}
 			minScaleRatio           = {$plugin.tx_spgallery.settings.galleria.minScaleRatio}
 			overlayBackground       = {$plugin.tx_spgallery.settings.galleria.overlayBackground}
@@ -82,22 +83,26 @@ plugin.tx_spgallery {
 			showCounter             = {$plugin.tx_spgallery.settings.galleria.showCounter}
 			showImagenav            = {$plugin.tx_spgallery.settings.galleria.showImagenav}
 			showInfo                = {$plugin.tx_spgallery.settings.galleria.showInfo}
+			swipe                   = {$plugin.tx_spgallery.settings.galleria.swipe}
 			fullscreenDoubleTap     = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
 			thumbCrop               = {$plugin.tx_spgallery.settings.galleria.thumbCrop}
+			thumbEventType          = {$plugin.tx_spgallery.settings.galleria.thumbEventType}
 			thumbFit                = {$plugin.tx_spgallery.settings.galleria.thumbFit}
 			thumbMargin             = {$plugin.tx_spgallery.settings.galleria.thumbMargin}
 			thumbQuality            = {$plugin.tx_spgallery.settings.galleria.thumbQuality}
 			thumbnails              = {$plugin.tx_spgallery.settings.galleria.thumbnails}
 			transition              = {$plugin.tx_spgallery.settings.galleria.transition}
 			transitionSpeed         = {$plugin.tx_spgallery.settings.galleria.transitionSpeed}
+			useCanvas               = {$plugin.tx_spgallery.settings.galleria.useCanvas}
 			width                   = {$plugin.tx_spgallery.settings.galleria.width}
 		}
 	}
 
 	## View specific settings
 	view {
-		templateRootPath          = {$plugin.tx_spgallery.view.templateRootPath}
 		layoutRootPath            = {$plugin.tx_spgallery.view.layoutRootPath}
+		partialRootPath           = {$plugin.tx_spgallery.view.partialRootPath}
+		templateRootPath          = {$plugin.tx_spgallery.view.templateRootPath}
 	}
 }
 

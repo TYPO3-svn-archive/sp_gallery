@@ -26,7 +26,7 @@
 	/**
 	 * Process gallery image directories
 	 */
-	class Tx_SpGallery_Task_DirectoryListener extends tx_scheduler_Task {
+	class Tx_SpGallery_Task_DirectoryObserver extends tx_scheduler_Task {
 
 		/**
 		 * Find unprocessed image directories and generate images by configuration

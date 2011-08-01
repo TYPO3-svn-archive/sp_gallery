@@ -59,7 +59,7 @@
 					</settings.pages>
 					<settings.listPage>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:IN:Gallery->show,</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.listPage</label>
 							<config>
@@ -75,7 +75,7 @@
 					</settings.listPage>
 					<settings.singlePage>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:!=:Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:!IN:Gallery->show,</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.singlePage</label>
 							<config>
