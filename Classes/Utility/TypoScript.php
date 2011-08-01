@@ -136,10 +136,9 @@
 
 			$path = explode('.', $typoScriptPath);
 			foreach ($path as $segment) {
-				if (empty($setup[$segment . '.'])) {
-					return array();
+				if (!empty($setup[$segment . '.'])) {
+					$setup = $setup[$segment . '.'];
 				}
-				$setup = $setup[$segment . '.'];
 			}
 
 			return $setup;
