@@ -128,17 +128,19 @@
 				self::initialize();
 			}
 
-			$type  = Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT;
-			$setup = self::$configurationManager->getConfiguration($type);
+			$setup = self::$configurationManager->getConfiguration(
+				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+			);
 			if (empty($typoScriptPath)) {
 				return $setup;
 			}
 
 			$path = explode('.', $typoScriptPath);
 			foreach ($path as $segment) {
-				if (!empty($setup[$segment . '.'])) {
-					$setup = $setup[$segment . '.'];
+				if (empty($setup[$segment . '.'])) {
+					return array();
 				}
+				$setup = $setup[$segment . '.'];
 			}
 
 			return $setup;
