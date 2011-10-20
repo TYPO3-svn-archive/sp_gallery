@@ -34,9 +34,12 @@
 		 *
 		 * @param array $uids UIDs to collect objects from
 		 * @param array $pids PIDs to collect objects from
+		 * @param integer $offset Offset to start with
+		 * @param integer $count Count of results
+		 * @param array $ordering Ordering <-> Direction
 		 * @return array An array of objects, empty if no objects found
 		 */
-		public function findByUidsAndPids(array $uids, array $pids) {
+		public function findByUidsAndPids(array $uids, array $pids, $offset = NULL, $count = NULL, array $ordering = NULL) {
 			$query = $this->createQuery();
 
 				// Disable default storage page handling
@@ -56,6 +59,21 @@
 				$query->matching($query->in('pid', $pids));
 			} else {
 				throw new Exception('Extension sp_gallery: No UIDs and PIDs given to find galleries', 1308305559);
+			}
+
+				// Offset
+			if (!empty($offset)) {
+				$query->setOffset((int) $offset);
+			}
+
+				// Limit
+			if (!empty($count)) {
+				$query->setLimit((int) $count);
+			}
+
+				// Ordering
+			if (!empty($ordering)) {
+				$query->setOrderings($ordering);
 			}
 
 			return $query->execute();

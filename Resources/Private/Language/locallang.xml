@@ -10,13 +10,16 @@
 			<label index="tx_spgallery_domain_model_gallery.name">Name of the gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Description of the gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Image directory in filesystem</label>
+
 			<label index="Tx_SpGallery_Task_DirectoryObserver.name">Image Gallery Directory Observer</label>
 			<label index="Tx_SpGallery_Task_DirectoryObserver.description">Finds changed gallery datasets and genereates images from defined directories.</label>
+
 			<label index="newContentElement.wizardItem.title">Image gallery</label>
 			<label index="newContentElement.wizardItem.description">Adds an image gallery to current page.</label>
 
-			<label index="no_gallery_found">Extension sp_gallery: No gallery found</label>
-			<label index="no_galleries_found">Extension sp_gallery: No galleries found</label>
+			<label index="no_gallery_found">No gallery found</label>
+			<label index="no_galleries_found">No galleries found</label>
+			<label index="no_storagepage_found">No storagePid defined</label>
 			<label index="return_to_list">Return to previous page</label>
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -24,13 +27,16 @@
 			<label index="tx_spgallery_domain_model_gallery.name">Name der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Beschreibung der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Bilderzeichnis im Dateisystem</label>
+
 			<label index="Tx_SpGallery_Task_DirectoryObserver.name">Bildergalerie Verzeichnis-Überwacher</label>
 			<label index="Tx_SpGallery_Task_DirectoryObserver.description">Erkennt geänderte Galerie-Datensätze und generiert Bilder aus den angegebenen Verzeichnissen.</label>
+
 			<label index="newContentElement.wizardItem.title">Bildergalerie</label>
 			<label index="newContentElement.wizardItem.description">Fügt der aktuellen Seite eine Bildergalerie hinzu.</label>
 
-			<label index="no_gallery_found">Extension sp_gallery: Keine Galerie gefunden</label>
-			<label index="no_galleries_found">Extension sp_gallery: Keine Galerien gefunden</label>
+			<label index="no_gallery_found">Keine Galerie gefunden</label>
+			<label index="no_galleries_found">Keine Galerien gefunden</label>
+			<label index="no_storagepage_found">Die storagePid wurde nicht definiert</label>
 			<label index="return_to_list">Zurück zur vorherigen Seite</label>
 		</languageKey>
 	</data>

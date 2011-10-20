@@ -48,11 +48,11 @@
 
 			$element = trim($element);
 			if (empty($element)) {
-				throw new Exception('Extension sp_gallery: No valid HTML element ID given to render gallery', 1308305552);
+				throw new Exception('No valid HTML element ID given to render gallery', 1308305552);
 			}
 
 			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('Extension sp_gallery: No valid gallery given to render', 1308305553);
+				throw new Exception('No valid gallery given to render', 1308305553);
 			}
 
 				// Get images

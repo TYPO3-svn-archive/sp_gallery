@@ -11,6 +11,7 @@
 			<label index="tx_spgallery_domain_model_gallery.description">Description</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Images</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory_hash">Image directory content hash</label>
+
 			<label index="tt_content.flexform_pi1.s_def">General</label>
 			<label index="tt_content.flexform_pi1.s_def.type">View type</label>
 			<label index="tt_content.flexform_pi1.s_def.type.show">Show single</label>
@@ -20,6 +21,29 @@
 			<label index="tt_content.flexform_pi1.s_def.pages">Image galleries</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Link back to this page</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Show on this page</label>
+
+			<label index="tt_content.flexform_pi1.s_galleries">Galleries</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Order galleries by</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.name">Name</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.directory">Directory</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.tstamp">Timestamp</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.crdate">Creation date</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection">Order direction</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection.asc">Ascending</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection.desc">Descending</label>
+			<label index="tt_content.flexform_pi1.s_galleries.limit">Limit result count</label>
+			<label index="tt_content.flexform_pi1.s_galleries.offset">Skip this count of results</label>
+
+			<label index="tt_content.flexform_pi1.s_images">Images</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy">Order images by</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.name">Name</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.tstamp">Timestamp</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.crdate">Creation date</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection">Order direction</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection.asc">Ascending</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection.desc">Descending</label>
+			<label index="tt_content.flexform_pi1.s_images.limit">Limit result count</label>
+			<label index="tt_content.flexform_pi1.s_images.offset">Skip this count of results</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
@@ -27,6 +51,7 @@
 			<label index="tx_spgallery_domain_model_gallery.description">Beschreibung</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Bilder</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory_hash">Hash des Galerie-Inhalts</label>
+
 			<label index="tt_content.flexform_pi1.s_def">Allgemein</label>
 			<label index="tt_content.flexform_pi1.s_def.type">Ansicht</label>
 			<label index="tt_content.flexform_pi1.s_def.type.show">Einzelansicht</label>
@@ -36,6 +61,29 @@
 			<label index="tt_content.flexform_pi1.s_def.pages">Bildergalerien</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Auf diese Seite zurückverweisen</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Auf dieser Seite anzeigen</label>
+
+			<label index="tt_content.flexform_pi1.s_galleries">Galerien</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Galerien sortieren nach</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.name">Name</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.directory">Verzeichnis</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.tstamp">Zeitstempel</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderBy.crdate">Erstelldatum</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection">Sortier-Richtung</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection.asc">Aufsteigend</label>
+			<label index="tt_content.flexform_pi1.s_galleries.orderDirection.desc">Absteigend</label>
+			<label index="tt_content.flexform_pi1.s_galleries.limit">Limitierung der Ergebnismenge</label>
+			<label index="tt_content.flexform_pi1.s_galleries.offset">Anzahl übersprungener Ergebnisse</label>
+
+			<label index="tt_content.flexform_pi1.s_images">Bilder</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy">Bilder sortieren nach</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.name">Name</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.tstamp">Zeitstempel</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.crdate">Erstelldatum</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection">Sortier-Richtung</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection.asc">Aufsteigend</label>
+			<label index="tt_content.flexform_pi1.s_images.orderDirection.desc">Absteigend</label>
+			<label index="tt_content.flexform_pi1.s_images.limit">Limitierung der Ergebnismenge</label>
+			<label index="tt_content.flexform_pi1.s_images.offset">Anzahl übersprungener Ergebnisse</label>
 		</languageKey>
 	</data>
 </T3locallang>

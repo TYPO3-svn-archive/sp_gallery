@@ -51,7 +51,7 @@
 		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
 			$this->settings = $configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 			if (empty($this->settings)) {
-				throw new Exception('Extension sp_gallery: No configuration found for gallery view helper', 1308305554);
+				throw new Exception('No configuration found for gallery view helper', 1308305554);
 			}
 			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
 		}
@@ -80,7 +80,8 @@
 				$this->imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
 			}
 			$directory = $gallery->getImageDirectory();
-			return $this->imageService->getGalleryImages($directory, $settings, $tag, $count);
+			$images = $this->imageService->getGalleryImages($directory, $settings, $tag, $count);
+			return $this->sortImages($images, $settings, $count);
 		}
 
 

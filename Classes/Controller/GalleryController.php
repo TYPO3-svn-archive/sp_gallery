@@ -68,7 +68,7 @@
 
 				// Get UIDs and PIDs of the configured gallaries
 			if (empty($this->settings['pages'])) {
-				$this->flashMessageContainer->add('Extension sp_gallery: No galleries defined to show');
+				$this->addMessage('no_galleries_found');
 			}
 			$this->ids = $this->getIds($this->settings['pages']);
 		}
@@ -83,7 +83,7 @@
 		public function showAction($gallery = NULL) {
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
-					$this->flashMessageContainer->add('Extension sp_gallery: No gallery defined to show');
+					$this->addMessage('no_gallery_found');
 				}
 				$gallery = $this->ids['uids'][0];
 			}
@@ -91,7 +91,7 @@
 			if (!empty($gallery)) {
 				$this->view->assign('gallery', $this->galleryRepository->findByUid($gallery));
 			} else {
-				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
+				$this->addMessage('no_storagepage_found');
 			}
 
 			$this->view->assign('settings', $this->settings);
@@ -107,12 +107,15 @@
 		 */
 		public function listAction() {
 			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
-				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
+				$this->addMessage('no_storagepage_found');
 			}
 
 			$uids = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
 			$pids = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
-			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids);
+			$offset = (isset($this->settings['offset']) ? (int) $this->settings['offset'] : 0);
+			$limit = (isset($this->settings['limit']) ? (int) $this->settings['limit'] : 10);
+			$ordering = $this->getOrdering();
+			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 
 			$this->view->assign('galleries',  $galleries);
 			$this->view->assign('settings',   $this->settings);
@@ -180,6 +183,42 @@
 			}
 
 			return 0;
+		}
+
+
+		/**
+		 * Returns ordering of image list
+		 *
+		 * @return array Ordering
+		 */
+		protected function getOrdering() {
+				// Get order direction
+			$desc = Tx_Extbase_Persistence_QueryInterface::ORDER_DESCENDING;
+			$asc  = Tx_Extbase_Persistence_QueryInterface::ORDER_ASCENDING;
+			$direction = (!empty($this->settings['orderDirection']) ? $this->settings['orderDirection'] : 'asc');
+			$direction = ($direction === 'asc' ? $asc : $desc);
+
+				// Get order field
+			$orderBy = (!empty($this->settings['orderBy']) ? $this->settings['orderBy'] : 'crdate');
+			$orderBy = ($orderBy === 'directory' ? 'imageDirectory' : $orderBy);
+			if (!in_array($orderBy, array('name', 'tstamp', 'tstamp', 'crdate'))) {
+				$orderBy = 'crdate';
+			}
+
+			return array($orderBy => $direction);
+		}
+
+
+		/**
+		 * Adds a translated message to flashmessages
+		 * 
+		 * @param string $key The label key in language file
+		 * @return void
+		 */
+		protected function addMessage($key) {
+			$extensionKey = $this->request->getControllerExtensionKey();
+			$message = Tx_Extbase_Utility_Localization::translate($key, $extensionKey);
+			$this->flashMessageContainer->add($message);
 		}
 
 	}

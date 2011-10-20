@@ -13,6 +13,20 @@ plugin.tx_spgallery {
 		listPage                  = {$plugin.tx_spgallery.settings.listPage}
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
 
+		galleries {
+			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}
+			limit                   = {$plugin.tx_spgallery.settings.galleries.limit}
+			orderDirection          = {$plugin.tx_spgallery.settings.galleries.orderDirection}
+			orderBy                 = {$plugin.tx_spgallery.settings.galleries.orderBy}
+		}
+
+		images {
+			offset                  = {$plugin.tx_spgallery.settings.images.offset}
+			limit                   = {$plugin.tx_spgallery.settings.images.limit}
+			orderDirection          = {$plugin.tx_spgallery.settings.images.orderDirection}
+			orderBy                 = {$plugin.tx_spgallery.settings.images.orderBy}
+		}
+
 		thumbImage {
 			maxW                    = {$plugin.tx_spgallery.settings.thumbImage.maxW}
 			maxH                    = {$plugin.tx_spgallery.settings.thumbImage.maxH}

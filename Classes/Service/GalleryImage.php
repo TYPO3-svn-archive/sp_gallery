@@ -97,7 +97,7 @@
 				if (!empty($settings) && !$tag) {
 					$info = $this->contentObject->getImgResource($file, $settings);
 					$file = (!empty($info[3]) ? $info[3] : $file);
-				} else if ($tag) {
+				} else if (!empty($tag)) {
 					$file = $this->contentObject->cImage($file, array('file.' => $settings));
 				}
 

@@ -40,7 +40,7 @@
 			}
 
 			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('Extension sp_gallery: No valid gallery given to render', 1308305558);
+				throw new Exception('No valid gallery given to render', 1308305558);
 			}
 
 				// Get images
