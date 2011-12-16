@@ -34,6 +34,11 @@
 		protected $galleryRepository;
 
 		/**
+		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 */
+		protected $imageRepository;
+
+		/**
 		 * @var array
 		 */
 		protected $plugin;
@@ -54,6 +59,15 @@
 
 
 		/**
+		 * @param Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository
+		 * @return void
+		 */
+		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
+			$this->imageRepository = $imageRepository;
+		}
+
+
+		/**
 		 * Initializes the current action
 		 *
 		 * @return void
@@ -68,7 +82,7 @@
 
 				// Get UIDs and PIDs of the configured gallaries
 			if (empty($this->settings['pages'])) {
-				$this->flashMessageContainer->add('Extension sp_gallery: No galleries defined to show');
+				$this->flashMessageContainer->add('No galleries defined to show');
 			}
 			$this->ids = $this->getIds($this->settings['pages']);
 		}
@@ -83,17 +97,29 @@
 		public function showAction($gallery = NULL) {
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
-					$this->flashMessageContainer->add('Extension sp_gallery: No gallery defined to show');
+					$this->flashMessageContainer->add('No gallery defined to show');
 				}
 				$gallery = $this->ids['uids'][0];
 			}
 
-			if (!empty($gallery)) {
-				$this->view->assign('gallery', $this->galleryRepository->findByUid($gallery));
-			} else {
-				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
+				// Load gallery from persistance
+			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
+				$gallery = $this->galleryRepository->findByUid((int) $gallery);
 			}
 
+				// Load images from persistance
+			if (!empty($gallery)) {
+				$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
+				$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
+				$ordering = $this->getOrdering($this->settings['images']);
+				$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
+			} else {
+				$this->flashMessageContainer->add('Gallery not found');
+			}
+
+				// Set template variables
+			$this->view->assign('gallery',  $gallery);
+			$this->view->assign('images',   (!empty($images) ? $images : array()));
 			$this->view->assign('settings', $this->settings);
 			$this->view->assign('plugin',   $this->plugin);
 			$this->view->assign('listPage', $this->getPageId('listPage'));
@@ -107,13 +133,27 @@
 		 */
 		public function listAction() {
 			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
-				$this->flashMessageContainer->add('Extension sp_gallery: No storagePid defined');
+				$this->flashMessageContainer->add('No galleries defined to show');
 			}
 
-			$uids = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
-			$pids = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
-			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids);
+				// Load galleries from persistance
+			$uids      = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
+			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
+			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
+			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
+			$ordering  = $this->getOrdering($this->settings['galleries']);
+			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 
+				// Order galleries according to manual sorting type
+			$extensionKey = $this->request->getControllerExtensionKey();
+			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
+				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
+				if ($configuration['gallerySortingType'] === 'plugin') {
+					$galleries = $this->sortGalleriesBySelector($galleries);
+				}
+			}
+
+				// Set template variables
 			$this->view->assign('galleries',  $galleries);
 			$this->view->assign('settings',   $this->settings);
 			$this->view->assign('plugin',     $this->plugin);
@@ -169,8 +209,32 @@
 
 
 		/**
+		 * Returns ordering of gallery list
+		 *
+		 * @param array $settings TypoScript setup
+		 * @return array Ordering
+		 */
+		protected function getOrdering(array $settings) {
+				// Get order direction
+			$desc = Tx_Extbase_Persistence_QueryInterface::ORDER_DESCENDING;
+			$asc  = Tx_Extbase_Persistence_QueryInterface::ORDER_ASCENDING;
+			$direction = (!empty($settings['orderDirection']) ? $settings['orderDirection'] : 'asc');
+			$direction = ($direction === 'asc' ? $asc : $desc);
+
+				// Get order field
+			$orderBy = (!empty($settings['orderBy']) ? $settings['orderBy'] : 'crdate');
+			$orderBy = ($orderBy === 'directory' ? 'imageDirectory' : $orderBy);
+			if (!in_array($orderBy, array('name', 'tstamp', 'crdate', 'sorting'))) {
+				$orderBy = 'crdate';
+			}
+
+			return array($orderBy => $direction);
+		}
+
+
+		/**
 		 * Returns the ID of configured page
-		 * 
+		 *
 		 * @param string $setting Name of the page in settings
 		 * @return integer PID of the page
 		 */
@@ -180,6 +244,36 @@
 			}
 
 			return 0;
+		}
+
+
+		/**
+		 * Order gallery objects by the sorting of the gallery selector in plugin
+		 *
+		 * @param Tx_Extbase_Persistence_QueryResult $galleries
+		 * @return array
+		 */
+		protected function sortGalleriesBySelector(Tx_Extbase_Persistence_QueryResult $galleries) {
+				// Get order of the selected galleries, skip folders
+			if (empty($this->ids['uids'])) {
+				return (array) $galleries;
+			}
+
+			$uids = $this->ids['uids'];
+
+				// Order uids by configured direction
+			$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
+			if ($direction !== 'asc') {
+				$uids = array_reverse($uids);
+			}
+
+				// Sort galleries by the order of uids in select field
+			$result = array_flip($uids);
+			foreach ($galleries as $gallery) {
+				$result[$gallery->getUid()] = $gallery;
+			}
+
+			return $result;
 		}
 
 	}

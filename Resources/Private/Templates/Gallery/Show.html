@@ -8,8 +8,15 @@
     <f:then>
       <h2>{gallery.name}</h2>
       <f:format.html>{gallery.description}</f:format.html>
-      <div id="gallery-{plugin.uid}" class="gallery-window" style="height:{settings.height}px;width:{settings.width}px;"></div>
-      <spgallery:gallery element="gallery-{plugin.uid}">{gallery}</spgallery:gallery>
+      <f:if condition="{images}">
+        <f:then>
+          <div id="gallery-{plugin.uid}" class="gallery-window" style="height:{settings.height}px;width:{settings.width}px;"></div>
+          <spgallery:gallery elementId="gallery-{plugin.uid}">{images}</spgallery:gallery>
+        </f:then>
+        <f:else>
+          <p><f:translate key="no_images_found"/></p>
+        </f:else>
+      </f:if>
     </f:then>
     <f:else>
       <p><f:translate key="no_gallery_found"/></p>

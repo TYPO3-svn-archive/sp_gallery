@@ -1,0 +1,5 @@
+# ======================================================================
+# Extension Configuration
+# ======================================================================
+# cat=Default Configuration/settings/100; type=options[List module=list, Selector in plugin=plugin]; label=Gallery Ordering Type: Order galleries manually by the sorting in list module or by the order of selected galleries in plugin record
+gallerySortingType = list

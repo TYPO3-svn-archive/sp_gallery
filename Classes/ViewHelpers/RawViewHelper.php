@@ -23,11 +23,30 @@
 	 *  This copyright notice MUST APPEAR in all copies of the script!
 	 ********************************************************************/
 
-
 	/**
-	 * Repository for Tx_SpGallery_Domain_Model_Gallery
+	 * Raw view helper
 	 */
-	class Tx_SpGallery_Domain_Repository_GalleryRepository extends Tx_SpGallery_Domain_Repository_AbstractRepository {
+	class Tx_SpGallery_ViewHelpers_RawViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+
+		/**
+		 * Disable the escaping interceptor
+		 */
+		protected $escapingInterceptorEnabled = FALSE;
+
+
+		/**
+		 * Renders raw content without htmlspecialchars
+		 *
+		 * @param string $content Content
+		 * @return string Raw content
+		 */
+		public function render($content = NULL) {
+			if ($content === NULL) {
+				$content = $this->renderChildren();
+			}
+
+			return $content;
+		}
 
 	}
 ?>

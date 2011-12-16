@@ -92,5 +92,191 @@
 				</el>
 			</ROOT>
 		</sDEF>
+		<sGALLERIES>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+
+					<settings.galleries.orderBy>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0" type="array">
+										<numIndex index="0"></numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy.name</numIndex>
+										<numIndex index="1">name</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy.directory</numIndex>
+										<numIndex index="1">directory</numIndex>
+									</numIndex>
+									<numIndex index="3">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy.tstamp</numIndex>
+										<numIndex index="1">tstamp</numIndex>
+									</numIndex>
+									<numIndex index="4">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy.crdate</numIndex>
+										<numIndex index="1">crdate</numIndex>
+									</numIndex>
+									<numIndex index="5">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderBy.sorting</numIndex>
+										<numIndex index="1">sorting</numIndex>
+									</numIndex>
+								</items>
+							</config>
+						</TCEforms>
+					</settings.galleries.orderBy>
+
+					<settings.galleries.orderDirection>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderDirection</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0" type="array">
+										<numIndex index="0"></numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderDirection.asc</numIndex>
+										<numIndex index="1">asc</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.orderDirection.desc</numIndex>
+										<numIndex index="1">desc</numIndex>
+									</numIndex>
+								</items>
+							</config>
+						</TCEforms>
+					</settings.galleries.orderDirection>
+
+					<settings.galleries.limit>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.limit</label>
+							<config>
+								<type>input</type>
+								<size>5</size>
+								<eval>num</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</settings.galleries.limit>
+
+					<settings.galleries.offset>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_galleries.offset</label>
+							<config>
+								<type>input</type>
+								<size>5</size>
+								<eval>num</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</settings.galleries.offset>
+
+				</el>
+			</ROOT>
+		</sGALLERIES>
+		<sIMAGES>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+
+					<settings.images.orderBy>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0" type="array">
+										<numIndex index="0"></numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.name</numIndex>
+										<numIndex index="1">name</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.directory</numIndex>
+										<numIndex index="1">directory</numIndex>
+									</numIndex>
+									<numIndex index="3">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.tstamp</numIndex>
+										<numIndex index="1">tstamp</numIndex>
+									</numIndex>
+									<numIndex index="4">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.crdate</numIndex>
+										<numIndex index="1">crdate</numIndex>
+									</numIndex>
+									<numIndex index="5">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.sorting</numIndex>
+										<numIndex index="1">sorting</numIndex>
+									</numIndex>
+								</items>
+							</config>
+						</TCEforms>
+					</settings.images.orderBy>
+
+					<settings.images.orderDirection>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderDirection</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0" type="array">
+										<numIndex index="0"></numIndex>
+										<numIndex index="1"></numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderDirection.asc</numIndex>
+										<numIndex index="1">asc</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderDirection.desc</numIndex>
+										<numIndex index="1">desc</numIndex>
+									</numIndex>
+								</items>
+							</config>
+						</TCEforms>
+					</settings.images.orderDirection>
+
+					<settings.images.limit>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.limit</label>
+							<config>
+								<type>input</type>
+								<size>5</size>
+								<eval>num</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</settings.images.limit>
+
+					<settings.images.offset>
+						<TCEforms>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.offset</label>
+							<config>
+								<type>input</type>
+								<size>5</size>
+								<eval>num</eval>
+								<default></default>
+							</config>
+						</TCEforms>
+					</settings.images.offset>
+
+				</el>
+			</ROOT>
+		</sIMAGES>
 	</sheets>
 </T3DataStructure>

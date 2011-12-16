@@ -25,9 +25,25 @@
 
 
 	/**
-	 * Repository for Tx_SpGallery_Domain_Model_Gallery
+	 * Repository for Tx_SpGallery_Domain_Model_Image
 	 */
-	class Tx_SpGallery_Domain_Repository_GalleryRepository extends Tx_SpGallery_Domain_Repository_AbstractRepository {
+	class Tx_SpGallery_Domain_Repository_ImageRepository extends Tx_SpGallery_Domain_Repository_AbstractRepository {
+
+		/**
+		 * Find all images of a gallery
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param string $offset Offset to start with
+		 * @param string $limit Limit of the results
+		 * @param array $ordering Ordering <-> Direction
+		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 */
+		public function findByGallery(Tx_SpGallery_Domain_Model_Gallery $gallery, $offset = NULL, $limit = NULL, array $ordering = NULL) {
+			$query = $this->createQuery($offset, $limit, $ordering);
+			$query->getQuerySettings()->setRespectStoragePage(FALSE);
+			$query->matching($query->equals('gallery', $gallery->getUid()));
+			return $query->execute();
+		}
 
 	}
 ?>

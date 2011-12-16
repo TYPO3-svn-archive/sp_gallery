@@ -1,0 +1,36 @@
+{namespace spgallery=Tx_SpGallery_ViewHelpers}
+
+<script type="text/javascript">
+  jQuery(document).ready(function($) {
+    Galleria.loadTheme('{themeFile}');
+    $('#{elementId}').galleria({
+      dataSource: [
+        <f:for each="{images}" as="image" iteration="iterator">
+        <spgallery:raw>{</spgallery:raw>
+          title       : '{image.original.name}',
+          description : '{image.original.description}',
+          image       : '<spgallery:location>{image.converted.small}</spgallery:location>',
+          thumb       : '<spgallery:location>{image.converted.thumb}</spgallery:location>',
+          big         : '<spgallery:location>{image.converted.large}</spgallery:location>',
+          original    : '<spgallery:location>{image.original.fileName}</spgallery:location>'
+        <spgallery:raw>}</spgallery:raw><f:if condition="{iterator.isLast}"><f:then></f:then><f:else>,</f:else></f:if>
+        </f:for>
+      ],
+      extend: function(options) {
+        var infoBox = $('#{elementId}').find('.galleria-info-text');
+        this.bind('image', function(event) {
+          var data = this.getData(event.index);
+          var download = infoBox.find('.galleria-info-download');
+          if (!download.length) {
+            download = $('<div class="galleria-info-download"></div>');
+            infoBox.append(download);
+          }
+          download.html('<a href="' + data.original + '" target="_blank" title=""><f:translate key="download_image"/></a>');
+        });
+      }<f:if condition="{options}">,</f:if>
+      <f:for each="{options}" as="option" key="key" iteration="iterator">
+        {key}: {option}<f:if condition="{iterator.isLast}"><f:then></f:then><f:else>,</f:else></f:if>
+      </f:for>
+    });
+  });
+</script>

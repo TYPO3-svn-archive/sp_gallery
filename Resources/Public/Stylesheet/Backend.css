@@ -1,0 +1,5 @@
+img.gallery-image {
+	margin:0 12px 0 6px;
+	border: 1px solid #ffffff;
+	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
+}

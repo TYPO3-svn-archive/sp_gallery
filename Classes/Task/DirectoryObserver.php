@@ -29,36 +29,113 @@
 	class Tx_SpGallery_Task_DirectoryObserver extends tx_scheduler_Task {
 
 		/**
-		 * Find unprocessed image directories and generate images by configuration
+		 * @var integer
+		 */
+		public $elementsPerRun = 3;
+
+		/**
+		 * @var string
+		 */
+		public $clearCachePages = 0;
+
+		/**
+		 * @var integer
+		 */
+		public $storagePid = 0;
+
+		/**
+		 * @var boolean
+		 */
+		public $generateName = FALSE;
+
+		/**
+		 * @var array
+		 */
+		protected $settings = array();
+
+		/**
+		 * @var Tx_SpGallery_Domain_Repository_GalleryRepository
+		 */
+		protected $galleryRepository;
+
+		/**
+		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 */
+		protected $imageRepository;
+
+		/**
+		 * @var Tx_SpGallery_Service_GalleryImage
+		 */
+		protected $imageService;
+
+		/**
+		 * @var Tx_Extbase_Persistence_Manager
+		 */
+		protected $persistenceManager;
+
+		/**
+		 * @var Tx_SpGallery_Persistence_Registry
+		 */
+		protected $registry;
+
+		/**
+		 * @var Tx_SpGallery_Object_ObjectBuilder
+		 */
+		protected $objectBuilder;
+
+
+		/**
+		 * Initialize the task
+		 *
+		 * @return void
+		 */
+		protected function initializeTask() {
+			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+
+				// Load plugin settings
+			$configuration  = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
+			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($configuration['settings.'], FALSE);
+
+				// Set new configuration for persistence handling
+			if (empty($configuration['persistence.']['storagePid'])) {
+				$configuration['persistence.']['storagePid'] = 1;
+			}
+			if (!empty($this->storagePid)) {
+				$configuration['persistence.']['storagePid'] = (int) $this->storagePid;
+			}
+			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
+			$configurationManager->setConfiguration($configuration);
+
+				// Load required objects
+			$this->galleryRepository  = $objectManager->get('Tx_SpGallery_Domain_Repository_GalleryRepository');
+			$this->imageRepository    = $objectManager->get('Tx_SpGallery_Domain_Repository_ImageRepository');
+			$this->imageService       = $objectManager->get('Tx_SpGallery_Service_GalleryImage');
+			$this->persistenceManager = $objectManager->get('Tx_Extbase_Persistence_Manager');
+			$this->registry           = $objectManager->get('Tx_SpGallery_Persistence_Registry');
+			$this->objectBuilder      = $objectManager->get('Tx_SpGallery_Object_ObjectBuilder');
+		}
+
+
+		/**
+		 * Find gallaries and generate images by configuration
 		 *
 		 * @return boolean TRUE if success
 		 */
 		public function execute() {
-				// Find all directories
-			$table  = 'tx_spgallery_domain_model_gallery';
-			$where  = 'image_directory IS NOT NULL AND image_directory != ""';
-			$where .= t3lib_BEfunc::BEenableFields($table);
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid,image_directory,image_directory_hash', $table, $where);
-			if (empty($result)) {
-				return TRUE;
-			}
+				// Get offset and limit
+			$limit  = (int) $this->elementsPerRun;
+			$offset = (int) $this->registry->get('offset');
 
-				// Get changed directories
-			$changedDirectories = $this->getChangedDirectories($result);
-			if (empty($changedDirectories)) {
-				return TRUE;
-			}
+				// Process galleries
+			$result = $this->processGalleries($offset, $limit);
 
-				// Generate images for changed directories
-			$processedDirectories = $this->generateImages($changedDirectories);
-			if (empty($processedDirectories)) {
-				return TRUE;
-			}
+				// Store new offset to registry
+			$offset = (!empty($result) ? $offset + $limit : 0);
+			$this->registry->add('offset', $offset);
 
-				// Save directory hashes
-			foreach ($processedDirectories as $directory) {
-				$fields = array('image_directory_hash' => $directory['image_directory_hash']);
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, 'uid=' . (int)$directory['uid'], $fields);
+				// Clear page cache
+			if (!empty($result) && !empty($this->clearCachePages)) {
+				$this->clearPageCache($this->clearCachePages);
 			}
 
 			return TRUE;
@@ -66,83 +143,192 @@
 
 
 		/**
-		 * Look up directories for changed content
+		 * Process all galleries
 		 *
-		 * @param array $directories Directory rows from table
-		 * @return array Changed directories and their files
+		 * @param integer $offset Gallery to start with
+		 * @param string $limit Limit of the galleries
+		 * @return boolean TRUE if success
 		 */
-		protected function getChangedDirectories(array $directories) {
+		protected function processGalleries($offset, $limit) {
+				// Find all galleries
+			$galleries = $this->galleryRepository->findAll($offset, $limit);
+			if (!$galleries->count()) {
+				return FALSE;
+			}
+
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$changedDirectories = array();
+			$modified = FALSE;
 
-			foreach ($directories as $directory) {
-					// Find recursive all image files
-				$path  = $directory['image_directory'];
-				$files = Tx_SpGallery_Utility_File::getFiles($path, TRUE, $allowedTypes);
-				$hash  = md5(serialize($files));
+				// Find changes in directory and generate images
+			foreach ($galleries as $gallery) {
+				$directory = $gallery->getImageDirectory();
+				$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
+				$hash = md5(serialize($files));
 
-				if ($hash !== $directory['image_directory_hash']) {
-					$directory['files'] = $files;
-					$directory['image_directory_hash'] = $hash;
-					$changedDirectories[] = $directory;
+				if ($hash !== $gallery->getImageDirectoryHash()) {
+					$imageFiles = $this->generateImageFiles($files);
+					$imageFiles = array_intersect_key($files, $imageFiles);
+					$images = $this->generateImageRecords($gallery, $imageFiles);
+					$gallery->setImages($images);
+					$gallery->setImageDirectoryHash($hash);
+					$modified = TRUE;
 				}
 			}
 
-			return $changedDirectories;
+			if ($modified) {
+				$this->persistenceManager->persistAll();
+			}
+
+			return $modified;
 		}
 
 
 		/**
 		 * Generate images from given directories
 		 *
-		 * @param array $directories Image directories
-		 * @return array Processed directories
+		 * @param array $files Image files
+		 * @return array Resulting image files
 		 */
-		protected function generateImages(array $directories) {
-			$processedDirectories = array();
-
-				// Load plugin settings
-			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
-			$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
-
-				// Create required instances
-			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-			$imageService  = $objectManager->get('Tx_SpGallery_Service_GalleryImage');
-
-				// Define image sizes
-			$imageSizes = array('teaser', 'thumb', 'small', 'large');
-
-				// Simulate working directory "htdocs", required for file_exists check
-				// in t3lib_stdGraphic::getImageDimensions
-			$currentDir = getcwd();
-			chdir(PATH_site);
-
-				// Generate images for each directory
-			foreach ($directories as $directory) {
-				if (empty($directory['files'])) {
-					continue;
-				}
-				foreach ($imageSizes as $size) {
-					if (empty($settings[$size . 'Image'])) {
-						continue;
-					}
-
-					$files = $directory['files'];
-
-						// Generate only defined count of files for teaser view
-					if ($size === 'teaser' && !empty($settings['teaserImageCount'])) {
-						$files = reset(array_chunk($files, (int)$settings['teaserImageCount']));
-					}
-
-					$imageService->processImageFiles($files, $settings[$size . 'Image']);
-				}
-				$processedDirectories[] = $directory;
+		protected function generateImageFiles(array $files) {
+			if (empty($files)) {
+				return array();
 			}
 
-				// Revert working directory
-			chdir($currentDir);
+			$imageSizes = array('teaser', 'thumb', 'small', 'large');
+			$imageFiles = array();
 
-			return $processedDirectories;
+			foreach ($imageSizes as $size) {
+				if (empty($this->settings[$size . 'Image'])) {
+					continue;
+				}
+
+					// Generate only defined count of files for teaser view
+				if ($size === 'teaser' && !empty($this->settings['teaserImageCount'])) {
+					$files = reset(array_chunk($files, (int) $this->settings['teaserImageCount']));
+				}
+
+					// Generate images in filesystem
+				$result = $this->imageService->processImageFiles($files, $this->settings[$size . 'Image']);
+				$imageFiles = array_merge($imageFiles, $result);
+			}
+
+			return $imageFiles;
+		}
+
+
+		/**
+		 * Generate image records from given files
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery Parent gallery
+		 * @param array $files Image files
+		 * @return array Image objects
+		 */
+		protected function generateImageRecords(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
+			if (empty($files)) {
+				return array();
+			}
+
+			$modified = FALSE;
+			$images = array();
+
+				// Generate image records
+			$files = array_unique($files);
+			foreach ($files as $file) {
+				$fileName = str_replace(PATH_site, '', $file);
+				$result = $this->imageRepository->findOneByFileName($fileName);
+				if (!empty($result)) {
+					$images[] = $result;
+					continue;
+				}
+
+				$imageInfo = getimagesize($file);
+
+					// Get file type
+				$fileType = Tx_SpGallery_Utility_File::getFileType($file);
+				if (!empty($imageInfo['mime']) && strpos($imageInfo['mime'], 'application') === FALSE) {
+					$fileType = str_replace('image/', '', $imageInfo['mime']);
+				}
+
+					// Generate name
+				$name = '';
+				if ($this->generateName) {
+					$name = basename($fileName);
+					$name = str_replace('_', ' ',substr($name, 0, strpos($name, '.')));
+					$name = ucwords(strtolower($name));
+				}
+
+					// Collect image attributes
+				$imageRow = array(
+					'name'         => $name,
+					'description'  => '',
+					'file_name'    => $fileName,
+					'file_size'    => filesize($file),
+					'file_type'    => $fileType,
+					'image_height' => (!empty($imageInfo[1]) ? $imageInfo[1] : 0),
+					'image_width'  => (!empty($imageInfo[0]) ? $imageInfo[0] : 0),
+					'gallery'      => $gallery->getUid(),
+				);
+
+					// Create image object
+				$images[] = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
+				$modified = TRUE;
+			}
+
+			if ($modified) {
+				$this->persistenceManager->persistAll();
+			}
+
+			return $images;
+		}
+
+
+		/**
+		 * Clear cache of given pages
+		 *
+		 * @param string $pages List of page ids
+		 * @return void
+		 */
+		protected function clearPageCache($pages) {
+			if (!empty($pages)) {
+				$pages = t3lib_div::intExplode(',', $pages, TRUE);
+				Tx_Extbase_Utility_Cache::clearPageCache($pages);
+			}
+		}
+
+
+		/**
+		 * Returns additional information
+		 *
+		 * @return string
+		 */
+		public function getAdditionalInformation() {
+				// Load offset and limit
+			$offset = (int) $this->registry->get('offset');
+			$limit = (int) $this->elementsPerRun;
+
+			return ' Limit: ' . $limit . ', Offset: ' . $offset . ' ';
+		}
+
+
+		/**
+		 * Remove disallowed attributes before serializing this object
+		 *
+		 * @return array Allowed class attributes
+		 */
+		public function __sleep() {
+			$attributes = get_object_vars($this);
+			$disallowed = array('settings', 'galleryRepository', 'imageRepository', 'imageService', 'persistenceManager', 'registry', 'objectBuilder');
+			return array_keys(array_diff_key($attributes, array_flip($disallowed)));
+		}
+
+
+		/**
+		 * Initialize the object after unserializing
+		 *
+		 * @return void
+		 */
+		public function __wakeup() {
+			$this->initializeTask();
 		}
 
 	}

@@ -13,6 +13,20 @@ plugin.tx_spgallery {
 		listPage                  = {$plugin.tx_spgallery.settings.listPage}
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
 
+		galleries {
+			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}
+			limit                   = {$plugin.tx_spgallery.settings.galleries.limit}
+			orderDirection          = {$plugin.tx_spgallery.settings.galleries.orderDirection}
+			orderBy                 = {$plugin.tx_spgallery.settings.galleries.orderBy}
+		}
+
+		images {
+			offset                  = {$plugin.tx_spgallery.settings.images.offset}
+			limit                   = {$plugin.tx_spgallery.settings.images.limit}
+			orderDirection          = {$plugin.tx_spgallery.settings.images.orderDirection}
+			orderBy                 = {$plugin.tx_spgallery.settings.images.orderBy}
+		}
+
 		thumbImage {
 			maxW                    = {$plugin.tx_spgallery.settings.thumbImage.maxW}
 			maxH                    = {$plugin.tx_spgallery.settings.thumbImage.maxH}
@@ -43,58 +57,211 @@ plugin.tx_spgallery {
 
 		## Galleria-Plugin options
 		galleria {
-			autoplay                = {$plugin.tx_spgallery.settings.galleria.autoplay}
-			carousel                = {$plugin.tx_spgallery.settings.galleria.carousel}
-			carouselFollow          = {$plugin.tx_spgallery.settings.galleria.carouselFollow}
-			carouselSpeed           = {$plugin.tx_spgallery.settings.galleria.carouselSpeed}
-			carouselSteps           = {$plugin.tx_spgallery.settings.galleria.carouselSteps}
-			clicknext               = {$plugin.tx_spgallery.settings.galleria.clicknext}
-			dataConfig              = {$plugin.tx_spgallery.settings.galleria.dataConfig}
-			dataSelector            = {$plugin.tx_spgallery.settings.galleria.dataSelector}
-			dataSource              = {$plugin.tx_spgallery.settings.galleria.dataSource}
-			debug                   = {$plugin.tx_spgallery.settings.galleria.debug}
-			easing                  = {$plugin.tx_spgallery.settings.galleria.easing}
-			extend                  = {$plugin.tx_spgallery.settings.galleria.extend}
-			fullscreenDoubleTap     = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
-			height                  = {$plugin.tx_spgallery.settings.galleria.height}
-			idleMode                = {$plugin.tx_spgallery.settings.galleria.idleMode}
-			idleSpeed               = {$plugin.tx_spgallery.settings.galleria.idleSpeed}
-			idleTime                = {$plugin.tx_spgallery.settings.galleria.idleTime}
-			imageCrop               = {$plugin.tx_spgallery.settings.galleria.imageCrop}
-			imageMargin             = {$plugin.tx_spgallery.settings.galleria.imageMargin}
-			imagePan                = {$plugin.tx_spgallery.settings.galleria.imagePan}
-			imagePanSmoothness      = {$plugin.tx_spgallery.settings.galleria.imagePanSmoothness}
-			imagePosition           = {$plugin.tx_spgallery.settings.galleria.imagePosition}
-			initialTransition       = {$plugin.tx_spgallery.settings.galleria.initialTransition}
-			keepSource              = {$plugin.tx_spgallery.settings.galleria.keepSource}
-			lightbox                = {$plugin.tx_spgallery.settings.galleria.lightbox}
-			lightboxFadeSpeed       = {$plugin.tx_spgallery.settings.galleria.lightboxFadeSpeed}
-			lightboxTransitionSpeed = {$plugin.tx_spgallery.settings.galleria.lightboxTransitionSpeed}
-			linkSourceTmages        = {$plugin.tx_spgallery.settings.galleria.linkSourceTmages}
-			maxScaleRatio           = {$plugin.tx_spgallery.settings.galleria.maxScaleRatio}
-			minScaleRatio           = {$plugin.tx_spgallery.settings.galleria.minScaleRatio}
-			overlayBackground       = {$plugin.tx_spgallery.settings.galleria.overlayBackground}
-			overlayOpacity          = {$plugin.tx_spgallery.settings.galleria.overlayOpacity}
-			pauseOnInteraction      = {$plugin.tx_spgallery.settings.galleria.pauseOnInteraction}
-			popupLinks              = {$plugin.tx_spgallery.settings.galleria.popupLinks}
-			preload                 = {$plugin.tx_spgallery.settings.galleria.preload}
-			queue                   = {$plugin.tx_spgallery.settings.galleria.queue}
-			show                    = {$plugin.tx_spgallery.settings.galleria.show}
-			showCounter             = {$plugin.tx_spgallery.settings.galleria.showCounter}
-			showImagenav            = {$plugin.tx_spgallery.settings.galleria.showImagenav}
-			showInfo                = {$plugin.tx_spgallery.settings.galleria.showInfo}
-			swipe                   = {$plugin.tx_spgallery.settings.galleria.swipe}
-			fullscreenDoubleTap     = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
-			thumbCrop               = {$plugin.tx_spgallery.settings.galleria.thumbCrop}
-			thumbEventType          = {$plugin.tx_spgallery.settings.galleria.thumbEventType}
-			thumbFit                = {$plugin.tx_spgallery.settings.galleria.thumbFit}
-			thumbMargin             = {$plugin.tx_spgallery.settings.galleria.thumbMargin}
-			thumbQuality            = {$plugin.tx_spgallery.settings.galleria.thumbQuality}
-			thumbnails              = {$plugin.tx_spgallery.settings.galleria.thumbnails}
-			transition              = {$plugin.tx_spgallery.settings.galleria.transition}
-			transitionSpeed         = {$plugin.tx_spgallery.settings.galleria.transitionSpeed}
-			useCanvas               = {$plugin.tx_spgallery.settings.galleria.useCanvas}
-			width                   = {$plugin.tx_spgallery.settings.galleria.width}
+			autoplay {
+				value                 = {$plugin.tx_spgallery.settings.galleria.autoplay}
+				type                  = boolean,number
+			}
+			carousel {
+				value                 = {$plugin.tx_spgallery.settings.galleria.carousel}
+				type                  = boolean
+			}
+			carouselFollow {
+				value                 = {$plugin.tx_spgallery.settings.galleria.carouselFollow}
+				type                  = boolean
+			}
+			carouselSpeed {
+				value                 = {$plugin.tx_spgallery.settings.galleria.carouselSpeed}
+				type                  = number
+			}
+			carouselSteps {
+				value                 = {$plugin.tx_spgallery.settings.galleria.carouselSteps}
+				type                  = number,string
+			}
+			clicknext {
+				value                 = {$plugin.tx_spgallery.settings.galleria.clicknext}
+				type                  = boolean
+			}
+			dataConfig {
+				value                 = {$plugin.tx_spgallery.settings.galleria.dataConfig}
+				type                  = string
+			}
+			dataSelector {
+				value                 = {$plugin.tx_spgallery.settings.galleria.dataSelector}
+				type                  = string
+			}
+			dataSource {
+				value                 = {$plugin.tx_spgallery.settings.galleria.dataSource}
+				type                  = string,array
+			}
+			debug {
+				value                 = {$plugin.tx_spgallery.settings.galleria.debug}
+				type                  = boolean
+			}
+			easing {
+				value                 = {$plugin.tx_spgallery.settings.galleria.easing}
+				type                  = string
+			}
+			extend {
+				value                 = {$plugin.tx_spgallery.settings.galleria.extend}
+				type                  = string
+			}
+			fullscreenDoubleTap {
+				value                 = {$plugin.tx_spgallery.settings.galleria.fullscreenDoubleTap}
+				type                  = boolean
+			}
+			height {
+				value                 = {$plugin.tx_spgallery.settings.galleria.height}
+				type                  = number,string
+			}
+			idleMode {
+				value                 = {$plugin.tx_spgallery.settings.galleria.idleMode}
+				type                  = boolean
+			}
+			idleSpeed {
+				value                 = {$plugin.tx_spgallery.settings.galleria.idleSpeed}
+				type                  = number
+			}
+			idleTime {
+				value                 = {$plugin.tx_spgallery.settings.galleria.idleTime}
+				type                  = number
+			}
+			imageCrop {
+				value                 = {$plugin.tx_spgallery.settings.galleria.imageCrop}
+				type                  = boolean,string
+			}
+			imageMargin {
+				value                 = {$plugin.tx_spgallery.settings.galleria.imageMargin}
+				type                  = number
+			}
+			imagePan {
+				value                 = {$plugin.tx_spgallery.settings.galleria.imagePan}
+				type                  = boolean
+			}
+			imagePanSmoothness {
+				value                 = {$plugin.tx_spgallery.settings.galleria.imagePanSmoothness}
+				type                  = number
+			}
+			imagePosition {
+				value                 = {$plugin.tx_spgallery.settings.galleria.imagePosition}
+				type                  = string
+			}
+			initialTransition {
+				value                 = {$plugin.tx_spgallery.settings.galleria.initialTransition}
+				type                  = string
+			}
+			keepSource {
+				value                 = {$plugin.tx_spgallery.settings.galleria.keepSource}
+				type                  = boolean
+			}
+			lightbox {
+				value                 = {$plugin.tx_spgallery.settings.galleria.lightbox}
+				type                  = boolean
+			}
+			lightboxFadeSpeed {
+				value                 = {$plugin.tx_spgallery.settings.galleria.lightboxFadeSpeed}
+				type                  = number
+			}
+			lightboxTransitionSpeed {
+				value                 = {$plugin.tx_spgallery.settings.galleria.lightboxTransitionSpeed}
+				type                  = number
+			}
+			maxScaleRatio {
+				value                 = {$plugin.tx_spgallery.settings.galleria.maxScaleRatio}
+				type                  = number
+			}
+			minScaleRatio {
+				value                 = {$plugin.tx_spgallery.settings.galleria.minScaleRatio}
+				type                  = number
+			}
+			overlayBackground {
+				value                 = {$plugin.tx_spgallery.settings.galleria.overlayBackground}
+				type                  = string
+			}
+			overlayOpacity {
+				value                 = {$plugin.tx_spgallery.settings.galleria.overlayOpacity}
+				type                  = number
+			}
+			pauseOnInteraction {
+				value                 = {$plugin.tx_spgallery.settings.galleria.pauseOnInteraction}
+				type                  = boolean
+			}
+			popupLinks {
+				value                 = {$plugin.tx_spgallery.settings.galleria.popupLinks}
+				type                  = boolean
+			}
+			preload {
+				value                 = {$plugin.tx_spgallery.settings.galleria.preload}
+				type                  = string,number
+			}
+			queue {
+				value                 = {$plugin.tx_spgallery.settings.galleria.queue}
+				type                  = boolean
+			}
+			show {
+				value                 = {$plugin.tx_spgallery.settings.galleria.show}
+				type                  = number
+			}
+			showCounter {
+				value                 = {$plugin.tx_spgallery.settings.galleria.showCounter}
+				type                  = boolean
+			}
+			showImagenav {
+				value                 = {$plugin.tx_spgallery.settings.galleria.showImagenav}
+				type                  = boolean
+			}
+			showInfo {
+				value                 = {$plugin.tx_spgallery.settings.galleria.showInfo}
+				type                  = boolean
+			}
+			swipe {
+				value                 = {$plugin.tx_spgallery.settings.galleria.swipe}
+				type                  = boolean
+			}
+			thumbCrop {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbCrop}
+				type                  = boolean,string
+			}
+			thumbEventType {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbEventType}
+				type                  = string
+			}
+			thumbFit {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbFit}
+				type                  = boolean
+			}
+			thumbMargin {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbMargin}
+				type                  = number
+			}
+			thumbQuality {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbQuality}
+				type                  = boolean,string
+			}
+			thumbnails {
+				value                 = {$plugin.tx_spgallery.settings.galleria.thumbnails}
+				type                  = boolean,string
+			}
+			transition {
+				value                 = {$plugin.tx_spgallery.settings.galleria.transition}
+				type                  = string
+			}
+			transitionSpeed {
+				value                 = {$plugin.tx_spgallery.settings.galleria.transitionSpeed}
+				type                  = number
+			}
+			useCanvas {
+				value                 = {$plugin.tx_spgallery.settings.galleria.useCanvas}
+				type                  = boolean
+			}
+			width {
+				value                 = {$plugin.tx_spgallery.settings.galleria.width}
+				type                  = number,string
+			}
+		}
+
+		## Backend options
+		backend {
+			stylesheet              = {$plugin.tx_spgallery.settings.backend.stylesheet}
 		}
 	}
 
@@ -117,6 +284,6 @@ plugin.tx_spgallery {
 page {
 	includeJSlibs.galleria = EXT:sp_gallery/Resources/Public/Javascript/galleria-1.2.4.min.js
 
-	includeCSS.galleria = EXT:sp_gallery/Resources/Public/Stylesheet/gallery.css
+	includeCSS.galleria = EXT:sp_gallery/Resources/Public/Stylesheet/Gallery.css
 	includeCSS.galleria.compress = 1
 }

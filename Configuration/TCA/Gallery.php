@@ -3,14 +3,14 @@
 		die ('Access denied.');
 	}
 
-	$TCA['tx_spgallery_domain_model_gallery'] = array(
-		'ctrl'      => $TCA['tx_spgallery_domain_model_gallery']['ctrl'],
+	$GLOBALS['TCA']['tx_spgallery_domain_model_gallery'] = array(
+		'ctrl'      => $GLOBALS['TCA']['tx_spgallery_domain_model_gallery']['ctrl'],
 		'interface' => array(
-			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, image_directory, image_directory_hash',
+			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, image_directory, image_directory_hash, system_message, images',
 		),
 		'types' => array(
 			'1'     => array(
-				'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description;;2;richtext:rte_transform[flag=rte_enabled|mode=ts];4-4-4, image_directory,--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime',
+				'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description;;2;richtext:rte_transform[flag=rte_enabled|mode=ts];4-4-4, image_directory, --div--;LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tab.images, system_message, images, --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime',
 			),
 		),
 		'palettes' => array(
@@ -116,22 +116,24 @@
 				),
 			),
 			'image_directory' => array(
-				'exclude' => 0,
-				'label'   => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.image_directory',
-				'config'  => array(
-					'type'     => 'input',
-					'size'     => 30,
-					'eval'     => 'trim,required',
-					'wizards'  => array(
-						'_PADDING' => 2,
-						'link'     => array(
-							'type'   => 'popup',
-							'icon'   => 'link_popup.gif',
-							'script' => 'browse_links.php?mode=wizard&amp;act=file',
-							'params' => array(
+				'exclude'      => 1,
+				'l10n_mode'    => 'exclude',
+				'l10n_display' => 'defaultAsReadonly',
+				'label'        => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.image_directory',
+				'config'       => array(
+					'type'         => 'input',
+					'size'         => 30,
+					'eval'         => 'trim,required',
+					'wizards'      => array(
+						'_PADDING'     => 2,
+						'link'         => array(
+							'type'         => 'popup',
+							'icon'         => 'link_popup.gif',
+							'script'       => 'browse_links.php?mode=wizard&amp;act=file',
+							'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1',
+							'params'       => array(
 								'blindLinkOptions' => 'mail,page,spec,url,file',
 							),
-							'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1',
 						),
 					),
 				),
@@ -139,6 +141,58 @@
 			'image_directory_hash' => array(
 				'config' => array(
 					'type'   => 'passthrough',
+				),
+			),
+			'images' => array(
+				'exclude'     => 1,
+				'label'       => '',
+				'displayCond' => 'FIELD:images:REQ:true', // Hide if empty
+				'config'  => array(
+					'type'           => 'inline',
+					'foreign_table'  => 'tx_spgallery_domain_model_image',
+					'foreign_field'  => 'gallery',
+					'foreign_sortby' => 'sorting',
+					'foreign_label'  => 'name',
+					'maxitems'       => 9999,
+					'appearance'     => array(
+						'expandSingle'                    => TRUE,
+						'levelLinksPosition'              => 'none',
+						'showSynchronizationLink'         => FALSE,
+						'showPossibleLocalizationRecords' => FALSE,
+						'showAllLocalizationLink'         => FALSE,
+						'useSortable'                     => TRUE,
+						'renderItemImage'                 => TRUE,
+						'enabledControls'                 => array(
+							'info'                            => FALSE,
+							'new'                             => FALSE,
+							'dragdrop'                        => TRUE,
+							'sort'                            => TRUE,
+							'hide'                            => FALSE,
+							'delete'                          => FALSE,
+							'localize'                        => FALSE,
+						),
+					),
+					'behaviour'      => array(
+						'localizationMode'                     => 'select',
+						'localizeChildrenAtParentLocalization' => 1,
+					),
+					'itemImage'      => array(
+						'foreign_field'  => 'file_name',
+						'height'         => '80m',
+						'width'          => '100m',
+					),
+				),
+			),
+			'system_message' => array(
+				'exclude'      => 1,
+				'l10n_mode'    => 'exclude',
+				'l10n_display' => 'hideDiff',
+				'label'        => '',
+				'displayCond'  => 'FIELD:images:REQ:false', // Show if images field is empty
+				'config'       => array(
+					'type'         => 'user',
+					'userFunc'     => 'Tx_SpGallery_Hook_Tca->renderEmptyImagesMessage',
+					'message'      => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.system_message',
 				),
 			),
 		),

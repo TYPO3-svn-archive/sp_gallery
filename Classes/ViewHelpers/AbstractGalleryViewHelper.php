@@ -67,110 +67,69 @@
 
 
 		/**
-		 * Returns all images from gallery
+		 * Returns all gallery images
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery Gallery to get images from
-		 * @param array $settings Image configuration
+		 * @param mixed $images Gallery images
+		 * @param string $formats Image formats to render
 		 * @param boolean $tag Returns images with complete tag
-		 * @param integer $count Count of files to return
-		 * @return array Relative image paths
+		 * @param integer $count Image count
+		 * @return array Image arrays
 		 */
-		protected function getGalleryImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $settings = array(), $tag = FALSE, $count = 0) {
+		protected function getGalleryImages($images, $formats = 'thumb, small, large', $tag = FALSE, $count = 0) {
+			if (empty($images) || empty($formats)) {
+				return array();
+			}
+
+				// Load image service
 			if ($this->imageService === NULL) {
 				$this->imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
 			}
-			$directory = $gallery->getImageDirectory();
-			return $this->imageService->getGalleryImages($directory, $settings, $tag, $count);
-		}
 
+			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
+			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
+			$formats = array_unique(t3lib_div::trimExplode(',', $formats, TRUE));
+			$imageFiles = array();
+			$result = array();
 
-		/**
-		 * Returns gallery theme file name
-		 *
-		 * @return string Relative file path
-		 */
-		protected function getThemeFile() {
-			$themePath = 'EXT:sp_gallery/Resources/Public/Themes/';
-			$themeName = 'classic';
-
-			if (!empty($this->settings['themesPath'])) {
-				$themePath = $this->settings['themesPath'];
+				// Reduce image count
+			if (!empty($count)) {
+				$images = reset(array_chunk($images, $count));
 			}
 
-			if (!empty($this->settings['theme'])) {
-				$themeName = $this->settings['theme'];
-			}
+			foreach ($formats as $format) {
+				if (empty($settings[$format . 'Image.'])) {
+					continue;
+				}
 
-			$themeFile = rtrim($themePath, '/') . '/' . $themeName . '/galleria.' . $themeName . '.min.js';
-			$themeFile = t3lib_div::getFileAbsFileName($themeFile);
+				foreach ($images as $image) {
+						// Add file for current format
+					if ($image instanceof Tx_SpGallery_Domain_Model_Image) {
+						$fileName = $image->getFileName();
+						$uid = $image->getUid();
+					} elseif (is_array($image)) {
+						$fileName = $image['file_name'];
+						$uid = $image['uid'];
+					}
+					$imageFiles[$uid] = $fileName;
 
-			return str_replace(PATH_site, '', $themeFile);
-		}
-
-
-		/**
-		 * Returns required Javascript for Galleria plugin
-		 *
-		 * @param array $images Images to show
-		 * @param string $themeFile Theme file name
-		 * @param string $element ID of the HTML element to render gallery
-		 * @return string Complete Javsscript content
-		 */
-		protected function getGalleryJs(array $images, $themeFile, $element) {
-			if (empty($images) || empty($themeFile) || empty($element)) {
-				return '';
-			}
-
-				// Get data source
-			$dataSource = array();
-			foreach ($images as $image) {
-				$dataSource[] = "      {image: '" . $image['small'] . "', thumb: '" . $image['thumb'] . "', big:'" . $image['large'] . "'}";
-			}
-
-				// Get Galleria options
-			$options = array(
-				"    dataSource: [ " . LF . implode(',' . LF, $dataSource) . LF . "    ]",
-			);
-			if (!empty($this->settings['galleria'])) {
-				foreach ($this->settings['galleria'] as $option => $value) {
-					if ($value !== '') {
-						$value = $this->escapeJsValue($value);
-						$options[] = $option . ": " . $value;
+						// Prepare result array
+					if (empty($result[$uid])) {
+						$result[$uid] = array(
+							'original'  => $image,
+							'converted' => array(),
+						);
 					}
 				}
-			}
-			$options = implode(',' . LF . '    ', $options);
 
-				// Load theme and initialize galleria
-			$script = array(
-				"jQuery(document).ready(function($) {",
-				"  Galleria.loadTheme('" . $themeFile . "');",
-				"  $('#" . trim($element) . "').galleria({" . LF . $options . LF . "  });",
-				"});"
-			);
+					// Convert images
+				$processedFiles = $this->imageService->processImageFiles($imageFiles, $settings[$format . 'Image.'], $tag);
+				foreach ($processedFiles as $uid => $file) {
+					$result[$uid]['converted'][$format] = $file;
+				}
 
-			return LF . implode(LF, $script) . LF;
-		}
+			}
 
-
-		/**
-		 * Escapes given value by its type
-		 *
-		 * @param string $value Value to escape
-		 * @return string Escaped value
-		 */
-		protected function escapeJsValue($value) {
-			if ($value === 'null' || $value === 'true' || $value === 'false' || $value == 'undef') {
-				return $value;
-			}
-			if (stripos($value, 'function') !== FALSE || stripos($value, '[') !== FALSE || stripos($value, '{') !== FALSE || stripos($value, 'this.') !== FALSE) {
-				return $value;
-			}
-			if (preg_match('|^[0-9\.,]*$|', $value)) {
-				return str_replace(',', '.', $value);
-			}
-			$value = trim((string) $value, '" \'');
-			return '"' . $value . '"';
+			return $result;
 		}
 
 	}

@@ -3,253 +3,283 @@
 # ======================================================================
 plugin.tx_spgallery {
 	settings {
-		# cat=Gallery: General/settings/100; type=string; label=Themes path: Path to galeria themes
+		# cat=Gallery: General/settings/1000; type=string; label=Themes path: Path to galeria themes
 		themesPath = EXT:sp_gallery/Resources/Public/Themes/
 
-		# cat=Gallery: General/settings/110; type=string; label=Theme: Default theme
+		# cat=Gallery: General/settings/1010; type=string; label=Theme: Default theme
 		theme = classic
 
-		# cat=Gallery: General/settings/120; type=boolean; label=Load jQuery: Load jQuery library
+		# cat=Gallery: General/settings/1020; type=boolean; label=Load jQuery: Load jQuery library
 		loadJQuery = 1
 
-		# cat=Gallery: General/settings/130; type=int+; label=Storage page: Default storage PID
+		# cat=Gallery: General/settings/1030; type=int; label=Storage page: Default storage PID
 		pages = 0
 
-			# cat=Gallery: General/settings/140; type=int+; label=Width: Default gallery element width
+		# cat=Gallery: General/settings/1040; type=int; label=Width: Default gallery element width
 		width = 500
 
-		# cat=Gallery: General/settings/150; type=int+; label=Height: Default gallery element height
+		# cat=Gallery: General/settings/1050; type=int; label=Height: Default gallery element height
 		height = 400
 
-		# cat=Gallery: General/settings/160; type=int+; label=Teaser image count: Default teaser image count
+		# cat=Gallery: General/settings/1060; type=int; label=Teaser image count: Default teaser image count
 		teaserImageCount = 5
 
-		# cat=Gallery: General/settings/162; type=int+; label=List page: Page ID of the list view page
+		# cat=Gallery: General/settings/1070; type=int; label=List page: Page ID of the list view page
 		listPage = 0
 
-		# cat=Gallery: General/settings/164; type=int+; label=Single page: Page ID of the single view page
+		# cat=Gallery: General/settings/1080; type=int; label=Single page: Page ID of the single view page
 		singlePage = 0
 
+		galleries {
+			# cat=Gallery: General/settings/1100; type=int; label=Offset: Skip this count of galleries in list view (can also be used for paginate)
+			offset = 0
+
+			# cat=Gallery: General/settings/1110; type=int; label=Limit: Limit gallery result count
+			limit = 0
+
+			# cat=Gallery: General/settings/1120; type=int; label=Order direction: Order gallery results by this direction
+			orderDirection = asc
+
+			# cat=Gallery: General/settings/1130; type=int; label=Order by: Order gallery results by this attribute
+			orderBy = crdate
+		}
+
+		images {
+			# cat=Gallery: General/settings/1200; type=int; label=Offset: Skip this count of images in list view (can also be used for paginate)
+			offset = 0
+
+			# cat=Gallery: General/settings/1210; type=int; label=Limit: Limit image result count
+			limit = 0
+
+			# cat=Gallery: General/settings/1220; type=int; label=Order direction: Order image results by this direction
+			orderDirection = asc
+
+			# cat=Gallery: General/settings/1230; type=int; label=Order by: Order image results by this attribute
+			orderBy = crdate
+		}
+
 		thumbImage {
-			# cat=Gallery: General/settings/170; type=int+; label=Thumbnail maxW: Maximal thumbnail width
+			# cat=Gallery: General/settings/1300; type=int; label=Thumbnail maxW: Maximal thumbnail width
 			maxW = 100c
 
-			# cat=Gallery: General/settings/180; type=int+; label=Thumbnail maxH: Maximal thumbnail height
+			# cat=Gallery: General/settings/1310; type=int; label=Thumbnail maxH: Maximal thumbnail height
 			maxH = 80c
 
-			# cat=Gallery: General/settings/190; type=int+; label=Thumbnail quality: Quality of thumbnails
+			# cat=Gallery: General/settings/1320; type=int; label=Thumbnail quality: Quality of thumbnails
 			quality = 70
 
-			# cat=Gallery: General/settings/200; type=string; label=Thumbnail format: Output format of thumbnails
+			# cat=Gallery: General/settings/1330; type=string; label=Thumbnail format: Output format of thumbnails
 			ext = jpg
 		}
 
 		smallImage {
-			# cat=Gallery: General/settings/210; type=int+; label=Small image maxW: Maximal width for small images
+			# cat=Gallery: General/settings/1400; type=int; label=Small image maxW: Maximal width for small images
 			maxW = 480
 
-			# cat=Gallery: General/settings/215; type=int+; label=Small image maxH: Maximal height for small images
+			# cat=Gallery: General/settings/1410; type=int; label=Small image maxH: Maximal height for small images
 			maxH = 330
 
-			# cat=Gallery: General/settings/220; type=int+; label=Small image quality: Quality of small images
+			# cat=Gallery: General/settings/1420; type=int; label=Small image quality: Quality of small images
 			quality = 70
 
-			# cat=Gallery: General/settings/225; type=string; label=Small image format: Output format of small images
+			# cat=Gallery: General/settings/1430; type=string; label=Small image format: Output format of small images
 			ext = jpg
 		}
 
 		largeImage {
-			# cat=Gallery: General/settings/230; type=int+; label=Large image maxW: Maximal width for large images in fullscreen mode
+			# cat=Gallery: General/settings/1500; type=int; label=Large image maxW: Maximal width for large images in fullscreen mode
 			maxW = 1024
 
-			# cat=Gallery: General/settings/235; type=int+; label=Large image maxH: Maximal height for large images in fullscreen mode
+			# cat=Gallery: General/settings/1510; type=int; label=Large image maxH: Maximal height for large images in fullscreen mode
 			maxH = 768
 
-			# cat=Gallery: General/settings/240; type=int+; label=Large image quality: Quality of large images
+			# cat=Gallery: General/settings/1520; type=int; label=Large image quality: Quality of large images
 			quality = 70
 
-			# cat=Gallery: General/settings/245; type=string; label=Large image format: Output format of large images
+			# cat=Gallery: General/settings/1530; type=string; label=Large image format: Output format of large images
 			ext = jpg
 		}
 
 		teaserImage {
-			# cat=Gallery: General/settings/250; type=int+; label=Teaser image maxW: Maximal width of teaser images
+			# cat=Gallery: General/settings/1600; type=int; label=Teaser image maxW: Maximal width of teaser images
 			maxW = 80c
 
-			# cat=Gallery: General/settings/255; type=int+; label=Teaser image maxH: Maximal height of teaser images
+			# cat=Gallery: General/settings/1610; type=int; label=Teaser image maxH: Maximal height of teaser images
 			maxH = 80c
 
-			# cat=Gallery: General/settings/260; type=int+; label=Teaser image quality: Quality of teaser images
+			# cat=Gallery: General/settings/1620; type=int; label=Teaser image quality: Quality of teaser images
 			quality = 70
 
-			# cat=Gallery: General/settings/265; type=string; label=Teaser image format: Output format of teaser images
+			# cat=Gallery: General/settings/1630; type=string; label=Teaser image format: Output format of teaser images
 			ext = jpg
 		}
 
 		galleria {
-			# cat=Gallery: Galleria-Plugin/settings/300; type=string; label=Autoplay: Start playing the slideshow with given milliseconds interval
+			# cat=Gallery: Galleria-Plugin/settings/1700; type=boolean; label=Autoplay: Start playing the slideshow with given milliseconds interval
 			autoplay =
 
-			# cat=Gallery: Galleria-Plugin/settings/310; type=string; label=Carousel: Activate / deactivate the built-in horizontal carousel feature
+			# cat=Gallery: Galleria-Plugin/settings/1710; type=boolean; label=Carousel: Activate / deactivate the built-in horizontal carousel feature
 			carousel =
 
-			# cat=Gallery: Galleria-Plugin/settings/320; type=string; label=Carousel follow: Define if the the carousel should follow the active image
+			# cat=Gallery: Galleria-Plugin/settings/1720; type=boolean; label=Carousel follow: Define if the the carousel should follow the active image
 			carouselFollow =
 
-			# cat=Gallery: Galleria-Plugin/settings/330; type=string; label=Carousel speed: Controls the slide speed of the carousel in milliseconds
+			# cat=Gallery: Galleria-Plugin/settings/1730; type=int; label=Carousel speed: Controls the slide speed of the carousel in milliseconds
 			carouselSpeed =
 
-			# cat=Gallery: Galleria-Plugin/settings/340; type=string; label=Carousel steps: The number of “steps” the carousel will advance when navigating between available thumbnails
+			# cat=Gallery: Galleria-Plugin/settings/1740; type=int; label=Carousel steps: The number of “steps” the carousel will advance when navigating between available thumbnails
 			carouselSteps =
 
-			# cat=Gallery: Galleria-Plugin/settings/350; type=string; label=Click next: Adds a click event over the stage that navigates to the next image in the gallery
+			# cat=Gallery: Galleria-Plugin/settings/1750; type=boolean; label=Click next: Adds a click event over the stage that navigates to the next image in the gallery
 			clicknext =
 
-			# cat=Gallery: Galleria-Plugin/settings/380; type=string; label=Data config: Configures how the data should be extracted from the source
+			# cat=Gallery: Galleria-Plugin/settings/1760; type=string; label=Data config: Configures how the data should be extracted from the source
 			dataConfig =
 
-			# cat=Gallery: Galleria-Plugin/settings/370; type=string; label=Data selector: The selector Galleria should look for in the HTML source
+			# cat=Gallery: Galleria-Plugin/settings/1770; type=string; label=Data selector: The selector Galleria should look for in the HTML source
 			dataSelector =
 
-			# cat=Gallery: Galleria-Plugin/settings/380; type=string; label=Data source: Define where to look for the Galleria data
+			# cat=Gallery: Galleria-Plugin/settings/1780; type=string; label=Data source: Define where to look for the Galleria data
 			dataSource =
 
-			# cat=Gallery: Galleria-Plugin/settings/390; type=string; label=Debug: This option is for turning debug on/off
+			# cat=Gallery: Galleria-Plugin/settings/1790; type=boolean; label=Debug: This option is for turning debug on/off
 			debug =
 
-			# cat=Gallery: Galleria-Plugin/settings/400; type=string; label=Easing: The global animation easing in Galleria
+			# cat=Gallery: Galleria-Plugin/settings/1800; type=string; label=Easing: The global animation easing in Galleria
 			easing =
 
-			# cat=Gallery: Galleria-Plugin/settings/410; type=string; label=Extend: Function is used to extend the init function of the theme
+			# cat=Gallery: Galleria-Plugin/settings/1810; type=string; label=Extend: Function is used to extend the init function of the theme
 			extend =
 
-			# cat=Gallery: Galleria-Plugin/settings/420; type=string; label=Fullscreen double-tap: Listens for the double-tap event on touch devices and toggle fullscreen mode if it happens
+			# cat=Gallery: Galleria-Plugin/settings/1820; type=boolean; label=Fullscreen double-tap: Listens for the double-tap event on touch devices and toggle fullscreen mode if it happens
 			fullscreenDoubleTap =
 
-			# cat=Gallery: Galleria-Plugin/settings/430; type=string; label=Height: Set Galleria height using this option to make sure it has the correct height
+			# cat=Gallery: Galleria-Plugin/settings/1830; type=int; label=Height: Set Galleria height using this option to make sure it has the correct height
 			height = {$plugin.tx_spgallery.settings.height}
 
-			# cat=Gallery: Galleria-Plugin/settings/440; type=string; label=Idle mode: Global option for turning on/off idle mode
+			# cat=Gallery: Galleria-Plugin/settings/1840; type=boolean; label=Idle mode: Global option for turning on/off idle mode
 			idleMode =
 
-			# cat=Gallery: Galleria-Plugin/settings/450; type=string; label=Idle speed: Control the animation speed of the idle elements
+			# cat=Gallery: Galleria-Plugin/settings/1850; type=int; label=Idle speed: Control the animation speed of the idle elements
 			idleSpeed =
 
-			# cat=Gallery: Galleria-Plugin/settings/460; type=string; label=Idle time: Control the delay before Galleria falls into Idle mode
+			# cat=Gallery: Galleria-Plugin/settings/1860; type=int; label=Idle time: Control the delay before Galleria falls into Idle mode
 			idleTime =
 
-			# cat=Gallery: Galleria-Plugin/settings/470; type=string; label=Image crop: Defines how the main image will be cropped inside it’s container
+			# cat=Gallery: Galleria-Plugin/settings/1870; type=boolean; label=Image crop: Defines how the main image will be cropped inside it’s container
 			imageCrop =
 
-			# cat=Gallery: Galleria-Plugin/settings/480; type=string; label=Image margin: Set a margin between the image and stage border
+			# cat=Gallery: Galleria-Plugin/settings/1880; type=int; label=Image margin: Set a margin between the image and stage border
 			imageMargin =
 
-			# cat=Gallery: Galleria-Plugin/settings/490; type=string; label=Image-pan: Useful if you have cropped images and want to let the users pan across the stage
+			# cat=Gallery: Galleria-Plugin/settings/1890; type=boolean; label=Image-pan: Useful if you have cropped images and want to let the users pan across the stage
 			imagePan =
 
-			# cat=Gallery: Galleria-Plugin/settings/500; type=string; label=Image-pan smoothness: This value sets how smooth the image pan movement should be
+			# cat=Gallery: Galleria-Plugin/settings/1900; type=int; label=Image-pan smoothness: This value sets how smooth the image pan movement should be
 			imagePanSmoothness =
 
-			# cat=Gallery: Galleria-Plugin/settings/510; type=string; label=Image position: Positions the main image inside the stage container
+			# cat=Gallery: Galleria-Plugin/settings/1910; type=string; label=Image position: Positions the main image inside the stage container
 			imagePosition =
 
-			# cat=Gallery: Galleria-Plugin/settings/520; type=string; label=Initial transition: Defines a different transition to show on the first image
+			# cat=Gallery: Galleria-Plugin/settings/1920; type=string; label=Initial transition: Defines a different transition to show on the first image
 			initialTransition =
 
-			# cat=Gallery: Galleria-Plugin/settings/530; type=string; label=Keep source: This option sets if the source HTML should be left intact
+			# cat=Gallery: Galleria-Plugin/settings/1930; type=boolean; label=Keep source: This option sets if the source HTML should be left intact
 			keepSource =
 
-			# cat=Gallery: Galleria-Plugin/settings/540; type=string; label=Lightbox: This option acts as a helper for attaching a lightbox when the user clicks on an image
+			# cat=Gallery: Galleria-Plugin/settings/1940; type=boolean; label=Lightbox: This option acts as a helper for attaching a lightbox when the user clicks on an image
 			lightbox =
 
-			# cat=Gallery: Galleria-Plugin/settings/550; type=string; label=Lightbox fade speed: Controls how fast lightbox will animate and fade images and captions in milliseconds
+			# cat=Gallery: Galleria-Plugin/settings/1950; type=int; label=Lightbox fade speed: Controls how fast lightbox will animate and fade images and captions in milliseconds
 			lightboxFadeSpeed =
 
-			# cat=Gallery: Galleria-Plugin/settings/560; type=string; label=Lightbox transition speed: Controls how fast the lightbox will animate the white square before displaying the image in milliseconds
+			# cat=Gallery: Galleria-Plugin/settings/1960; type=int; label=Lightbox transition speed: Controls how fast the lightbox will animate the white square before displaying the image in milliseconds
 			lightboxTransitionSpeed =
 
-			# cat=Gallery: Galleria-Plugin/settings/565; type=string; label=Link source images: Link source images
-			linkSourceTmages =
-
-			# cat=Gallery: Galleria-Plugin/settings/570; type=string; label=Max scale ratio: Sets the maximum scale ratio for images
+			# cat=Gallery: Galleria-Plugin/settings/1970; type=int; label=Max scale ratio: Sets the maximum scale ratio for images
 			maxScaleRatio =
 
-			# cat=Gallery: Galleria-Plugin/settings/580; type=string; label=Min scale ratio: Sets the minimum scale ratio for images
+			# cat=Gallery: Galleria-Plugin/settings/1980; type=int; label=Min scale ratio: Sets the minimum scale ratio for images
 			minScaleRatio =
 
-			# cat=Gallery: Galleria-Plugin/settings/590; type=string; label=Overlay background: This defines the overlay background color when displaying the lightbox
+			# cat=Gallery: Galleria-Plugin/settings/1990; type=string; label=Overlay background: This defines the overlay background color when displaying the lightbox
 			overlayBackground =
 
-			# cat=Gallery: Galleria-Plugin/settings/600; type=string; label=Overlay opacity: This sets how much opacity the overlay should have when displaying the lightbox
+			# cat=Gallery: Galleria-Plugin/settings/2000; type=int; label=Overlay opacity: This sets how much opacity the overlay should have when displaying the lightbox
 			overlayOpacity =
 
-			# cat=Gallery: Galleria-Plugin/settings/610; type=string; label=Pause on interaction: Stop the playback if the user presses thumbnails or any other navigational links
+			# cat=Gallery: Galleria-Plugin/settings/2010; type=boolean; label=Pause on interaction: Stop the playback if the user presses thumbnails or any other navigational links
 			pauseOnInteraction =
 
-			# cat=Gallery: Galleria-Plugin/settings/620; type=string; label=Popup links: Setting this to true will open any image links in a new window
+			# cat=Gallery: Galleria-Plugin/settings/2020; type=boolean; label=Popup links: Setting this to true will open any image links in a new window
 			popupLinks =
 
-			# cat=Gallery: Galleria-Plugin/settings/630; type=string; label=Preload: Defines how many images Galleria should preload in advance
+			# cat=Gallery: Galleria-Plugin/settings/2030; type=int; label=Preload: Defines how many images Galleria should preload in advance
 			preload = 3
 
-			# cat=Gallery: Galleria-Plugin/settings/640; type=string; label=Queue: This will make Galleria stall during animations
+			# cat=Gallery: Galleria-Plugin/settings/2040; type=boolean; label=Queue: This will make Galleria stall during animations
 			queue =
 
-			# cat=Gallery: Galleria-Plugin/settings/650; type=string; label=Show: This defines what image index to show at first
+			# cat=Gallery: Galleria-Plugin/settings/2050; type=int; label=Show: This defines what image index to show at first
 			show =
 
-			# cat=Gallery: Galleria-Plugin/settings/660; type=string; label=Show counter: Set this to false if you do not wish to display the counter
+			# cat=Gallery: Galleria-Plugin/settings/2060; type=boolean; label=Show counter: Set this to false if you do not wish to display the counter
 			showCounter =
 
-			# cat=Gallery: Galleria-Plugin/settings/670; type=string; label=Show imagenav: Set this to false if you do not wish to display the image navigation
+			# cat=Gallery: Galleria-Plugin/settings/2070; type=boolean; label=Show imagenav: Set this to false if you do not wish to display the image navigation
 			showImagenav =
 
-			# cat=Gallery: Galleria-Plugin/settings/680; type=string; label=Show info: Set this to false if you do not wish to display the caption
+			# cat=Gallery: Galleria-Plugin/settings/2080; type=boolean; label=Show info: Set this to false if you do not wish to display the caption
 			showInfo =
 
-			# cat=Gallery: Galleria-Plugin/settings/690; type=string; label=Swipe: Enables a swipe movement for flicking through images on touch devices
+			# cat=Gallery: Galleria-Plugin/settings/2090; type=boolean; label=Swipe: Enables a swipe movement for flicking through images on touch devices
 			swipe =
 
-			# cat=Gallery: Galleria-Plugin/settings/700; type=string; label=Thumb crop: Same as Image crop but for thumbnail
+			# cat=Gallery: Galleria-Plugin/settings/2100; type=boolean; label=Thumb crop: Same as Image crop but for thumbnail
 			thumbCrop =
 
-			# cat=Gallery: Galleria-Plugin/settings/705; type=string; label=Thumb event type: Defines wich event opens the thumbnail image in gallery window
+			# cat=Gallery: Galleria-Plugin/settings/2110; type=string; label=Thumb event type: Defines wich event opens the thumbnail image in gallery window
 			thumbEventType =
 
-			# cat=Gallery: Galleria-Plugin/settings/710; type=string; label=Thumb fit: Shrink thumbnail containers to fit the actual thumbnail size
+			# cat=Gallery: Galleria-Plugin/settings/2120; type=boolean; label=Thumb fit: Shrink thumbnail containers to fit the actual thumbnail size
 			thumbFit =
 
-			# cat=Gallery: Galleria-Plugin/settings/720; type=string; label=Thumb margin: Same as imageMargin but for thumbnails
+			# cat=Gallery: Galleria-Plugin/settings/2130; type=int; label=Thumb margin: Same as imageMargin but for thumbnails
 			thumbMargin =
 
-			# cat=Gallery: Galleria-Plugin/settings/730; type=string; label=Thumb quality: Defines if and how IE should use bicubic image rendering for thumbnails
+			# cat=Gallery: Galleria-Plugin/settings/2140; type=boolean; label=Thumb quality: Defines if and how IE should use bicubic image rendering for thumbnails
 			thumbQuality =
 
-			# cat=Gallery: Galleria-Plugin/settings/740; type=string; label=Thumbnails: Sets the creation of thumbnails. If false, Galleria will not create thumbnails and no carousel
+			# cat=Gallery: Galleria-Plugin/settings/2150; type=boolean; label=Thumbnails: Sets the creation of thumbnails. If false, Galleria will not create thumbnails and no carousel
 			thumbnails =
 
-			# cat=Gallery: Galleria-Plugin/settings/750; type=string; label=Transition: The transition that is used when displaying the images
+			# cat=Gallery: Galleria-Plugin/settings/2160; type=string; label=Transition: The transition that is used when displaying the images
 			transition =
 
-			# cat=Gallery: Galleria-Plugin/settings/760; type=string; label=Transition speed: The milliseconds used in the animation when applying the transition
+			# cat=Gallery: Galleria-Plugin/settings/2170; type=int; label=Transition speed: The milliseconds used in the animation when applying the transition
 			transitionSpeed =
 
-			# cat=Gallery: Galleria-Plugin/settings/765; type=string; label=Use canvas: Use canvas for thumbnail image paths
+			# cat=Gallery: Galleria-Plugin/settings/2180; type=boolean; label=Use canvas: Use canvas for thumbnail image paths
 			useCanvas =
 
-			# cat=Gallery: Galleria-Plugin/settings/770; type=string; label=Width: Use this option to set a gallery width manually
+			# cat=Gallery: Galleria-Plugin/settings/2190; type=int; label=Width: Use this option to set a gallery width manually
 			width = {$plugin.tx_spgallery.settings.width}
+		}
+
+		backend {
+			# cat=Gallery: General/settings/2200; type=string; label=Backend stylesheet: Additional stylesheet file for the plugin configuration in backend
+			stylesheet = EXT:sp_gallery/Resources/Public/Stylesheet/Backend.css
 		}
 	}
 
 	view {
-		# cat=Gallery: General/view/900; type=string; label=Path to template layouts
+		# cat=Gallery: General/view/2300; type=string; label=Path to template layouts
 		layoutRootPath = EXT:sp_gallery/Resources/Private/Layouts/
 
-		# cat=Gallery: General/view/910; type=string; label=Path to template partials
+		# cat=Gallery: General/view/2310; type=string; label=Path to template partials
 		partialRootPath = EXT:sp_gallery/Resources/Private/Partials/
 
-		# cat=Gallery: General/view/920; type=string; label=Path to template root
+		# cat=Gallery: General/view/2320; type=string; label=Path to template root
 		templateRootPath = EXT:sp_gallery/Resources/Private/Templates/
 	}
 }

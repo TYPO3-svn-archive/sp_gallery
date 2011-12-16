@@ -44,11 +44,15 @@
 			}
 
 				// Get images
-			$imageCount    = (!empty($this->settings['teaserImageCount']) ? (int)$this->settings['teaserImageCount'] : 5);
-			$imageSettings = (!empty($this->settings['teaserImage']) ? $this->settings['teaserImage'] : array());
-			$images        = $this->getGalleryImages($gallery, $imageSettings, TRUE, $imageCount);
+			$imageCount = (!empty($this->settings['teaserImageCount']) ? (int) $this->settings['teaserImageCount'] : 5);
+			$images = $this->getGalleryImages($gallery, 'teaser', TRUE, $imageCount);
 
-			return implode(LF, $images);
+			$content = '';
+			foreach ($images as $image) {
+				$content .= LF . $image['converted']['teaser'];
+			}
+
+			return $content;
 		}
 
 	}

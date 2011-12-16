@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>Context Sensitive Help (CSH) for table tx_spgallery_domain_model_image</description>
+		<type>CSH</type>
+		<csh_table>tx_spgallery_domain_model_image</csh_table>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="name.description">Name of the image</label>
+			<label index="description.description">Description of the image</label>
+			<label index="description.file_name">File name of the image</label>
+			<label index="description.file_size">File size of the image</label>
+			<label index="description.file_type">File type of the image</label>
+			<label index="description.image_height">Image height</label>
+			<label index="description.image_width">Image width</label>
+			<label index="description.internal_note">Internal note</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="name.description">Name des Bildes</label>
+			<label index="image_directory.description">Bilderzeichnis im Dateisystem</label>
+			<label index="description.file_name">Dateiname</label>
+			<label index="description.file_size">Dateigröße</label>
+			<label index="description.file_type">Dateityp</label>
+			<label index="description.image_height">Höhe des Bildes</label>
+			<label index="description.image_width">Breite des Bildes</label>
+			<label index="description.internal_note">Interne Notiz</label>
+		</languageKey>
+	</data>
+</T3locallang>

@@ -26,9 +26,34 @@ div.tx-sp-gallery ul {
 
 /**
  * Activate CSS shadow for gallery
- * 
+ *
 div.gallery-window {
 	border: 9px solid #ffffff;
 	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
 }
 */
+
+div.galleria-info-download {
+	margin: 6px 0 0 0;
+	padding: 6px 0 0 0;
+	border-top: 1px solid #756969;
+	text-align: right;
+}
+
+div.galleria-info-download a {
+	display: inline-block;
+	height: 16px;
+	/*width: 16px;
+	background: url(../Images/Download.gif) top right no-repeat;*/
+	text-decoration: none;
+	color: #bbbbbb;
+	font: normal 12px/1.1 arial,sans-serif;
+}
+
+div.galleria-info-download a:hover {
+	text-decoration: underline;
+}
+
+div.galleria-info-download a:focus {
+	outline: none;
+}

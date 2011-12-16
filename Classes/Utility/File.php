@@ -58,7 +58,7 @@
 
 						// Check file type
 					if (!empty($fileTypes)) {
-						$currentType = strtolower(substr($fileName, strrpos($fileName, '.') + 1));
+						$currentType = self::getFileType($fileName);
 						if (!in_array($currentType, $fileTypes)) {
 							continue;
 						}
@@ -75,6 +75,21 @@
 
 			natsort($result);
 			return $result;
+		}
+
+
+		/**
+		 * Get file type
+		 *
+		 * @param string $fileName Path to the file
+		 * @return string File type
+		 */
+		public static function getFileType($fileName) {
+			$dot = strrpos($fileName, '.');
+			if ($dot === FALSE) {
+				return '';
+			}
+			return strtolower(substr($fileName, $dot + 1));
 		}
 
 	}

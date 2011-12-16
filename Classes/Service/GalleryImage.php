@@ -33,11 +33,6 @@
 		 */
 		protected $contentObject;
 
-		/**
-		 * @var array
-		 */
-		protected $directoryCache;
-
 
 		/**
 		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
@@ -45,30 +40,6 @@
 		 */
 		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
 			$this->contentObject = $configurationManager->getContentObject();
-		}
-
-
-		/**
-		 * Returns all gallery images
-		 *
-		 * @param string $directory Image directory
-		 * @param array $settings Image configuration
-		 * @param boolean $tag Returns images with complete tag
-		 * @param integer $count Count of files to return
-		 * @return array Relative image paths
-		 */
-		public function getGalleryImages($directory, array $settings = array(), $tag = FALSE, $count = 0) {
-			if (empty($directory)) {
-				return array();
-			}
-
-			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes, $count);
-			if (empty($files)) {
-				return array();
-			}
-
-			return $this->processImageFiles($files, $settings, $tag);
 		}
 
 
@@ -89,7 +60,23 @@
 				return $files;
 			}
 
+				// Get allowed file types
+			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
+
+				// Simulate working directory "htdocs", required for file_exists check
+				// in t3lib_stdGraphic::getImageDimensions
+			$currentDir = getcwd();
+			chdir(PATH_site);
+
+				// Process images
 			foreach ($files as $key => $file) {
+					// Check if converting is allowed for this file type
+				$fileType = Tx_SpGallery_Utility_File::getFileType($file);
+				if (!t3lib_div::inList($allowedTypes, $fileType)) {
+					unset($files[$key]);
+					continue;
+				}
+
 					// Get relative path
 				$file = str_replace(PATH_site, '', $file);
 
@@ -103,6 +90,9 @@
 
 				$files[$key] = $file;
 			}
+
+				// Revert working directory
+			chdir($currentDir);
 
 			return $files;
 		}

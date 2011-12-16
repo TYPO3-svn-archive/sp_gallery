@@ -24,47 +24,66 @@
 	 ********************************************************************/
 
 	/**
-	 * Gallery
+	 * Image
 	 */
-	class Tx_SpGallery_Domain_Model_Gallery extends Tx_Extbase_DomainObject_AbstractEntity {
+	class Tx_SpGallery_Domain_Model_Image extends Tx_Extbase_DomainObject_AbstractEntity {
 
 		/**
-		 * Name of the gallery
+		 * Name of the image
 		 *
 		 * @var string
-		 * @validate NotEmpty
 		 */
 		protected $name;
 
 		/**
-		 * Description of the gallery
+		 * Description of the image
 		 *
 		 * @var string
 		 */
 		protected $description;
 
 		/**
-		 * Image directory in filesystem
+		 * Image path in filesystem
 		 *
 		 * @var string
 		 * @validate NotEmpty
 		 */
-		protected $imageDirectory;
+		protected $fileName;
 
 		/**
-		 * Image directory content hash
+		 * File size
+		 *
+		 * @var int
+		 */
+		protected $fileSize;
+
+		/**
+		 * File type
 		 *
 		 * @var string
 		 */
-		protected $imageDirectoryHash;
+		protected $fileType;
 
 		/**
-		 * Images
+		 * Image height
 		 *
-		 * @var Tx_Extbase_Persistence_ObjectStorage<Tx_SpGallery_Domain_Model_Image>
-		 * @lazy
+		 * @var int
 		 */
-		protected $images;
+		protected $imageHeight;
+
+		/**
+		 * Image width
+		 *
+		 * @var int
+		 */
+		protected $imageWidth;
+
+		/**
+		 * The gallary
+		 *
+		 * @var Tx_SpGallery_Domain_Model_Gallery
+		 */
+		protected $gallery;
 
 
 		/**
@@ -102,73 +121,104 @@
 
 
 		/**
-		 * @param string $imageDirectory
+		 * @param string $fileName
 		 * @return void
 		 */
-		public function setImageDirectory($imageDirectory) {
-			$this->imageDirectory = $imageDirectory;
+		public function setFileName($fileName) {
+			$this->fileName = $fileName;
 		}
 
 
 		/**
 		 * @return string
 		 */
-		public function getImageDirectory() {
-			return $this->imageDirectory;
+		public function getFileName() {
+			return $this->fileName;
 		}
 
 
 		/**
-		 * @param string $imageDirectoryHash
+		 * @param integer $fileSize
 		 * @return void
 		 */
-		public function setImageDirectoryHash($imageDirectoryHash) {
-			$this->imageDirectoryHash = $imageDirectoryHash;
+		public function setFileSize($fileSize) {
+			$this->fileSize = (int) $fileSize;
+		}
+
+
+		/**
+		 * @return integer
+		 */
+		public function getFileSize() {
+			return $this->fileSize;
+		}
+
+
+		/**
+		 * @param string $fileType
+		 * @return void
+		 */
+		public function setFileType($fileType) {
+			$this->fileType = $fileType;
 		}
 
 
 		/**
 		 * @return string
 		 */
-		public function getImageDirectoryHash() {
-			return $this->imageDirectoryHash;
+		public function getFileType() {
+			return $this->fileType;
 		}
 
 
 		/**
-		 * @param array $images
+		 * @param integer $imageHeight
 		 * @return void
 		 */
-		public function setImages(array $images) {
-			foreach ($images as $image) {
-				$this->images->attach($image);
-			}
+		public function setImageHeight($imageHeight) {
+			$this->imageHeight = (int) $imageHeight;
 		}
 
 
 		/**
-		 * @return Tx_Extbase_Persistence_ObjectStorage<Tx_SpGallery_Domain_Model_Image>
+		 * @return integer
 		 */
-		public function getImages() {
-			return $this->images;
+		public function getImageHeight() {
+			return $this->imageHeight;
 		}
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Model_Image $image
+		 * @param integer $imageWidth
 		 * @return void
 		 */
-		public function addImage(Tx_SpGallery_Domain_Model_Image $image) {
-			$this->images->attach($image);
+		public function setImageWidth($imageWidth) {
+			$this->imageWidth = (int) $imageWidth;
 		}
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Model_Image $tag
+		 * @return integer
+		 */
+		public function getImageWidth() {
+			return $this->imageWidth;
+		}
+
+
+		/**
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery
 		 * @return void
 		 */
-		public function removeImage(Tx_SpGallery_Domain_Model_Image $image) {
-			$this->images->detach($image);
+		public function setGallery(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+			$this->gallery = $gallery;
+		}
+
+
+		/**
+		 * @return Tx_SpGallery_Domain_Model_Gallery
+		 */
+		public function getGallery() {
+			return $this->gallery;
 		}
 
 	}
