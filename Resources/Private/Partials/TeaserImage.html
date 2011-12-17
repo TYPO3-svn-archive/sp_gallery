@@ -1,0 +1,14 @@
+{namespace spgallery=Tx_SpGallery_ViewHelpers}
+
+<f:if condition="{singlePage}">
+	<f:then>
+		<f:link.action controller="Gallery" action="show" arguments="{gallery: gallery, image: index}" pageUid="{singlePage}">
+			<f:image src="{source}" alt="" />
+		</f:link.action>
+	</f:then>
+	<f:else>
+		<f:link.action controller="Gallery" action="show" arguments="{gallery: gallery, image: index}">
+			<f:image src="{source}" alt="" />
+		</f:link.action>
+	</f:else>
+</f:if>

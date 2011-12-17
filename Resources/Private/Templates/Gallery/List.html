@@ -11,10 +11,10 @@
           <li>
             <f:if condition="{singlePage}">
               <f:then>
-                <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}" pageUid="{singlePage}">{gallery.name}</f:link.action>
+                <f:link.action controller="Gallery" action="show" arguments="{gallery: gallery}" pageUid="{singlePage}">{gallery.name}</f:link.action>
               </f:then>
               <f:else>
-                <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}">{gallery.name}</f:link.action>
+                <f:link.action controller="Gallery" action="show" arguments="{gallery: gallery}">{gallery.name}</f:link.action>
               </f:else>
             </f:if>
             <f:format.html>{gallery.description}</f:format.html>

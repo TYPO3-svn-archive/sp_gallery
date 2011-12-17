@@ -52,19 +52,24 @@
 		/**
 		 * Renders the jQuery gallery
 		 *
-		 * @param mixed $images Images to render
+		 * @param mixed $gallery The gallery to render
 		 * @param string $elementId ID of the HTML element to render gallery
+		 * @param integer $show UID of the image to show after loading
 		 * @return string Rendered gallery
 		 */
-		public function render($images = NULL, $elementId = NULL) {
-			if ($images === NULL) {
-				$images = $this->renderChildren();
+		public function render($gallery = NULL, $elementId = NULL, $show = NULL) {
+			if ($gallery === NULL) {
+				$gallery = $this->renderChildren();
+			}
+
+			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
+				throw new Exception('No valid gallery given to render', 1308305558);
 			}
 
 				// Check container id
 			$elementId = trim($elementId);
 			if (empty($elementId)) {
-				throw new Exception('Extension sp_gallery: No valid HTML element ID given to render gallery', 1308305552);
+				throw new Exception('No valid HTML element ID given to render gallery', 1308305552);
 			}
 
 				// Escape options
@@ -78,9 +83,15 @@
 			}
 
 				// Get image files
-			$images = $this->getGalleryImages($images);
+			$images = $this->getGalleryImages($gallery);
 
-			return $this->renderGalleryTemplate($elementId, $images, $options);
+				// Add index of the image to show after loading
+			if ($show !== NULL && !empty($images[$show])) {
+				$tempImages = array_values($images);
+				$options['show'] = (int) array_search($images[$show], $tempImages);
+			}
+
+			return $this->renderGalleryTemplate($elementId, $images, $options, $show);
 		}
 
 
@@ -90,6 +101,7 @@
 		 * @param string $elementId The id of the DIV container in HTML template
 		 * @param array $images The image files grouped by size
 		 * @param array $options Javascript options for the galleria plugin
+		 * @param integer $show UID of the image to show after loading
 		 * @return string The rendered content
 		 */
 		protected function renderGalleryTemplate($elementId, array $images, array $options) {

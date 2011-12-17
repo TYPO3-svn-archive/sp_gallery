@@ -43,6 +43,11 @@
 		 */
 		protected $imageService;
 
+		/**
+		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 */
+		protected $imageRepository;
+
 
 		/**
 		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
@@ -51,7 +56,7 @@
 		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
 			$this->settings = $configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 			if (empty($this->settings)) {
-				throw new Exception('Extension sp_gallery: No configuration found for gallery view helper', 1308305554);
+				throw new Exception('No configuration found for gallery view helper', 1308305554);
 			}
 			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
 		}
@@ -67,18 +72,34 @@
 
 
 		/**
+		 * @param Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository
+		 * @return void
+		 */
+		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
+			$this->imageRepository = $imageRepository;
+		}
+
+
+		/**
 		 * Returns all gallery images
 		 *
-		 * @param mixed $images Gallery images
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The Gallery
 		 * @param string $formats Image formats to render
 		 * @param boolean $tag Returns images with complete tag
 		 * @param integer $count Image count
 		 * @return array Image arrays
 		 */
-		protected function getGalleryImages($images, $formats = 'thumb, small, large', $tag = FALSE, $count = 0) {
-			if (empty($images) || empty($formats)) {
+		protected function getGalleryImages(Tx_SpGallery_Domain_Model_Gallery $gallery, $formats = 'thumb, small, large', $tag = FALSE, $count = 0) {
+			if (empty($gallery) || empty($formats)) {
 				return array();
 			}
+
+				// Load images from persistence
+			$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
+			$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
+			$limit    = (!empty($count) ? (int) $count : $limit);
+			$ordering = Tx_SpGallery_Utility_Repository::getOrdering($this->settings['images']);
+			$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 
 				// Load image service
 			if ($this->imageService === NULL) {
@@ -90,11 +111,6 @@
 			$formats = array_unique(t3lib_div::trimExplode(',', $formats, TRUE));
 			$imageFiles = array();
 			$result = array();
-
-				// Reduce image count
-			if (!empty($count)) {
-				$images = reset(array_chunk($images, $count));
-			}
 
 			foreach ($formats as $format) {
 				if (empty($settings[$format . 'Image.'])) {

@@ -34,11 +34,6 @@
 		protected $galleryRepository;
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
-		 */
-		protected $imageRepository;
-
-		/**
 		 * @var array
 		 */
 		protected $plugin;
@@ -55,15 +50,6 @@
 		 */
 		public function injectGalleryRepository(Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository) {
 			$this->galleryRepository = $galleryRepository;
-		}
-
-
-		/**
-		 * @param Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository
-		 * @return void
-		 */
-		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
-			$this->imageRepository = $imageRepository;
 		}
 
 
@@ -92,9 +78,10 @@
 		 * Displays a single gallery
 		 *
 		 * @param integer $gallery The gallery to display
+		 * @param integer $image UID of the image to show in gallery
 		 * @return string The rendered view
 		 */
-		public function showAction($gallery = NULL) {
+		public function showAction($gallery = NULL, $image = NULL) {
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
 					$this->flashMessageContainer->add('No gallery defined to show');
@@ -107,19 +94,9 @@
 				$gallery = $this->galleryRepository->findByUid((int) $gallery);
 			}
 
-				// Load images from persistance
-			if (!empty($gallery)) {
-				$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
-				$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
-				$ordering = $this->getOrdering($this->settings['images']);
-				$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
-			} else {
-				$this->flashMessageContainer->add('Gallery not found');
-			}
-
 				// Set template variables
 			$this->view->assign('gallery',  $gallery);
-			$this->view->assign('images',   (!empty($images) ? $images : array()));
+			$this->view->assign('image',    $image);
 			$this->view->assign('settings', $this->settings);
 			$this->view->assign('plugin',   $this->plugin);
 			$this->view->assign('listPage', $this->getPageId('listPage'));
@@ -141,7 +118,7 @@
 			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
 			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
 			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-			$ordering  = $this->getOrdering($this->settings['galleries']);
+			$ordering  = Tx_SpGallery_Utility_Repository::getOrdering($this->settings['galleries']);
 			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 
 				// Order galleries according to manual sorting type
@@ -201,34 +178,10 @@
 				if (strpos($page, 'pages') !== FALSE) {
 					$key = 'pids';
 				}
-				$ids[$key][] = (int)$id;
+				$ids[$key][] = (int) $id;
 			}
 
 			return $ids;
-		}
-
-
-		/**
-		 * Returns ordering of gallery list
-		 *
-		 * @param array $settings TypoScript setup
-		 * @return array Ordering
-		 */
-		protected function getOrdering(array $settings) {
-				// Get order direction
-			$desc = Tx_Extbase_Persistence_QueryInterface::ORDER_DESCENDING;
-			$asc  = Tx_Extbase_Persistence_QueryInterface::ORDER_ASCENDING;
-			$direction = (!empty($settings['orderDirection']) ? $settings['orderDirection'] : 'asc');
-			$direction = ($direction === 'asc' ? $asc : $desc);
-
-				// Get order field
-			$orderBy = (!empty($settings['orderBy']) ? $settings['orderBy'] : 'crdate');
-			$orderBy = ($orderBy === 'directory' ? 'imageDirectory' : $orderBy);
-			if (!in_array($orderBy, array('name', 'tstamp', 'crdate', 'sorting'))) {
-				$orderBy = 'crdate';
-			}
-
-			return array($orderBy => $direction);
 		}
 
 

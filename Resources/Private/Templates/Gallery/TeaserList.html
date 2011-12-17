@@ -11,20 +11,9 @@
           <li class="teaser-images">
             <h3>{gallery.name}</h3>
             <f:format.html>{gallery.description}</f:format.html>
-            <p>
-              <f:if condition="{singlePage}">
-                <f:then>
-                  <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}" pageUid="{singlePage}">
-                    <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
-                  </f:link.action>
-                </f:then>
-                <f:else>
-                  <f:link.action controller="Gallery" action="show" arguments="{gallery : gallery}">
-                    <spgallery:teaserImages>{gallery}</spgallery:teaserImages>
-                  </f:link.action>
-                </f:else>
-              </f:if>
-            </p>
+            <spgallery:teaserImages gallery="{gallery}" index="uid" element="source">
+              <f:render partial="TeaserImage" arguments="{gallery: gallery, index: uid, source: source, singlePage: singlePage}" />
+            </spgallery:teaserImages>
           </li>
         </f:for>
       </ul>

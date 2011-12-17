@@ -32,24 +32,26 @@
 		 * Renders the teaser images of a gallery
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery Gallery to render
-		 * @return string Rendered gallery
+		 * @param string $index The name of the template variable for the index
+		 * @param string $element The name of the template variable for the image element
+		 * @return string Rendered output
 		 */
-		public function render($gallery = NULL) {
-			if ($gallery === NULL) {
-				$gallery = $this->renderChildren();
-			}
-
+		public function render(Tx_SpGallery_Domain_Model_Gallery $gallery, $index = 'uid', $element = 'image') {
 			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('Extension sp_gallery: No valid gallery given to render', 1308305558);
+				throw new Exception('No valid gallery given to render', 1308305558);
 			}
 
 				// Get images
 			$imageCount = (!empty($this->settings['teaserImageCount']) ? (int) $this->settings['teaserImageCount'] : 5);
-			$images = $this->getGalleryImages($gallery, 'teaser', TRUE, $imageCount);
+			$images = $this->getGalleryImages($gallery, 'teaser', FALSE, $imageCount);
 
 			$content = '';
-			foreach ($images as $image) {
-				$content .= LF . $image['converted']['teaser'];
+			foreach ($images as $uid => $image) {
+				$this->templateVariableContainer->add($index, $uid);
+				$this->templateVariableContainer->add($element, $image['converted']['teaser']);
+				$content .= $this->renderChildren();
+				$this->templateVariableContainer->remove($index);
+				$this->templateVariableContainer->remove($element);
 			}
 
 			return $content;
