@@ -9,11 +9,37 @@
       <h2>{gallery.name}</h2>
       <f:format.html>{gallery.description}</f:format.html>
       <div id="gallery-{plugin.uid}" class="gallery-window" style="height:{settings.height}px;width:{settings.width}px;"></div>
-      <spgallery:gallery elementId="gallery-{plugin.uid}" show="{image}">{gallery}</spgallery:gallery>
+      <spgallery:gallery elementId="gallery-{plugin.uid}" infoId="gallery-info-{plugin.uid}" show="{image}">{gallery}</spgallery:gallery>
     </f:then>
     <f:else>
       <p><f:translate key="no_gallery_found"/></p>
     </f:else>
+  </f:if>
+  <f:if condition="{settings.showImageInfo}">
+    <div id="gallery-info-{plugin.uid}" class="gallery-info">
+      <table colspan="0" rowspan="0" border="0">
+        <tr>
+          <th><f:translate key="tx_spgallery_domain_model_image.file_name"/></th>
+          <td class="gallery-info-{plugin.uid}-file"></td>
+        </tr>
+        <tr>
+          <th><f:translate key="tx_spgallery_domain_model_image.file_size"/></th>
+          <td class="gallery-info-{plugin.uid}-size"></td>
+        </tr>
+        <tr>
+          <th><f:translate key="tx_spgallery_domain_model_image.file_type"/></th>
+          <td class="gallery-info-{plugin.uid}-type"></td>
+        </tr>
+        <tr>
+          <th><f:translate key="tx_spgallery_domain_model_image.image_width"/></th>
+          <td class="gallery-info-{plugin.uid}-width"></td>
+        </tr>
+        <tr>
+          <th><f:translate key="tx_spgallery_domain_model_image.image_height"/></th>
+          <td class="gallery-info-{plugin.uid}-height"></td>
+        </tr>
+      </table>
+    </div>
   </f:if>
   <f:if condition="{listPage}">
     <p><f:link.page pageUid="{listPage}"><f:translate key="return_to_list"/></f:link.page></p>

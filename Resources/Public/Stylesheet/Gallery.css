@@ -33,27 +33,16 @@ div.gallery-window {
 }
 */
 
-div.galleria-info-download {
-	margin: 6px 0 0 0;
-	padding: 6px 0 0 0;
-	border-top: 1px solid #756969;
-	text-align: right;
+div.gallery-info {
+	padding: 9px 0 0 0;
 }
 
-div.galleria-info-download a {
-	display: inline-block;
-	height: 16px;
-	/*width: 16px;
-	background: url(../Images/Download.gif) top right no-repeat;*/
-	text-decoration: none;
-	color: #bbbbbb;
-	font: normal 12px/1.1 arial,sans-serif;
+div.gallery-info table th {
+	padding: 2px 6px 2px 0;
 }
 
-div.galleria-info-download a:hover {
-	text-decoration: underline;
-}
-
-div.galleria-info-download a:focus {
-	outline: none;
+div.gallery-info table th,
+div.gallery-info table td {
+	text-align: left;
+	font-size: 11px;
 }

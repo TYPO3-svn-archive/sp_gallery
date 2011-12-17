@@ -11,6 +11,12 @@
 			<label index="tx_spgallery_domain_model_gallery.description">Description of the gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Image directory in filesystem</label>
 
+			<label index="tx_spgallery_domain_model_image.file_name">File name</label>
+			<label index="tx_spgallery_domain_model_image.file_size">File size</label>
+			<label index="tx_spgallery_domain_model_image.file_type">File type</label>
+			<label index="tx_spgallery_domain_model_image.image_height">Image height</label>
+			<label index="tx_spgallery_domain_model_image.image_width">Image width</label>
+
 			<label index="tx_spgallery_task_directoryobserver.name">Image Gallery Directory Observer</label>
 			<label index="tx_spgallery_task_directoryobserver.description">Finds changed gallery datasets and genereates images from defined directories.</label>
 			<label index="tx_spgallery_task_directoryobserver.elementsPerRun">Count of galleries to process at once</label>
@@ -25,13 +31,18 @@
 			<label index="no_galleries_found">No galleries found</label>
 			<label index="no_images_found">No images found in gallery</label>
 			<label index="return_to_list">Return to previous page</label>
-			<label index="download_image">Download »</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
 			<label index="tx_spgallery_domain_model_gallery.name">Name der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Beschreibung der Galerie</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Bilderzeichnis im Dateisystem</label>
+
+			<label index="tx_spgallery_domain_model_image.file_name">Dateiname</label>
+			<label index="tx_spgallery_domain_model_image.file_size">Dateigröße</label>
+			<label index="tx_spgallery_domain_model_image.file_type">Dateityp</label>
+			<label index="tx_spgallery_domain_model_image.image_height">Bildhöhe</label>
+			<label index="tx_spgallery_domain_model_image.image_width">Bildbreite</label>
 
 			<label index="tx_spgallery_task_directoryobserver.name">Bildergalerie Verzeichnis-Überwacher</label>
 			<label index="tx_spgallery_task_directoryobserver.description">Erkennt geänderte Galerie-Datensätze und generiert Bilder aus den angegebenen Verzeichnissen.</label>

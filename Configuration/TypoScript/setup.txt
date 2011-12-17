@@ -12,6 +12,7 @@ plugin.tx_spgallery {
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
 		listPage                  = {$plugin.tx_spgallery.settings.listPage}
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
+		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
 
 		galleries {
 			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}

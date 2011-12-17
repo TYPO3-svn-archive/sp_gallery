@@ -36,7 +36,22 @@
 		/**
 		 * @var string
 		 */
-		protected $templateFile = 'EXT:sp_gallery/Resources/Private/Templates/Gallery/Javascript.html';
+		protected $layoutRootPath = 'EXT:sp_gallery/Resources/Private/Layouts/';
+
+		/**
+		 * @var string
+		 */
+		protected $templateRootPath = 'EXT:sp_gallery/Resources/Private/Templates/';
+
+		/**
+		 * @var string
+		 */
+		protected $patialRootPath = 'EXT:sp_gallery/Resources/Private/Partials/';
+
+		/**
+		 * @var string
+		 */
+		protected $templateFile = 'Gallery/Javascript.html';
 
 
 		/**
@@ -45,7 +60,17 @@
 		 * @return void
 		 */
 		public function initialize() {
-
+			$viewSettings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.view');
+			$viewSettings = Tx_SpGallery_Utility_TypoScript::parse($viewSettings);
+			if (!empty($viewSettings['layoutRootPath'])) {
+				$this->layoutRootPath = $viewSettings['layoutRootPath'];
+			}
+			if (!empty($viewSettings['templateRootPath'])) {
+				$this->templateRootPath = $viewSettings['templateRootPath'];
+			}
+			if (!empty($viewSettings['partialRootPath'])) {
+				$this->patialRootPath = $viewSettings['patialRootPath'];
+			}
 		}
 
 
@@ -54,10 +79,11 @@
 		 *
 		 * @param mixed $gallery The gallery to render
 		 * @param string $elementId ID of the HTML element to render gallery
+		 * @param string $infoId ID of the HTML element to render detailed gallery info
 		 * @param integer $show UID of the image to show after loading
 		 * @return string Rendered gallery
 		 */
-		public function render($gallery = NULL, $elementId = NULL, $show = NULL) {
+		public function render($gallery = NULL, $elementId = NULL, $infoId = NULL, $show = NULL) {
 			if ($gallery === NULL) {
 				$gallery = $this->renderChildren();
 			}
@@ -91,7 +117,7 @@
 				$options['show'] = (int) array_search($images[$show], $tempImages);
 			}
 
-			return $this->renderGalleryTemplate($elementId, $images, $options, $show);
+			return $this->renderGalleryTemplate($elementId, $infoId, $images, $options, $show);
 		}
 
 
@@ -99,27 +125,32 @@
 		 * Renders the Javascript template as described in TypoScript
 		 *
 		 * @param string $elementId The id of the DIV container in HTML template
+		 * @param string $infoId ID of the HTML element to render detailed gallery info
 		 * @param array $images The image files grouped by size
 		 * @param array $options Javascript options for the galleria plugin
 		 * @param integer $show UID of the image to show after loading
 		 * @return string The rendered content
 		 */
-		protected function renderGalleryTemplate($elementId, array $images, array $options) {
+		protected function renderGalleryTemplate($elementId, $infoId, array $images, array $options) {
 				// Get settings
 			$extensionKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 			$themeFile    = $this->getThemeFile();
-			$templateFile = $this->getTemplateFile();
+			$templateFile = $this->getTemplatePathAndFilename();
 
 				// Create Fluid view
 			$view = t3lib_div::makeInstance('Tx_Fluid_View_StandaloneView');
+			$view->setLayoutRootPath($this->layoutRootPath);
+			$view->setPartialRootPath($this->patialRootPath);
 			$view->setTemplatePathAndFilename($templateFile);
 			$view->getRequest()->setControllerExtensionName($extensionKey);
 
 				// Assign variables to template
 			$view->assign('themeFile',   $themeFile);
 			$view->assign('elementId',   $elementId);
+			$view->assign('infoId',      $infoId);
 			$view->assign('images',      $images);
 			$view->assign('options',     $options);
+			$view->assign('settings',    $this->settings);
 
 				// Render template
 			$content = $view->render();
@@ -158,14 +189,9 @@
 		 *
 		 * @return string Relative file path
 		 */
-		protected function getTemplateFile() {
-			$templateFile = $this->templateFile;
-
-			if (!empty($this->settings['templateFile'])) {
-				$templateFile = $this->settings['templateFile'];
-			}
-
-			return $GLOBALS['TSFE']->tmpl->getFileName($templateFile);
+		protected function getTemplatePathAndFilename() {
+			$fileName = rtrim($this->templateRootPath, '/') . '/' . $this->templateFile;
+			return $GLOBALS['TSFE']->tmpl->getFileName($fileName);
 		}
 
 

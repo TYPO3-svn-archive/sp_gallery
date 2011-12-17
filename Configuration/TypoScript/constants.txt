@@ -30,6 +30,9 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/1080; type=int; label=Single page: Page ID of the single view page
 		singlePage = 0
 
+		# cat=Gallery: General/settings/1090; type=boolean; label=Show image info: Show detailed image info below gallery
+		showImageInfo = 0
+
 		galleries {
 			# cat=Gallery: General/settings/1100; type=int; label=Offset: Skip this count of galleries in list view (can also be used for paginate)
 			offset = 0
