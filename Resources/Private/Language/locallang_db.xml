@@ -32,6 +32,7 @@
 			<label index="tt_content.flexform_pi1.s_def.pages">Image galleries</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Link back to this page</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Show on this page</label>
+			<label index="tt_content.flexform_pi1.s_def.uploadPage">Upload images on this page</label>
 
 			<label index="tt_content.flexform_pi1.s_galleries">Galleries</label>
 			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Order galleries by</label>
@@ -86,6 +87,7 @@
 			<label index="tt_content.flexform_pi1.s_def.pages">Bildergalerien</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Auf diese Seite zurückverweisen</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Auf dieser Seite anzeigen</label>
+			<label index="tt_content.flexform_pi1.s_def.uploadPage">Bilder auf dieser Seite hochladen</label>
 
 			<label index="tt_content.flexform_pi1.s_galleries">Galerien</label>
 			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Galerien sortieren nach</label>

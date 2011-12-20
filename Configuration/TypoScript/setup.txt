@@ -12,6 +12,7 @@ plugin.tx_spgallery {
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
 		listPage                  = {$plugin.tx_spgallery.settings.listPage}
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
+		uploadPage                = {$plugin.tx_spgallery.settings.uploadPage}
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
 
 		galleries {
@@ -272,19 +273,32 @@ plugin.tx_spgallery {
 		partialRootPath           = {$plugin.tx_spgallery.view.partialRootPath}
 		templateRootPath          = {$plugin.tx_spgallery.view.templateRootPath}
 	}
+
+	## Persistence specific settings
+	persistence {
+		storagePid                = {$plugin.tx_spgallery.persistence.storagePid}
+	}
 }
 
 
 ## Include jQuery library
-[globalVar = LIT:1 = {$plugin.tx_spgallery.settings.loadJQuery}]
-  page.includeJSlibs.jquery = EXT:sp_gallery/Resources/Public/Javascript/jquery-1.6.1.min.js
+[globalVar = LIT:1 = {$plugin.tx_spgallery.settings.libraries.jquery}]
+  page.includeJSlibs.jquery = EXT:sp_gallery/Resources/Public/Javascript/jquery-1.7.1.min.js
+  page.includeJSlibs.jquery.disableCompression = 1
 [global]
 
 
 ## Include Galleria library
-page {
-	includeJSlibs.galleria = EXT:sp_gallery/Resources/Public/Javascript/galleria-1.2.4.min.js
+[globalVar = LIT:1 = {$plugin.tx_spgallery.settings.libraries.galleria}]
+	page.includeJSlibs.galleria = EXT:sp_gallery/Resources/Public/Javascript/galleria-1.2.6.min.js
+	page.includeJSlibs.galleria.disableCompression = 1
+	page.includeCSS.galleria = EXT:sp_gallery/Resources/Public/Stylesheet/Gallery.css
+[global]
 
-	includeCSS.galleria = EXT:sp_gallery/Resources/Public/Stylesheet/Gallery.css
-	includeCSS.galleria.compress = 1
-}
+
+## Include Jcrop library
+[globalVar = LIT:1 = {$plugin.tx_spgallery.settings.libraries.jcrop}]
+  page.includeJSlibs.jcrop = EXT:sp_gallery/Resources/Public/Javascript/jcrop-0.9.9.min.js
+  page.includeJSlibs.jcrop.disableCompression = 1
+  page.includeCSS.jcrop = EXT:sp_gallery/Resources/Public/Stylesheet/Jcrop.css
+[global]

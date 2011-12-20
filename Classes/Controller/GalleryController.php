@@ -70,7 +70,7 @@
 			if (empty($this->settings['pages'])) {
 				$this->flashMessageContainer->add('No galleries defined to show');
 			}
-			$this->ids = $this->getIds($this->settings['pages']);
+			$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
 		}
 
 
@@ -118,15 +118,16 @@
 			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
 			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
 			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-			$ordering  = Tx_SpGallery_Utility_Repository::getOrdering($this->settings['galleries']);
+			$ordering  = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
 			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 
 				// Order galleries according to manual sorting type
 			$extensionKey = $this->request->getControllerExtensionKey();
+			$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
 			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
 				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
 				if ($configuration['gallerySortingType'] === 'plugin') {
-					$galleries = $this->sortGalleriesBySelector($galleries);
+					$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
 				}
 			}
 
@@ -160,28 +161,52 @@
 
 
 		/**
-		 * Returns an array of PIDs and UIDs
+		 * Displays a form to create a new image
 		 *
-		 * @param string $pages List of pages
-		 * @return array UIDs and PIDs
+		 * @param Tx_TorrGallery_Domain_Model_Image $newImage Image object which has not yet been added to the repository
+		 * @return void
+		 * @dontvalidate $newImage
 		 */
-		protected function getIds($pages) {
-			$ids = array(
-				'uids' => array(),
-				'pids' => array(),
-			);
+		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL) {
+			if ($newImage === NULL && !$this->isStoragePageConfigured('Tx_SpGallery_Domain_Model_Image')) {
+				throw new Exception('Please configure "plugin.tx_spgallery.persistence.storagePid" in TypoScript setup');
+			}
+			$this->view->assign('newImage', $newImage);
+		}
 
-			$pages = t3lib_div::trimExplode(',', $pages);
-			foreach($pages as $page) {
-				$id  = substr($page, strrpos($page, '_') + 1);
-				$key = 'uids';
-				if (strpos($page, 'pages') !== FALSE) {
-					$key = 'pids';
-				}
-				$ids[$key][] = (int) $id;
+
+		/**
+		 * Creates a new image and forwards to the list action
+		 *
+		 * @param Tx_TorrGallery_Domain_Model_Image $newImage Image object which has not yet been added to the repository
+		 * @param Tx_TorrGallery_Domain_Model_Author $newAuthor Author object which has not yet been added to the repository
+		 * @return void
+		 */
+		public function createAction(Tx_TorrGallery_Domain_Model_Image $newImage, Tx_TorrGallery_Domain_Model_Author $newAuthor) {
+				// Move uploaded file to new directory
+			$directory = Tx_TorrConfiguration_Utility_Backend::getUploadfolder('tx_torrgallery_domain_model_image', 'image');
+			$filename  = Tx_TorrConfiguration_Utility_File::moveUploadedFile(
+				$_FILES['tx_torrgallery_pi1']['tmp_name']['newImage']['image'],
+				$_FILES['tx_torrgallery_pi1']['name']['newImage']['image'],
+				$directory
+			);
+			if (empty($filename)) {
+				$this->forwardWithMessage('msg.file_invalid', 'new');
 			}
 
-			return $ids;
+				// Complete image object
+			$newImage->addAuthor($newAuthor);
+			$newImage->setImage($filename);
+
+				// Add new objects
+			$this->imageRepository->add($newImage);
+			$this->authorRepository->add($newAuthor);
+
+				// Clear list page cache
+			$listPage = (!empty($this->settings['listPage']) ? $this->settings['listPage'] : $GLOBALS['TSFE']->id);
+			$this->clearPageCache($listPage);
+
+			$this->redirect('list');
 		}
 
 
@@ -195,38 +220,7 @@
 			if (!empty($setting) && !empty($this->settings[$setting])) {
 				return (int) str_replace('pages_', '', $this->settings[$setting]);
 			}
-
 			return 0;
-		}
-
-
-		/**
-		 * Order gallery objects by the sorting of the gallery selector in plugin
-		 *
-		 * @param Tx_Extbase_Persistence_QueryResult $galleries
-		 * @return array
-		 */
-		protected function sortGalleriesBySelector(Tx_Extbase_Persistence_QueryResult $galleries) {
-				// Get order of the selected galleries, skip folders
-			if (empty($this->ids['uids'])) {
-				return (array) $galleries;
-			}
-
-			$uids = $this->ids['uids'];
-
-				// Order uids by configured direction
-			$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-			if ($direction !== 'asc') {
-				$uids = array_reverse($uids);
-			}
-
-				// Sort galleries by the order of uids in select field
-			$result = array_flip($uids);
-			foreach ($galleries as $gallery) {
-				$result[$gallery->getUid()] = $gallery;
-			}
-
-			return $result;
 		}
 
 	}

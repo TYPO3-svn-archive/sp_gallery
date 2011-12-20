@@ -137,23 +137,18 @@
 			$themeFile    = $this->getThemeFile();
 			$templateFile = $this->getTemplatePathAndFilename();
 
-				// Create Fluid view
-			$view = t3lib_div::makeInstance('Tx_Fluid_View_StandaloneView');
-			$view->setLayoutRootPath($this->layoutRootPath);
-			$view->setPartialRootPath($this->patialRootPath);
-			$view->setTemplatePathAndFilename($templateFile);
-			$view->getRequest()->setControllerExtensionName($extensionKey);
-
 				// Assign variables to template
-			$view->assign('themeFile',   $themeFile);
-			$view->assign('elementId',   $elementId);
-			$view->assign('infoId',      $infoId);
-			$view->assign('images',      $images);
-			$view->assign('options',     $options);
-			$view->assign('settings',    $this->settings);
+			$variables = array(
+				'themeFile' => $themeFile,
+				'elementId' => $elementId,
+				'infoId'    => $infoId,
+				'images'    => $images,
+				'options'   => $options,
+				'settings'  => $this->settings,
+			);
 
 				// Render template
-			$content = $view->render();
+			$content = Tx_SpGallery_Utility_Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
 
 				// Remove whitepases and empty newlines
 			return preg_replace('/^[ \t]*[\r\n]+/m', '', $content);
