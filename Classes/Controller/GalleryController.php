@@ -34,6 +34,11 @@
 		protected $galleryRepository;
 
 		/**
+		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 */
+		protected $imageRepository;
+
+		/**
 		 * @var array
 		 */
 		protected $plugin;
@@ -54,6 +59,15 @@
 
 
 		/**
+		 * @param Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository
+		 * @return void
+		 */
+		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
+			$this->imageRepository = $imageRepository;
+		}
+
+
+		/**
 		 * Initializes the current action
 		 *
 		 * @return void
@@ -65,6 +79,15 @@
 				// Get information about current plugin
 			$contentObject = $this->configurationManager->getContentObject();
 			$this->plugin = (!empty($contentObject->data) ? $contentObject->data : array());
+
+				// Override storagePid
+			if (!empty($this->settings['newRecordPid'])) {
+				$configuration = $this->configurationManager->getConfiguration(
+					Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
+				);
+				$configuration['persistence']['storagePid'] = (int) $this->settings['newRecordPid'];
+				$this->configurationManager->setConfiguration($configuration);
+			}
 
 				// Get UIDs and PIDs of the configured gallaries
 			if (empty($this->settings['pages'])) {
@@ -168,7 +191,8 @@
 		 * @dontvalidate $newImage
 		 */
 		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL) {
-			if ($newImage === NULL && !$this->isStoragePageConfigured('Tx_SpGallery_Domain_Model_Image')) {
+			$storagePidConfigured = Tx_SpGallery_Utility_Persistence::hasStoragePage('sp_gallery', 'image');
+			if ($newImage === NULL && !$storagePidConfigured) {
 				throw new Exception('Please configure "plugin.tx_spgallery.persistence.storagePid" in TypoScript setup');
 			}
 			$this->view->assign('newImage', $newImage);
@@ -183,24 +207,12 @@
 		 * @return void
 		 */
 		public function createAction(Tx_TorrGallery_Domain_Model_Image $newImage, Tx_TorrGallery_Domain_Model_Author $newAuthor) {
-				// Move uploaded file to new directory
-			$directory = Tx_TorrConfiguration_Utility_Backend::getUploadfolder('tx_torrgallery_domain_model_image', 'image');
-			$filename  = Tx_TorrConfiguration_Utility_File::moveUploadedFile(
-				$_FILES['tx_torrgallery_pi1']['tmp_name']['newImage']['image'],
-				$_FILES['tx_torrgallery_pi1']['name']['newImage']['image'],
-				$directory
-			);
-			if (empty($filename)) {
-				$this->forwardWithMessage('msg.file_invalid', 'new');
-			}
 
 				// Complete image object
-			$newImage->addAuthor($newAuthor);
 			$newImage->setImage($filename);
 
 				// Add new objects
 			$this->imageRepository->add($newImage);
-			$this->authorRepository->add($newAuthor);
 
 				// Clear list page cache
 			$listPage = (!empty($this->settings['listPage']) ? $this->settings['listPage'] : $GLOBALS['TSFE']->id);

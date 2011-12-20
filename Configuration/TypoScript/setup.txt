@@ -7,6 +7,8 @@ plugin.tx_spgallery {
 		themesPath                = {$plugin.tx_spgallery.settings.themesPath}
 		theme                     = {$plugin.tx_spgallery.settings.theme}
 		pages                     = {$plugin.tx_spgallery.settings.pages}
+		newRecordPid              = {$plugin.tx_spgallery.settings.newRecordPid}
+		hideNewRecords            = {$plugin.tx_spgallery.settings.hideNewRecords}
 		width                     = {$plugin.tx_spgallery.settings.width}
 		height                    = {$plugin.tx_spgallery.settings.height}
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}

@@ -108,12 +108,14 @@
 		/**
 		 * Check whether a storage page is configured or not
 		 *
+		 * @param string $extensionKey Extension key
 		 * @param string $modelName Name of the model
-		 * @param string $pluginName Name of the plugin
 		 * @return TRUE if a storage page was found
 		 */
-		static public function isStoragePageConfigured($modelName, $pluginName) {
-			$extensionSetup = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.' . $pluginName . '.persistence');
+		static public function hasStoragePage($extensionKey, $modelName) {
+			$extensionName  = str_replace(' ', '', ucwords(str_replace('_', ' ', $extensionKey)));
+			$modelClassName = 'Tx_' . $extensionName . '_Domain_Model_' . ucfirst($modelName);
+			$extensionSetup = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_' . strtolower($extensionName) . '.persistence');
 			$extbaseSetup   = Tx_SpGallery_Utility_TypoScript::getSetup('config.tx_extbase.persistence');
 			$mergedSetup    = Tx_Extbase_Utility_Arrays::arrayMergeRecursiveOverrule($extbaseSetup, $extensionSetup, FALSE, FALSE);
 
@@ -121,7 +123,7 @@
 				return TRUE;
 			}
 
-			if (!empty($mergedSetup['classes.'][$modelName . '.']['newRecordStoragePid'])) {
+			if (!empty($mergedSetup['classes.'][$modelClassName . '.']['newRecordStoragePid'])) {
 				return TRUE;
 			}
 

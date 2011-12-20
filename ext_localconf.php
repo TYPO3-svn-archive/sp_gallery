@@ -8,10 +8,10 @@
 		$_EXTKEY,
 		'Gallery',
 		array(
-			'Gallery' => 'show, list, teaser, teaserList',
+			'Gallery' => 'show, list, teaser, teaserList, new, create',
 		),
 		array(
-			'Gallery' => '',
+			'Gallery' => 'new, create',
 		)
 	);
 
