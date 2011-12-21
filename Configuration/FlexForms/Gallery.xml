@@ -25,23 +25,23 @@
 								<items type="array">
 									<numIndex index="0" type="array">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.type.show</numIndex>
-										<numIndex index="1">Gallery->show;Gallery->new;Gallery->create</numIndex>
+										<numIndex index="1">Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update</numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.type.list</numIndex>
-										<numIndex index="1">Gallery->list;Gallery->show;Gallery->new;Gallery->create</numIndex>
+										<numIndex index="1">Gallery->list;Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.type.teaser</numIndex>
-										<numIndex index="1">Gallery->teaser;Gallery->show;Gallery->new;Gallery->create</numIndex>
+										<numIndex index="1">Gallery->teaser;Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update</numIndex>
 									</numIndex>
 									<numIndex index="3" type="array">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.type.teaserList</numIndex>
-										<numIndex index="1">Gallery->teaserList;Gallery->show;Gallery->new;Gallery->create</numIndex>
+										<numIndex index="1">Gallery->teaserList;Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update</numIndex>
 									</numIndex>
 									<numIndex index="4" type="array">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.type.upload</numIndex>
-										<numIndex index="1">Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</numIndex>
+										<numIndex index="1">Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</numIndex>
 									</numIndex>
 								</items>
 							</config>
@@ -50,7 +50,7 @@
 
 					<settings.pages>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:!=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:!=:Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.pages</label>
 							<config>
@@ -67,7 +67,7 @@
 
 					<settings.listPage>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:IN:Gallery->show;Gallery->new;Gallery->create,</displayCond>
+							<displayCond>FIELD:switchableControllerActions:IN:Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update,</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.listPage</label>
 							<config>
@@ -84,7 +84,7 @@
 
 					<settings.singlePage>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:!IN:Gallery->show;Gallery->new;Gallery->create,Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show,</displayCond>
+							<displayCond>FIELD:switchableControllerActions:!IN:Gallery->show;Gallery->new;Gallery->create;Gallery->edit;Gallery->update,Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show,</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.singlePage</label>
 							<config>
@@ -101,7 +101,7 @@
 
 					<settings.galleryUid>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.galleryUid</label>
 							<config>
@@ -118,7 +118,7 @@
 
 					<settings.redirectPage>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.redirectPage</label>
 							<config>

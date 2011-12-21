@@ -32,13 +32,16 @@
 			<label index="no_gallery_found">No gallery found</label>
 			<label index="no_galleries_found">No galleries found</label>
 			<label index="no_images_found">No images found in gallery</label>
-			<label index="create_new_image">Create image</label>
+			<label index="no_galleries_defined">No galleries defined to show</label>
+			<label index="no_gallery_defined">No gallery defined to show</label>
+			<label index="no_gallery_pid_defined">No gallery defined to create new images</label>
+			<label index="gallery_not_found">Gallery not found</label>
+			<label index="image_not_found">Image not found</label>
+			<label index="directory_invalid">Gallery directory is invalid</label>
+			<label index="file_invalid">Uploaded file is invalid</label>
 			<label index="return_to_list">Return to previous page</label>
-
-			<label index="msg.no_galleries_defined">No galleries defined to show</label>
-			<label index="msg.no_gallery_defined">No gallery defined to show</label>
-			<label index="msg.gallery_not_found">Gallery not found</label>
-			<label index="msg.file_invalid">Uploaded file is invalid</label>
+			<label index="create_new_image">Create image</label>
+			<label index="crop_image">Crop image</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
@@ -67,14 +70,16 @@
 			<label index="no_gallery_found">Keine Galerie gefunden</label>
 			<label index="no_galleries_found">Keine Galerien gefunden</label>
 			<label index="no_images_found">Keine Bilder in der Galerie gefunden</label>
+			<label index="no_galleries_defined">Keine Galerien zur Anzeige definiert</label>
+			<label index="no_gallery_defined">Keine Galerie zur Anzeige definiert</label>
+			<label index="no_gallery_pid_defined">Keine Galerie für neue Bilder definiert</label>
+			<label index="gallery_not_found">Galerie nicht gefunden</label>
+			<label index="image_not_found">Bild nicht gefunden</label>
+			<label index="directory_invalid">Galerie-Verzeichnis ist nicht valide</label>
+			<label index="file_invalid">Die hochgeladene Datei ist nicht valide</label>
 			<label index="return_to_list">Zurück zur vorherigen Seite</label>
 			<label index="create_new_image">Bild erstellen</label>
-			<label index="download_image">Herunterladen »</label>
-
-			<label index="msg.no_galleries_defined">Keine Galerien zur Anzeige definiert</label>
-			<label index="msg.no_gallery_defined">Keine Galerie zur Anzeige definiert</label>
-			<label index="msg.gallery_not_found">Galerie nicht gefunden</label>
-			<label index="msg.file_invalid">Die hochgeladene Datei ist nicht valide</label>
+			<label index="crop_image">Bild croppen</label>
 		</languageKey>
 	</data>
 </T3locallang>

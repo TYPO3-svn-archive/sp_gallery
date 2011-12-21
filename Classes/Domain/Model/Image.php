@@ -46,7 +46,6 @@
 		 * Image path in filesystem
 		 *
 		 * @var string
-		 * @validate NotEmpty
 		 */
 		protected $fileName;
 
@@ -219,6 +218,39 @@
 		 */
 		public function getGallery() {
 			return $this->gallery;
+		}
+
+
+		/**
+		 * Generate image information from filename
+		 *
+		 * @return void
+		 */
+		public function generateImageInformation() {
+			$fileName = $this->getFileName();
+			if (!empty($fileName)) {
+				$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($fileName);
+				$this->setFileSize($imageInfo['size']);
+				$this->setFileType($imageInfo['type']);
+				$this->setImageHeight($imageInfo['height']);
+				$this->setImageWidth($imageInfo['width']);
+			}
+		}
+
+
+		/**
+		 * Generate image name from filename
+		 *
+		 * @return void
+		 */
+		public function generateImageName() {
+			$fileName = $this->getFileName();
+			if (!empty($fileName)) {
+				$name = basename($fileName);
+				$name = str_replace('_', ' ',substr($name, 0, strpos($name, '.')));
+				$name = ucwords(strtolower($name));
+				$this->setName($name);
+			}
 		}
 
 	}

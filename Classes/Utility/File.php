@@ -220,13 +220,12 @@
 
 		/**
 		 * Returns an array with image information
-		 * 
+		 *
 		 * @param string $fileName The file name
 		 * @return array Image information
 		 */
 		static public function getImageInfo($fileName) {
 			$result = array(
-				'name'   => '',
 				'file'   => '',
 				'size'   => 0,
 				'type'   => '',
@@ -257,11 +256,6 @@
 			if (!empty($imageInfo['mime']) && strpos($imageInfo['mime'], 'application') === FALSE) {
 				$result['type'] = str_replace('image/', '', $imageInfo['mime']);
 			}
-
-				// Generate name
-			$name = basename($fileName);
-			$name = str_replace('_', ' ',substr($name, 0, strpos($name, '.')));
-			$result['name'] = ucwords(strtolower($name));
 
 			return $result;
 		}
@@ -374,12 +368,9 @@
 				return '';
 			}
 
+			$path = t3lib_div::getFileAbsFileName($path);
 			$path = str_replace(PATH_site, '', $path);
-			if (is_dir($path)) {
-				$path = rtrim($path, '/') . '/';
-			}
-
-			return $path;
+			return rtrim($path, '/') . '/';
 		}
 
 
@@ -400,7 +391,8 @@
 			}
 
 			if ($create && self::createDirectory($path)) {
-				return PATH_site . rtrim($path, '/') . '/';
+				$path = t3lib_div::getFileAbsFileName($path);
+				return rtrim($path, '/') . '/';
 			}
 
 			return '';

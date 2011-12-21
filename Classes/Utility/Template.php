@@ -39,6 +39,22 @@
 		 * @return string The rendered content
 		 */
 		static public function render($extensionKey, $templateFile, array $variables = array(), $layoutRootPath = NULL, $partialRootPath = NULL) {
+			$content = self::renderRaw($extensionKey, $templateFile, $variables, $layoutRootPath, $partialRootPath);
+			return preg_replace('/^[ \t]*[\r\n]+/m', '', $content);
+		}
+
+
+		/**
+		 * Renders a template and returns RAW content
+		 *
+		 * @param string $extensionKey The extension key
+		 * @param string $templateFile Absolut path to template file
+		 * @param array $variables The template variables
+		 * @param string $layoutRootPath Path to layouts
+		 * @param string $partialRootPath Path to partials
+		 * @return string Raw rendered content
+		 */
+		static public function renderRaw($extensionKey, $templateFile, array $variables = array(), $layoutRootPath = NULL, $partialRootPath = NULL) {
 			if (empty($extensionKey) || empty($templateFile)) {
 				return '';
 			}

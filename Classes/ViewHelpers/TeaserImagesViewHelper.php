@@ -38,7 +38,7 @@
 		 */
 		public function render(Tx_SpGallery_Domain_Model_Gallery $gallery, $index = 'uid', $element = 'image') {
 			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('No valid gallery given to render', 1308305558);
+				throw new Exception('No valid gallery given to render');
 			}
 
 				// Get images

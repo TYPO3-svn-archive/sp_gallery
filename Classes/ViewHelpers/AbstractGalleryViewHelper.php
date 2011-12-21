@@ -26,20 +26,10 @@
 	/**
 	 * Abstract gallery view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	abstract class Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper extends Tx_SpGallery_ViewHelpers_AbstractTemplateBasedViewHelper {
 
 		/**
-		 * @var Tx_Extbase_Object_ObjectManager
-		 */
-		protected $objectManager;
-
-		/**
-		 * @var array
-		 */
-		protected $settings;
-
-		/**
-		 * @var Tx_SpGallery_Service_GalleryImageService
+		 * @var Tx_SpGallery_Service_GalleryImage
 		 */
 		protected $imageService;
 
@@ -50,24 +40,11 @@
 
 
 		/**
-		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
+		 * @param Tx_SpGallery_Service_GalleryImage $imageService
 		 * @return void
 		 */
-		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
-			$this->settings = $configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-			if (empty($this->settings)) {
-				throw new Exception('No configuration found for gallery view helper', 1308305554);
-			}
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
-		}
-
-
-		/**
-		 * @param Tx_Extbase_Object_ObjectManager $objectManager
-		 * @return void
-		 */
-		public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
-			$this->objectManager = $objectManager;
+		public function injectImageService(Tx_SpGallery_Service_GalleryImage $imageService) {
+			$this->imageService = $imageService;
 		}
 
 
@@ -101,11 +78,7 @@
 			$ordering = Tx_SpGallery_Utility_Repository::getOrdering($this->settings['images']);
 			$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 
-				// Load image service
-			if ($this->imageService === NULL) {
-				$this->imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
-			}
-
+				// Get attributes
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
 			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
 			$formats = array_unique(t3lib_div::trimExplode(',', $formats, TRUE));

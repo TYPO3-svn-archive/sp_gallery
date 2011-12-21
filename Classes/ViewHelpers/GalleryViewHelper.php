@@ -36,42 +36,12 @@
 		/**
 		 * @var string
 		 */
-		protected $layoutRootPath = 'EXT:sp_gallery/Resources/Private/Layouts/';
+		protected $templateFile = 'Javascript/Gallery.js';
 
 		/**
 		 * @var string
 		 */
-		protected $templateRootPath = 'EXT:sp_gallery/Resources/Private/Templates/';
-
-		/**
-		 * @var string
-		 */
-		protected $patialRootPath = 'EXT:sp_gallery/Resources/Private/Partials/';
-
-		/**
-		 * @var string
-		 */
-		protected $templateFile = 'Gallery/Javascript.html';
-
-
-		/**
-		 * Initializes the view helper before invoking the render method
-		 *
-		 * @return void
-		 */
-		public function initialize() {
-			$viewSettings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.view');
-			$viewSettings = Tx_SpGallery_Utility_TypoScript::parse($viewSettings);
-			if (!empty($viewSettings['layoutRootPath'])) {
-				$this->layoutRootPath = $viewSettings['layoutRootPath'];
-			}
-			if (!empty($viewSettings['templateRootPath'])) {
-				$this->templateRootPath = $viewSettings['templateRootPath'];
-			}
-			if (!empty($viewSettings['partialRootPath'])) {
-				$this->patialRootPath = $viewSettings['patialRootPath'];
-			}
-		}
+		protected $tag = '<script type="text/javascript">|</script>';
 
 
 		/**
@@ -81,7 +51,7 @@
 		 * @param string $elementId ID of the HTML element to render gallery
 		 * @param string $infoId ID of the HTML element to render detailed gallery info
 		 * @param integer $show UID of the image to show after loading
-		 * @return string Rendered gallery
+		 * @return string Rendered content
 		 */
 		public function render($gallery = NULL, $elementId = NULL, $infoId = NULL, $show = NULL) {
 			if ($gallery === NULL) {
@@ -89,13 +59,13 @@
 			}
 
 			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('No valid gallery given to render', 1308305558);
+				throw new Exception('No valid gallery given to render');
 			}
 
 				// Check container id
 			$elementId = trim($elementId);
 			if (empty($elementId)) {
-				throw new Exception('No valid HTML element ID given to render gallery', 1308305552);
+				throw new Exception('No valid HTML element ID given to render gallery');
 			}
 
 				// Escape options
@@ -117,7 +87,7 @@
 				$options['show'] = (int) array_search($images[$show], $tempImages);
 			}
 
-			return $this->renderGalleryTemplate($elementId, $infoId, $images, $options, $show);
+			return $this->renderTemplate($elementId, $infoId, $images, $options);
 		}
 
 
@@ -129,9 +99,9 @@
 		 * @param array $images The image files grouped by size
 		 * @param array $options Javascript options for the galleria plugin
 		 * @param integer $show UID of the image to show after loading
-		 * @return string The rendered content
+		 * @return string Rendered content
 		 */
-		protected function renderGalleryTemplate($elementId, $infoId, array $images, array $options) {
+		protected function renderTemplate($elementId, $infoId, array $images, array $options) {
 				// Get settings
 			$extensionKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 			$themeFile    = $this->getThemeFile();
@@ -149,9 +119,7 @@
 
 				// Render template
 			$content = Tx_SpGallery_Utility_Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
-
-				// Remove whitepases and empty newlines
-			return preg_replace('/^[ \t]*[\r\n]+/m', '', $content);
+			return str_replace('|', $content, $this->tag);
 		}
 
 
@@ -176,60 +144,6 @@
 			$themeFile = $GLOBALS['TSFE']->tmpl->getFileName($themeFile);
 
 			return t3lib_div::locationHeaderUrl($themeFile);
-		}
-
-
-		/**
-		 * Returns the javascript template file
-		 *
-		 * @return string Relative file path
-		 */
-		protected function getTemplatePathAndFilename() {
-			$fileName = rtrim($this->templateRootPath, '/') . '/' . $this->templateFile;
-			return $GLOBALS['TSFE']->tmpl->getFileName($fileName);
-		}
-
-
-		/**
-		 * Escapes given value by its type
-		 *
-		 * @param string $value Value to escape
-		 * @param string $types List of variable types
-		 * @return string Escaped value
-		 */
-		protected function escapeValue($value, $types) {
-			if (empty($types)) {
-				return 'null';
-			}
-
-			$types = t3lib_div::trimExplode(',', $types, TRUE);
-
-				// Null
-			if (in_array('null', $types) && $value === 'null') {
-				return $value;
-			}
-
-				// Boolean
-			if (in_array('boolean', $types) && is_numeric($value)) {
-				return (!empty($value) ? 'true' : 'false');
-			}
-
-				// Integer / double
-			if (in_array('number', $types) && is_numeric($value)) {
-				return $value;
-			}
-
-				// Array
-			if (in_array('array', $types) && strpos($value, '[') !== FALSE) {
-				return $value;
-			}
-
-				// String
-			if (in_array('string', $types)) {
-				return "'" . $value . "'";
-			}
-
-			return 'null';
 		}
 
 	}

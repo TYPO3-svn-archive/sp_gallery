@@ -1,0 +1,34 @@
+{namespace spgallery=Tx_SpGallery_ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="main">
+	<f:flashMessages />
+	<f:render partial="FormErrors" />
+
+	<f:if condition="{image}">
+		<f:then>
+			<div class="crop-window">
+				<f:form method="post" action="update" name="image" id="crop-form-{plugin.uid}">
+				<fieldset class="image-new">
+					<f:form.hidden name="coordinates[top]" value="0" class="top" />
+					<f:form.hidden name="coordinates[left]" value="0" class="left" />
+					<f:form.hidden name="coordinates[bottom]" value="0" class="bottom" />
+					<f:form.hidden name="coordinates[right]" value="0" class="right" />
+					<f:form.hidden name="coordinates[width]" value="0" class="width" />
+					<f:form.hidden name="coordinates[height]" value="0" class="height" />
+					<f:form.hidden name="image[uid]" value="{image.uid}" />
+
+					<f:image src="{image.fileName}" alt="{image.name}" width="500" height="400" id="crop-{plugin.uid}" />
+					<hr />
+					<f:form.submit value="{f:translate(key: 'crop_image')}" />
+				</fieldset>
+			</f:form>
+			</div>
+      <spgallery:cropImage elementId="crop-{plugin.uid}" formId="crop-form-{plugin.uid}">{image}</spgallery:cropImage>
+		</f:then>
+		<f:else>
+			<p><f:translate key="image_not_found"/></p>
+		</f:else>
+	</f:if>
+</f:section>

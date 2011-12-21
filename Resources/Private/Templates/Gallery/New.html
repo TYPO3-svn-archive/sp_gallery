@@ -1,22 +1,31 @@
+{namespace spgallery=Tx_SpGallery_ViewHelpers}
+
 <f:layout name="Default" />
 
 <f:section name="main">
 	<f:flashMessages />
 	<f:render partial="FormErrors" />
 
-	<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}">
-		<fieldset class="image-new">
-			<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" />*</label><br />
-			<f:form.textfield property="name" value="{newImage.name}" /><br />
+	<f:if condition="{settings.galleryUid}">
+		<f:then>
+			<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}">
+				<fieldset class="image-new">
+					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" />*</label><br />
+					<f:form.textfield property="name" value="{newImage.name}" /><br />
 
-			<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
-			<f:form.textarea property="description" value="{newImage.description}" cols="30" rows="5" /><br />
+					<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
+					<f:form.textarea property="description" value="{newImage.description}" cols="30" rows="5" /><br />
 
-			<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
-			<f:form.upload property="fileName" /><br />
+					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
+					<f:form.upload property="fileName" /><br />
 
-			<hr />
-			<f:form.submit value="{f:translate(key: 'create_new_image')}" />
-		</fieldset>
-	</f:form>
+					<hr />
+					<f:form.submit value="{f:translate(key: 'create_new_image')}" />
+				</fieldset>
+			</f:form>
+		</f:then>
+		<f:else>
+			<p><f:translate key="no_gallery_pid_defined"/></p>
+		</f:else>
+	</f:if>
 </f:section>

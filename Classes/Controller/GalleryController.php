@@ -26,7 +26,7 @@
 	/**
 	 * Controller for the Gallery object
 	 */
-	class Tx_SpGallery_Controller_GalleryController extends Tx_Extbase_MVC_Controller_ActionController {
+	class Tx_SpGallery_Controller_GalleryController extends Tx_SpGallery_Controller_AbstractController {
 
 		/**
 		 * @var Tx_SpGallery_Domain_Repository_GalleryRepository
@@ -39,9 +39,9 @@
 		protected $imageRepository;
 
 		/**
-		 * @var array
+		 * @var Tx_Extbase_Persistence_Manager
 		 */
-		protected $plugin;
+		protected $persistenceManager;
 
 		/**
 		 * @var array
@@ -68,23 +68,17 @@
 
 
 		/**
-		 * Initializes the current action
+		 * Initialize the controller
 		 *
 		 * @return void
 		 */
-		protected function initializeAction() {
-				// Pre-parse TypoScript setup
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
-
-				// Get information about current plugin
-			$contentObject = $this->configurationManager->getContentObject();
-			$this->plugin = (!empty($contentObject->data) ? $contentObject->data : array());
-
+		protected function initializeController() {
 				// Get UIDs and PIDs of the configured galleries
 			$action = $this->request->getControllerActionName();
-			if ($action !== 'new' && $action !== 'create') {
+			$showActions = array('show', 'list', 'teaser', 'teaserList');
+			if (in_array($action, $showActions)) {
 				if (empty($this->settings['pages'])) {
-					$this->addMessage('msg.no_galleries_defined');
+					$this->addMessage('no_galleries_defined');
 				}
 				$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
 			}
@@ -92,7 +86,7 @@
 
 
 		/**
-		 * Displays a single gallery
+		 * Display a single gallery
 		 *
 		 * @param integer $gallery The gallery to display
 		 * @param integer $image UID of the image to show in gallery
@@ -101,7 +95,7 @@
 		public function showAction($gallery = NULL, $image = NULL) {
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
-					$this->addMessage('msg.no_gallery_defined');
+					$this->addMessage('no_gallery_defined');
 				}
 				$gallery = $this->ids['uids'][0];
 			}
@@ -121,13 +115,13 @@
 
 
 		/**
-		 * Displays all galleries
+		 * Display all galleries
 		 *
 		 * @return void
 		 */
 		public function listAction() {
 			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
-				$this->addMessage('msg.no_galleries_defined');
+				$this->addMessage('no_galleries_defined');
 			}
 
 				// Load galleries from persistance
@@ -157,7 +151,7 @@
 
 
 		/**
-		 * Displays some teaser images of a gallery
+		 * Display some teaser images of a gallery
 		 *
 		 * @return void
 		 */
@@ -168,7 +162,7 @@
 
 
 		/**
-		 * Displays some teaser images of a list of galleries
+		 * Display some teaser images of a list of galleries
 		 *
 		 * @return void
 		 */
@@ -178,7 +172,7 @@
 
 
 		/**
-		 * Displays a form to create a new image
+		 * Display a form to create a new image
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
 		 * @return void
@@ -190,26 +184,20 @@
 
 
 		/**
-		 * Creates a new image and forwards to defined redirect page
+		 * Create a new image and forwards to defined redirect page
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
 		 * @return void
 		 */
 		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage) {
 			if (empty($this->settings['galleryUid'])) {
-				$this->forwardWithMessage('msg.no_gallery_defined', 'new');
+				$this->forwardWithMessage('no_gallery_defined', 'new');
 			}
 
 				// Get gallery for new images
-			$gallery = $this->galleryRepository->getByUid((int) $this->settings['galleryUid']);
+			$gallery = $this->galleryRepository->findByUid((int) $this->settings['galleryUid']);
 			if (empty($gallery)) {
-				$this->forwardWithMessage('msg.gallery_not_found', 'new');
-			}
-
-				// Get upload directory
-			$directory = $gallery->getImageDirectory();
-			if (empty($directory)) {
-				$this->forwardWithMessage('msg.file_invalid', 'new');
+				$this->forwardWithMessage('gallery_not_found', 'new');
 			}
 
 				// Override storagePid
@@ -219,31 +207,86 @@
 			$configuration['persistence']['storagePid'] = (int) $gallery->getPid();
 			$this->configurationManager->setConfiguration($configuration);
 
+				// Create image and update directory hash
+			$this->uploadImage($gallery, $newImage);
+			$this->imageRepository->add($newImage);
+			$gallery->generateDirectoryHash();
+
+				// Persist now to get the UID
+			$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
+			$persistenceManager->persistAll();
+
+				// Redirect to edit action for preview and cropping
+			$this->redirect('edit', NULL, NULL, array('image' => $newImage));
+		}
+
+
+		/**
+		 * Upload an image to given gallery
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery to create image
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage The new image
+		 * @return void
+		 */
+		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $newImage) {
+				// Get upload directory
+			$directory = $gallery->getImageDirectory();
+			if (empty($directory)) {
+				$this->forwardWithMessage('directory_invalid', 'new');
+			}
+			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
+
 				// Move uploaded image to gallery directory
 			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile(
-				$_FILES['tx_spgallery_pi1']['tmp_name']['newImage']['fileName'],
-				$_FILES['tx_spgallery_pi1']['name']['newImage']['fileName'],
+				$_FILES['tx_spgallery_gallery']['tmp_name']['newImage']['fileName'],
+				$_FILES['tx_spgallery_gallery']['name']['newImage']['fileName'],
 				$directory
 			);
 			if (empty($fileName)) {
-				$this->forwardWithMessage('msg.file_invalid', 'new');
+				$this->forwardWithMessage('file_invalid', 'new');
 			}
 
 				// Complete image object
-			$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($fileName);
-			$imageName = ($this->settings['generateName'] ? $imageInfo['name'] : '');
-			$newImage->setName($imageName);
-			$newImage->setFileName($fileName);
-			$newImage->setFileSize($imageInfo['size']);
-			$newImage->setFileType($imageInfo['type']);
-			$newImage->setImageHeight($imageInfo['height']);
-			$newImage->setImageWidth($imageInfo['width']);
 			$newImage->setGallery($gallery);
+			$newImage->setFileName($directory . $fileName);
+			$newImage->generateImageInformation();
+			if (!empty($this->settings['generateName'])) {
+				$newImage->generateImageName();
+			}
+		}
 
-				// Add new objects
-			$this->imageRepository->add($newImage);
 
-				// Clear detail and list page cache
+		/**
+		 * Display a form to crop an image
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @param array $coordinates The image size and position
+		 * @return void
+		 * @dontvalidate $image
+		 * @dontvalidate $coordinates
+		 */
+		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL, array $coordinates = NULL) {
+			$this->view->assign('settings', $this->settings);
+			$this->view->assign('plugin',   $this->plugin);
+			$this->view->assign('image',    $image);
+		}
+
+
+		/**
+		 * Crop given image image
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @param array $coordinates The image size and position
+		 * @return void
+		 */
+		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL, array $coordinates = NULL) {
+			print_r($coordinates);die();
+
+
+
+
+
+				// Clear page cache
 			if (!empty($this->settings['clearCachePages'])) {
 				$this->clearPageCache($this->settings['clearCachePages']);
 			}
@@ -254,90 +297,6 @@
 			} else {
 				$this->redirect('new');
 			}
-		}
-
-
-		/**
-		 * Returns the ID of configured page
-		 *
-		 * @param string $setting Name of the page in settings
-		 * @return integer PID of the page
-		 */
-		protected function getPageId($setting) {
-			if (!empty($setting) && !empty($this->settings[$setting])) {
-				return (int) str_replace('pages_', '', $this->settings[$setting]);
-			}
-			return 0;
-		}
-
-
-		/**
-		 * Clear cache of given pages
-		 *
-		 * @param string $pages List of page ids
-		 * @return void
-		 */
-		protected function clearPageCache($pages) {
-			if (!empty($pages)) {
-				$pages = t3lib_div::intExplode(',', $pages, TRUE);
-				Tx_Extbase_Utility_Cache::clearPageCache($pages);
-			}
-		}
-
-
-		/**
-		 * Translate a label
-		 *
-		 * @param string $label Label to translate
-		 * @param array $arguments Optional arguments array
-		 * @return string Translated label
-		 */
-		protected function translate($label, array $arguments = NULL) {
-			$extensionKey = $this->request->getControllerExtensionKey();
-			return Tx_Extbase_Utility_Localization::translate($label, $extensionKey, $arguments);
-		}
-
-
-		/**
-		 * Add message to flash messages
-		 * 
-		 * @param string $message Identifier of the message
-		 * @param array $arguments Optional array of arguments
-		 * @return void
-		 */
-		protected function addMessage($message, array $arguments = NULL) {
-			$this->flashMessageContainer->add($this->translate($message, $arguments));
-		}
-
-
-		/**
-		 * Send flash message and redirect to given action
-		 * 
-		 * @param string $message Identifier of the message to send
-		 * @param string $action Name of the action
-		 * @param string $controller Optional name of the controller
-		 * @param array $arguments Optional array of arguments
-		 * @param integer $pageUid Optional UID of the page to redirect to
-		 * @return void
-		 */
-		protected function redirectWithMessage($message, $action, $controller = NULL, array $arguments = NULL, $pageUid = NULL) {
-			$this->addMessage($message);
-			$this->redirect($action, $controller, NULL, $arguments, $pageUid);
-		}
-
-
-		/**
-		 * Send flash message and forward to given action
-		 * 
-		 * @param string $message Identifier of the message to send
-		 * @param string $action Name of the action
-		 * @param string $controller Optional name of the controller
-		 * @param array $arguments Optional array of arguments
-		 * @return void
-		 */
-		protected function forwardWithMessage($message, $action, $controller = NULL, array $arguments = NULL) {
-			$this->addMessage($message);
-			$this->forward($action, $controller, NULL, $arguments, $pageUid);
 		}
 
 	}

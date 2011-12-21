@@ -171,5 +171,21 @@
 			$this->images->detach($image);
 		}
 
+
+		/**
+		 * Generate directory hash
+		 *
+		 * @return void
+		 */
+		public function generateDirectoryHash() {
+			$directory = $this->getImageDirectory();
+			if (!empty($directory)) {
+				$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
+				$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
+				$hash = md5(serialize($files));
+				$this->setImageDirectoryHash($hash);
+			}
+		}
+
 	}
 ?>

@@ -233,7 +233,7 @@
 
 				// Generate image records
 			$files = array_unique($files);
-			foreach ($files as $file) {
+			foreach ($files as $key => $file) {
 				$fileName = str_replace(PATH_site, '', $file);
 				$result = $this->imageRepository->findOneByFileName($fileName);
 				if (!empty($result)) {
@@ -241,24 +241,16 @@
 					continue;
 				}
 
-					// Get image information
-				$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($file);
-				$imageName = ($this->generateName ? $imageInfo['name'] : '');
-
-					// Collect image attributes
-				$imageRow = array(
-					'name'         => $imageName,
-					'description'  => '',
-					'file_name'    => $fileName,
-					'file_size'    => $imageInfo['size'],
-					'file_type'    => $imageInfo['type'],
-					'image_height' => $imageInfo['height'],
-					'image_width'  => $imageInfo['width'],
-					'gallery'      => $gallery->getUid(),
-				);
-
 					// Create image object
-				$images[] = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
+				$imageRow = array(
+					'file_name' => $fileName,
+					'gallery'   => $gallery->getUid(),
+				);
+				$images[$key] = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
+				$images[$key]->generateImageInformation();
+				if ($this->generateName) {
+					$images[$key]->generateImageName();
+				}
 				$modified = TRUE;
 			}
 
@@ -293,8 +285,9 @@
 				// Load offset and limit
 			$offset = (int) $this->registry->get('offset');
 			$limit = (int) $this->elementsPerRun;
+			$pid = (int) $this->storagePid;
 
-			return ' Limit: ' . $limit . ', Offset: ' . $offset . ' ';
+			return ' Limit: ' . $limit . ', Offset: ' . $offset . ', Storage: ' . $pid . ' ';
 		}
 
 
