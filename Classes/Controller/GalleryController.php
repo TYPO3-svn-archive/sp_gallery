@@ -80,20 +80,14 @@
 			$contentObject = $this->configurationManager->getContentObject();
 			$this->plugin = (!empty($contentObject->data) ? $contentObject->data : array());
 
-				// Override storagePid
-			if (!empty($this->settings['newRecordPid'])) {
-				$configuration = $this->configurationManager->getConfiguration(
-					Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
-				);
-				$configuration['persistence']['storagePid'] = (int) $this->settings['newRecordPid'];
-				$this->configurationManager->setConfiguration($configuration);
+				// Get UIDs and PIDs of the configured galleries
+			$action = $this->request->getControllerActionName();
+			if ($action !== 'new' && $action !== 'create') {
+				if (empty($this->settings['pages'])) {
+					$this->addMessage('msg.no_galleries_defined');
+				}
+				$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
 			}
-
-				// Get UIDs and PIDs of the configured gallaries
-			if (empty($this->settings['pages'])) {
-				$this->flashMessageContainer->add('No galleries defined to show');
-			}
-			$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
 		}
 
 
@@ -107,7 +101,7 @@
 		public function showAction($gallery = NULL, $image = NULL) {
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
-					$this->flashMessageContainer->add('No gallery defined to show');
+					$this->addMessage('msg.no_gallery_defined');
 				}
 				$gallery = $this->ids['uids'][0];
 			}
@@ -133,7 +127,7 @@
 		 */
 		public function listAction() {
 			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
-				$this->flashMessageContainer->add('No galleries defined to show');
+				$this->addMessage('msg.no_galleries_defined');
 			}
 
 				// Load galleries from persistance
@@ -186,39 +180,80 @@
 		/**
 		 * Displays a form to create a new image
 		 *
-		 * @param Tx_TorrGallery_Domain_Model_Image $newImage Image object which has not yet been added to the repository
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
 		 * @return void
 		 * @dontvalidate $newImage
 		 */
 		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL) {
-			$storagePidConfigured = Tx_SpGallery_Utility_Persistence::hasStoragePage('sp_gallery', 'image');
-			if ($newImage === NULL && !$storagePidConfigured) {
-				throw new Exception('Please configure "plugin.tx_spgallery.persistence.storagePid" in TypoScript setup');
-			}
 			$this->view->assign('newImage', $newImage);
 		}
 
 
 		/**
-		 * Creates a new image and forwards to the list action
+		 * Creates a new image and forwards to defined redirect page
 		 *
-		 * @param Tx_TorrGallery_Domain_Model_Image $newImage Image object which has not yet been added to the repository
-		 * @param Tx_TorrGallery_Domain_Model_Author $newAuthor Author object which has not yet been added to the repository
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
 		 * @return void
 		 */
-		public function createAction(Tx_TorrGallery_Domain_Model_Image $newImage, Tx_TorrGallery_Domain_Model_Author $newAuthor) {
+		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage) {
+			if (empty($this->settings['galleryUid'])) {
+				$this->forwardWithMessage('msg.no_gallery_defined', 'new');
+			}
+
+				// Get gallery for new images
+			$gallery = $this->galleryRepository->getByUid((int) $this->settings['galleryUid']);
+			if (empty($gallery)) {
+				$this->forwardWithMessage('msg.gallery_not_found', 'new');
+			}
+
+				// Get upload directory
+			$directory = $gallery->getImageDirectory();
+			if (empty($directory)) {
+				$this->forwardWithMessage('msg.file_invalid', 'new');
+			}
+
+				// Override storagePid
+			$configuration = $this->configurationManager->getConfiguration(
+				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
+			);
+			$configuration['persistence']['storagePid'] = (int) $gallery->getPid();
+			$this->configurationManager->setConfiguration($configuration);
+
+				// Move uploaded image to gallery directory
+			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile(
+				$_FILES['tx_spgallery_pi1']['tmp_name']['newImage']['fileName'],
+				$_FILES['tx_spgallery_pi1']['name']['newImage']['fileName'],
+				$directory
+			);
+			if (empty($fileName)) {
+				$this->forwardWithMessage('msg.file_invalid', 'new');
+			}
 
 				// Complete image object
-			$newImage->setImage($filename);
+			$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($fileName);
+			$imageName = ($this->settings['generateName'] ? $imageInfo['name'] : '');
+			$newImage->setName($imageName);
+			$newImage->setFileName($fileName);
+			$newImage->setFileSize($imageInfo['size']);
+			$newImage->setFileType($imageInfo['type']);
+			$newImage->setImageHeight($imageInfo['height']);
+			$newImage->setImageWidth($imageInfo['width']);
+			$newImage->setGallery($gallery);
 
 				// Add new objects
 			$this->imageRepository->add($newImage);
 
-				// Clear list page cache
-			$listPage = (!empty($this->settings['listPage']) ? $this->settings['listPage'] : $GLOBALS['TSFE']->id);
-			$this->clearPageCache($listPage);
+				// Clear detail and list page cache
+			if (!empty($this->settings['clearCachePages'])) {
+				$this->clearPageCache($this->settings['clearCachePages']);
+			}
 
-			$this->redirect('list');
+				// Redirect
+			if (!empty($this->settings['redirectPage'])) {
+				$this->redirectToUri((int) $this->settings['redirectPage']);
+			} else {
+				$this->redirect('new');
+			}
 		}
 
 
@@ -233,6 +268,76 @@
 				return (int) str_replace('pages_', '', $this->settings[$setting]);
 			}
 			return 0;
+		}
+
+
+		/**
+		 * Clear cache of given pages
+		 *
+		 * @param string $pages List of page ids
+		 * @return void
+		 */
+		protected function clearPageCache($pages) {
+			if (!empty($pages)) {
+				$pages = t3lib_div::intExplode(',', $pages, TRUE);
+				Tx_Extbase_Utility_Cache::clearPageCache($pages);
+			}
+		}
+
+
+		/**
+		 * Translate a label
+		 *
+		 * @param string $label Label to translate
+		 * @param array $arguments Optional arguments array
+		 * @return string Translated label
+		 */
+		protected function translate($label, array $arguments = NULL) {
+			$extensionKey = $this->request->getControllerExtensionKey();
+			return Tx_Extbase_Utility_Localization::translate($label, $extensionKey, $arguments);
+		}
+
+
+		/**
+		 * Add message to flash messages
+		 * 
+		 * @param string $message Identifier of the message
+		 * @param array $arguments Optional array of arguments
+		 * @return void
+		 */
+		protected function addMessage($message, array $arguments = NULL) {
+			$this->flashMessageContainer->add($this->translate($message, $arguments));
+		}
+
+
+		/**
+		 * Send flash message and redirect to given action
+		 * 
+		 * @param string $message Identifier of the message to send
+		 * @param string $action Name of the action
+		 * @param string $controller Optional name of the controller
+		 * @param array $arguments Optional array of arguments
+		 * @param integer $pageUid Optional UID of the page to redirect to
+		 * @return void
+		 */
+		protected function redirectWithMessage($message, $action, $controller = NULL, array $arguments = NULL, $pageUid = NULL) {
+			$this->addMessage($message);
+			$this->redirect($action, $controller, NULL, $arguments, $pageUid);
+		}
+
+
+		/**
+		 * Send flash message and forward to given action
+		 * 
+		 * @param string $message Identifier of the message to send
+		 * @param string $action Name of the action
+		 * @param string $controller Optional name of the controller
+		 * @param array $arguments Optional array of arguments
+		 * @return void
+		 */
+		protected function forwardWithMessage($message, $action, $controller = NULL, array $arguments = NULL) {
+			$this->addMessage($message);
+			$this->forward($action, $controller, NULL, $arguments, $pageUid);
 		}
 
 	}

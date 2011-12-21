@@ -7,14 +7,13 @@ plugin.tx_spgallery {
 		themesPath                = {$plugin.tx_spgallery.settings.themesPath}
 		theme                     = {$plugin.tx_spgallery.settings.theme}
 		pages                     = {$plugin.tx_spgallery.settings.pages}
-		newRecordPid              = {$plugin.tx_spgallery.settings.newRecordPid}
-		hideNewRecords            = {$plugin.tx_spgallery.settings.hideNewRecords}
+		galleryUid                = {$plugin.tx_spgallery.settings.galleryUid}
 		width                     = {$plugin.tx_spgallery.settings.width}
 		height                    = {$plugin.tx_spgallery.settings.height}
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
 		listPage                  = {$plugin.tx_spgallery.settings.listPage}
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
-		uploadPage                = {$plugin.tx_spgallery.settings.uploadPage}
+		redirectPage              = {$plugin.tx_spgallery.settings.redirectPage}
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
 
 		galleries {

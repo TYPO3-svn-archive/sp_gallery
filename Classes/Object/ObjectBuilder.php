@@ -23,7 +23,6 @@
 	 *  This copyright notice MUST APPEAR in all copies of the script!
 	 ********************************************************************/
 
-
 	/**
 	 * Builder for domain objects
 	 */
@@ -58,7 +57,7 @@
 
 		/**
 		 * Create an object from given class and attributes
-		 *
+		 * 
 		 * @param string $className Name of the class
 		 * @param array $attributes Array of all class attributes
 		 * @return Tx_Extbase_DomainObject_DomainObjectInterface Stored object
@@ -75,8 +74,26 @@
 			}
 
 				// Build object
-			$classSchema = $this->getClassSchema($className);
 			$object = new $className();
+			$object = $this->update($object, $attributes);
+
+				// Add object to internal cache
+			$this->objects[$identifier] = $object;
+
+			return $object;
+		}
+
+
+		/**
+		 * Update an object with given attributes
+		 * 
+		 * @param Tx_Extbase_DomainObject_DomainObjectInterface $object The object
+		 * @param array $attributes Array of all class attributes
+		 * @return Tx_Extbase_DomainObject_DomainObjectInterface Stored object
+		 */
+		public function update(Tx_Extbase_DomainObject_DomainObjectInterface $object, array $attributes) {
+			$classSchema = $this->getClassSchema(get_class($object));
+
 			foreach ($attributes as $key => $value) {
 				$propertyName = t3lib_div::underscoredToLowerCamelCase($key);
 				$protertyInfo = $classSchema->getProperty($propertyName);
@@ -90,16 +107,13 @@
 				}
 			}
 
-				// Add object to internal cache
-			$this->objects[$identifier] = $object;
-
 			return $object;
 		}
 
 
 		/**
 		 * Returns the schema of a class
-		 *
+		 * 
 		 * @param string $className Name of the class
 		 * @return Tx_Extbase_Reflection_ClassSchema Class schema
 		 */

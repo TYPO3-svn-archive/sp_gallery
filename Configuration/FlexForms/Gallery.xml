@@ -99,11 +99,28 @@
 						</TCEforms>
 					</settings.singlePage>
 
-					<settings.uploadPage>
+					<settings.galleryUid>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:!=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
 							<exclude>1</exclude>
-							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.uploadPage</label>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.galleryUid</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>tx_spgallery_domain_model_gallery</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+								<show_thumbs>0</show_thumbs>
+							</config>
+						</TCEforms>
+					</settings.galleryUid>
+
+					<settings.redirectPage>
+						<TCEforms>
+							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<exclude>1</exclude>
+							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.redirectPage</label>
 							<config>
 								<type>group</type>
 								<internal_type>db</internal_type>
@@ -114,36 +131,7 @@
 								<show_thumbs>1</show_thumbs>
 							</config>
 						</TCEforms>
-					</settings.uploadPage>
-
-					<settings.newRecordPid>
-						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
-							<exclude>1</exclude>
-							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.newRecordPid</label>
-							<config>
-								<type>group</type>
-								<internal_type>db</internal_type>
-								<allowed>pages</allowed>
-								<size>1</size>
-								<maxitems>1</maxitems>
-								<minitems>0</minitems>
-								<show_thumbs>0</show_thumbs>
-							</config>
-						</TCEforms>
-					</settings.newRecordPid>
-
-					<settings.hideNewRecords>
-						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
-							<exclude>1</exclude>
-							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.hideNewRecords</label>
-							<config>
-								<type>check</type>
-								<default></default>
-							</config>
-						</TCEforms>
-					</settings.hideNewRecords>
+					</settings.redirectPage>
 
 				</el>
 			</ROOT>

@@ -219,6 +219,55 @@
 
 
 		/**
+		 * Returns an array with image information
+		 * 
+		 * @param string $fileName The file name
+		 * @return array Image information
+		 */
+		static public function getImageInfo($fileName) {
+			$result = array(
+				'name'   => '',
+				'file'   => '',
+				'size'   => 0,
+				'type'   => '',
+				'height' => 0,
+				'width'  => 0,
+			);
+
+			if (empty($fileName)) {
+				return $result;
+			}
+
+			$fileName = t3lib_div::getFileAbsFileName($fileName);
+			if (!self::fileExists($fileName)) {
+				return $result;
+			}
+
+				// Get basic information
+			$result['file'] = $fileName;
+			$result['size'] = (int) filesize($fileName);
+
+				// Get image information
+			$imageInfo = getimagesize($fileName);
+			$result['height'] = (!empty($imageInfo[1]) ? (int) $imageInfo[1] : 0);
+			$result['width']  = (!empty($imageInfo[0]) ? (int) $imageInfo[0] : 0);
+
+				// Get file type
+			$result['type'] = self::getFileType($fileName);
+			if (!empty($imageInfo['mime']) && strpos($imageInfo['mime'], 'application') === FALSE) {
+				$result['type'] = str_replace('image/', '', $imageInfo['mime']);
+			}
+
+				// Generate name
+			$name = basename($fileName);
+			$name = str_replace('_', ' ',substr($name, 0, strpos($name, '.')));
+			$result['name'] = ucwords(strtolower($name));
+
+			return $result;
+		}
+
+
+		/**
 		 * Move a file or folder
 		 *
 		 * @param string $fromFileName Existing file

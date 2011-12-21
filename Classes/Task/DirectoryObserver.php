@@ -241,31 +241,19 @@
 					continue;
 				}
 
-				$imageInfo = getimagesize($file);
-
-					// Get file type
-				$fileType = Tx_SpGallery_Utility_File::getFileType($file);
-				if (!empty($imageInfo['mime']) && strpos($imageInfo['mime'], 'application') === FALSE) {
-					$fileType = str_replace('image/', '', $imageInfo['mime']);
-				}
-
-					// Generate name
-				$name = '';
-				if ($this->generateName) {
-					$name = basename($fileName);
-					$name = str_replace('_', ' ',substr($name, 0, strpos($name, '.')));
-					$name = ucwords(strtolower($name));
-				}
+					// Get image information
+				$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($file);
+				$imageName = ($this->generateName ? $imageInfo['name'] : '');
 
 					// Collect image attributes
 				$imageRow = array(
-					'name'         => $name,
+					'name'         => $imageName,
 					'description'  => '',
 					'file_name'    => $fileName,
-					'file_size'    => filesize($file),
-					'file_type'    => $fileType,
-					'image_height' => (!empty($imageInfo[1]) ? $imageInfo[1] : 0),
-					'image_width'  => (!empty($imageInfo[0]) ? $imageInfo[0] : 0),
+					'file_size'    => $imageInfo['size'],
+					'file_type'    => $imageInfo['type'],
+					'image_height' => $imageInfo['height'],
+					'image_width'  => $imageInfo['width'],
 					'gallery'      => $gallery->getUid(),
 				);
 

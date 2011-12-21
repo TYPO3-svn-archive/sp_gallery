@@ -31,11 +31,10 @@
 			<label index="tt_content.flexform_pi1.s_def.type.teaserList">Teaser list</label>
 			<label index="tt_content.flexform_pi1.s_def.type.upload">Upload form</label>
 			<label index="tt_content.flexform_pi1.s_def.pages">Image galleries</label>
-			<label index="tt_content.flexform_pi1.s_def.newRecordPid">Create on this page</label>
-			<label index="tt_content.flexform_pi1.s_def.hideNewRecords">Hide new</label>
+			<label index="tt_content.flexform_pi1.s_def.galleryUid">Create in this gallery</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Link back to this page</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Show on this page</label>
-			<label index="tt_content.flexform_pi1.s_def.uploadPage">Upload page</label>
+			<label index="tt_content.flexform_pi1.s_def.redirectPage">Redirect to this page</label>
 
 			<label index="tt_content.flexform_pi1.s_galleries">Galleries</label>
 			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Order galleries by</label>
@@ -89,11 +88,10 @@
 			<label index="tt_content.flexform_pi1.s_def.type.teaserList">Teaser-Liste</label>
 			<label index="tt_content.flexform_pi1.s_def.type.upload">Upload-Formular</label>
 			<label index="tt_content.flexform_pi1.s_def.pages">Bildergalerien</label>
-			<label index="tt_content.flexform_pi1.s_def.newRecordPid">Auf dieser Seite erstellen</label>
-			<label index="tt_content.flexform_pi1.s_def.hideNewRecords">Verstecke neue</label>
+			<label index="tt_content.flexform_pi1.s_def.galleryUid">In dieser Galerie erstellen</label>
 			<label index="tt_content.flexform_pi1.s_def.listPage">Auf diese Seite zurückverweisen</label>
 			<label index="tt_content.flexform_pi1.s_def.singlePage">Auf dieser Seite anzeigen</label>
-			<label index="tt_content.flexform_pi1.s_def.uploadPage">Upload-Seite</label>
+			<label index="tt_content.flexform_pi1.s_def.redirectPage">Auf diese Seite weiterleiten</label>
 
 			<label index="tt_content.flexform_pi1.s_galleries">Galerien</label>
 			<label index="tt_content.flexform_pi1.s_galleries.orderBy">Galerien sortieren nach</label>
