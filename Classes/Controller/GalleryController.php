@@ -175,10 +175,17 @@
 		 * Display a form to create a new image
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage Existing image object to remove
 		 * @return void
 		 * @dontvalidate $newImage
+		 * @dontvalidate $image
 		 */
-		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL) {
+		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, Tx_SpGallery_Domain_Model_Image $image = NULL) {
+				// Remove image from edit action
+			if (!empty($image)) {
+				$this->imageRepository->remove($image);
+			}
+
 			$this->view->assign('newImage', $newImage);
 		}
 
@@ -229,6 +236,10 @@
 		 * @return void
 		 */
 		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $newImage) {
+			if (empty($_FILES['tx_spgallery_gallery']['tmp_name']['newImage']['fileName'])) {
+				$this->forwardWithMessage('file_empty', 'new');
+			}
+
 				// Get upload directory
 			$directory = $gallery->getImageDirectory();
 			if (empty($directory)) {
@@ -245,6 +256,9 @@
 			if (empty($fileName)) {
 				$this->forwardWithMessage('file_invalid', 'new');
 			}
+
+				// Hide image first
+			$newImage->setHidden(1);
 
 				// Complete image object
 			$newImage->setGallery($gallery);
@@ -265,7 +279,7 @@
 		 * @dontvalidate $image
 		 * @dontvalidate $coordinates
 		 */
-		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL, array $coordinates = NULL) {
+		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL, $coordinates = NULL) {
 			$this->view->assign('settings', $this->settings);
 			$this->view->assign('plugin',   $this->plugin);
 			$this->view->assign('image',    $image);
@@ -278,13 +292,34 @@
 		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
 		 * @param array $coordinates The image size and position
 		 * @return void
+		 * @dontvalidate $image
+		 * @dontvalidate $coordinates
 		 */
-		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL, array $coordinates = NULL) {
-			print_r($coordinates);die();
+		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL, $coordinates = NULL) {
+				// Get filename
+			$fileName = $image->getFileName();
+			if (empty($fileName)) {
+				$this->forwardWithMessage('file_invalid', 'edit');
+			}
 
+				// Build settings array
+			$settings = array(
+				''
+			);
 
+				// Convert and complete image object
+			$imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
+			$fileName = $imageService->processImageFile($fileName, $settings);
+			if (!empty($fileName)) {
+				$image->setFileName($fileName);
+				$image->generateImageInformation();
+				if (!empty($this->settings['generateName'])) {
+					$image->generateImageName();
+				}
+			}
 
-
+				// Unhide image now
+			$image->setHidden(0);
 
 				// Clear page cache
 			if (!empty($this->settings['clearCachePages'])) {

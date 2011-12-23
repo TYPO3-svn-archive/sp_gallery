@@ -9,19 +9,27 @@
 	<f:if condition="{image}">
 		<f:then>
 			<div class="crop-window">
-				<f:form method="post" action="update" name="image" id="crop-form-{plugin.uid}">
-				<fieldset class="image-new">
+				<f:form method="post" action="update" name="image" object="{image}" id="crop-form-{plugin.uid}">
+				<fieldset class="image-edit">
 					<f:form.hidden name="coordinates[top]" value="0" class="top" />
 					<f:form.hidden name="coordinates[left]" value="0" class="left" />
 					<f:form.hidden name="coordinates[bottom]" value="0" class="bottom" />
 					<f:form.hidden name="coordinates[right]" value="0" class="right" />
 					<f:form.hidden name="coordinates[width]" value="0" class="width" />
 					<f:form.hidden name="coordinates[height]" value="0" class="height" />
-					<f:form.hidden name="image[uid]" value="{image.uid}" />
 
-					<f:image src="{image.fileName}" alt="{image.name}" width="500" height="400" id="crop-{plugin.uid}" />
+					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
+					<f:form.textfield property="name" value="{image.name}" /><br />
+
+					<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
+					<f:form.textarea property="description" value="{image.description}" cols="30" rows="5" /><br />
+
+					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
+					<f:image src="{image.fileName}" alt="{image.name}" maxWidth="{settings.smallImage.maxW}" maxHeight="{settings.smallImage.maxH}" id="crop-{plugin.uid}" />
+					<span class="crop-info"><f:translate key="crop_info" /></span>
+					<f:form.upload property="fileName" /><br />
 					<hr />
-					<f:form.submit value="{f:translate(key: 'crop_image')}" />
+					<input type="button" value="{f:translate(key: 'back')}" onclick="window.location.href = '<f:uri.action action="new" arguments="{image: '{image.uid}'}"></f:uri.action>'" /><span class="button-div"></span><f:form.submit value="{f:translate(key: 'save')}" />
 				</fieldset>
 			</f:form>
 			</div>

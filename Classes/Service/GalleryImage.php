@@ -97,5 +97,25 @@
 			return $files;
 		}
 
+
+		/**
+		 * Convert single image with given settings
+		 *
+		 * @param string $fileName File to process
+		 * @param array $settings Image configuration
+		 * @param boolean $tag Returns images with complete tag
+		 * @return string Relative image path
+		 */
+		public function processImageFile($fileName, array $settings = array(), $tag = FALSE) {
+			if (empty($fileName)) {
+				return '';
+			}
+			$files = $this->processImageFiles(array($fileName), $settings, $tag);
+			if (!empty($files)) {
+				return reset($files);
+			}
+			return '';
+		}
+
 	}
 ?>

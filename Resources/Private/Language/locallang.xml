@@ -39,9 +39,15 @@
 			<label index="image_not_found">Image not found</label>
 			<label index="directory_invalid">Gallery directory is invalid</label>
 			<label index="file_invalid">Uploaded file is invalid</label>
+			<label index="file_empty">No image selected</label>
 			<label index="return_to_list">Return to previous page</label>
 			<label index="create_new_image">Create image</label>
-			<label index="crop_image">Crop image</label>
+			<label index="save">Save »</label>
+			<label index="preview">Preview »</label>
+			<label index="reset">Reset</label>
+			<label index="image">Image</label>
+			<label index="back">« Back</label>
+			<label index="crop_info">Select an area to crop image</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
@@ -77,9 +83,15 @@
 			<label index="image_not_found">Bild nicht gefunden</label>
 			<label index="directory_invalid">Galerie-Verzeichnis ist nicht valide</label>
 			<label index="file_invalid">Die hochgeladene Datei ist nicht valide</label>
+			<label index="file_empty">Kein Bild ausgewählt</label>
 			<label index="return_to_list">Zurück zur vorherigen Seite</label>
 			<label index="create_new_image">Bild erstellen</label>
-			<label index="crop_image">Bild croppen</label>
+			<label index="save">Speichern »</label>
+			<label index="preview">Vorschau »</label>
+			<label index="reset">Leeren</label>
+			<label index="image">Bild</label>
+			<label index="back">« Zurück</label>
+			<label index="crop_info">Einen Bereich auswählen um das Bild auszuschneiden</label>
 		</languageKey>
 	</data>
 </T3locallang>

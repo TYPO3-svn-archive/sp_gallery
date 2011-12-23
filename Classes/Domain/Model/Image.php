@@ -29,6 +29,13 @@
 	class Tx_SpGallery_Domain_Model_Image extends Tx_Extbase_DomainObject_AbstractEntity {
 
 		/**
+		 * Hide image
+		 *
+		 * @var integer
+		 */
+		protected $hidden;
+
+		/**
 		 * Name of the image
 		 *
 		 * @var string
@@ -83,6 +90,23 @@
 		 * @var Tx_SpGallery_Domain_Model_Gallery
 		 */
 		protected $gallery;
+
+
+		/**
+		 * @param integer $hidden
+		 * @return void
+		 */
+		public function setHidden($hidden) {
+			$this->hidden = (int) $hidden;
+		}
+
+
+		/**
+		 * @return integer
+		 */
+		public function getHidden() {
+			return (int) $this->hidden;
+		}
 
 
 		/**

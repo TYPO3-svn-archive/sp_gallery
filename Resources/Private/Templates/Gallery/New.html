@@ -3,14 +3,16 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:flashMessages />
-	<f:render partial="FormErrors" />
+	<div class="form-errors">
+		<f:flashMessages />
+		<f:render partial="FormErrors" />
+	</div>
 
 	<f:if condition="{settings.galleryUid}">
 		<f:then>
 			<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}">
 				<fieldset class="image-new">
-					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" />*</label><br />
+					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
 					<f:form.textfield property="name" value="{newImage.name}" /><br />
 
 					<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
@@ -20,7 +22,7 @@
 					<f:form.upload property="fileName" /><br />
 
 					<hr />
-					<f:form.submit value="{f:translate(key: 'create_new_image')}" />
+					<input type="reset" value="{f:translate(key: 'reset')}" /><span class="button-div"></span><f:form.submit value="{f:translate(key: 'preview')}" />
 				</fieldset>
 			</f:form>
 		</f:then>
