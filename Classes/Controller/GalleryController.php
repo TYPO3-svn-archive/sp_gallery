@@ -302,21 +302,31 @@
 				$this->forwardWithMessage('file_invalid', 'edit');
 			}
 
-				// Build settings array
-			$settings = array(
-				''
-			);
+				// Build crop settings
+			$factorY = ((int) $image->getImageWidth() / (int) $coordinates['imgWidth']);
+			$factorX = ((int) $image->getImageHeight() / (int) $coordinates['imgHeight']);
+			$y = ((int) $coordinates['top'] * $factorY);
+			$x = ((int) $coordinates['left'] * $factorX);
+			$w = ((int) $coordinates['width'] * $factorY);
+			$h = ((int) $coordinates['height'] * $factorX);
 
-				// Convert and complete image object
 			$imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
-			$fileName = $imageService->processImageFile($fileName, $settings);
-			if (!empty($fileName)) {
-				$image->setFileName($fileName);
-				$image->generateImageInformation();
-				if (!empty($this->settings['generateName'])) {
-					$image->generateImageName();
+
+				// Convert image
+			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
+				$fileName = $imageService->cropImageFile($fileName, $x, $y, $w, $h);
+				print_r($fileName);
+				if (!empty($fileName)) {
+					$image->setFileName($fileName);
+					$image->generateImageInformation();
+					if (!empty($this->settings['generateName'])) {
+						$image->generateImageName();
+					}
 				}
 			}
+
+				// Create all sizes
+			$imageService->generateImageFiles(array($fileName), $this->settings);
 
 				// Unhide image now
 			$image->setHidden(0);
@@ -330,7 +340,7 @@
 			if (!empty($this->settings['redirectPage'])) {
 				$this->redirectToUri((int) $this->settings['redirectPage']);
 			} else {
-				$this->redirect('new');
+				$this->forward('edit');
 			}
 		}
 

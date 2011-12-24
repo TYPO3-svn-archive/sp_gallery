@@ -166,7 +166,7 @@
 				$hash = md5(serialize($files));
 
 				if ($hash !== $gallery->getImageDirectoryHash()) {
-					$imageFiles = $this->generateImageFiles($files);
+					$imageFiles = $this->imageService->generateImageFiles($files, $this->settings);
 					$imageFiles = array_intersect_key($files, $imageFiles);
 					$images = $this->generateImageRecords($gallery, $imageFiles);
 					$gallery->setImages($images);
@@ -180,39 +180,6 @@
 			}
 
 			return $modified;
-		}
-
-
-		/**
-		 * Generate images from given directories
-		 *
-		 * @param array $files Image files
-		 * @return array Resulting image files
-		 */
-		protected function generateImageFiles(array $files) {
-			if (empty($files)) {
-				return array();
-			}
-
-			$imageSizes = array('teaser', 'thumb', 'small', 'large');
-			$imageFiles = array();
-
-			foreach ($imageSizes as $size) {
-				if (empty($this->settings[$size . 'Image'])) {
-					continue;
-				}
-
-					// Generate only defined count of files for teaser view
-				if ($size === 'teaser' && !empty($this->settings['teaserImageCount'])) {
-					$files = reset(array_chunk($files, (int) $this->settings['teaserImageCount']));
-				}
-
-					// Generate images in filesystem
-				$result = $this->imageService->processImageFiles($files, $this->settings[$size . 'Image']);
-				$imageFiles = array_merge($imageFiles, $result);
-			}
-
-			return $imageFiles;
 		}
 
 

@@ -126,7 +126,7 @@
 			if ($dot === FALSE) {
 				return '';
 			}
-			return substr($fileName, $dot + 1);
+			return strtolower(substr($fileName, $dot + 1));
 		}
 
 

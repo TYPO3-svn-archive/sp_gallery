@@ -75,7 +75,7 @@
 			$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
 			$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
 			$limit    = (!empty($count) ? (int) $count : $limit);
-			$ordering = Tx_SpGallery_Utility_Repository::getOrdering($this->settings['images']);
+			$ordering = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['images']);
 			$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 
 				// Get attributes
