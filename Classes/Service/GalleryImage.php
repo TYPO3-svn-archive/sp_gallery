@@ -166,7 +166,7 @@
 			$h = (int) $h;
 
 			$settings = array(
-				'XY' => ($y + $w) . ',' . ($x + $h),
+				'XY' =>  ($y + $w) . ',' . ($x + $h),
 				'format' => $fileType,
 				'quality' => 100,
 				'10' => 'IMAGE',

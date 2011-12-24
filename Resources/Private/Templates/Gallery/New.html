@@ -10,7 +10,18 @@
 
 	<f:if condition="{settings.galleryUid}">
 		<f:then>
-			<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}">
+			<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}"  id="crop-form-{plugin.uid}">
+				<div style="display: none;">
+					<f:form.hidden name="coordinates[top]" value="0" class="top" />
+					<f:form.hidden name="coordinates[left]" value="0" class="left" />
+					<f:form.hidden name="coordinates[width]" value="0" class="width" />
+					<f:form.hidden name="coordinates[height]" value="0" class="height" />
+					<f:form.hidden name="coordinates[factorX]" value="0" class="factorX" />
+					<f:form.hidden name="coordinates[factorY]" value="0" class="factorY" />
+					<f:form.hidden property="imageWidth" value="{newImage.imageWidth}" class="imageWidth" />
+					<f:form.hidden property="imageHeight" value="{newImage.imageHeight}" class="imageHeight" />
+					<f:form.hidden property="fileName" value="{newImage.fileName}" class="fileName" />
+				</div>
 				<fieldset class="image-new">
 					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
 					<f:form.textfield property="name" value="{newImage.name}" /><br />
@@ -19,10 +30,24 @@
 					<f:form.textarea property="description" value="{newImage.description}" cols="30" rows="5" /><br />
 
 					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
-					<f:form.upload property="fileName" /><br />
+					<f:if condition="{newImage.fileName}">
+						<div class="crop-image">
+							<f:image src="{newImage.fileName}" alt="{newImage.name}" maxWidth="{settings.smallImage.maxW}" maxHeight="{settings.smallImage.maxH}" id="crop-{plugin.uid}" />
+							<span class="crop-info"><f:translate key="crop_info" /></span>
+							<spgallery:cropImage elementId="crop-{plugin.uid}" formId="crop-form-{plugin.uid}">{newImage}</spgallery:cropImage>
+						</div>
+					</f:if>
+					<f:form.upload name="uploadFile" /><br />
 
 					<hr />
-					<input type="reset" value="{f:translate(key: 'reset')}" /><span class="button-div"></span><f:form.submit value="{f:translate(key: 'preview')}" />
+					<f:if condition="{newImage.fileName}">
+						<f:then>
+							<input type="button" value="{f:translate(key: 'reset')}" onclick="window.location.href = '{f:uri.action(action:'new')}';"><span class="button-div"></span><f:form.submit value="{f:translate(key: 'preview')}" class="preview-button" style="display:none;" /><f:form.submit value="{f:translate(key: 'save')}" class="save-button" />
+						</f:then>
+						<f:else>
+							<input type="button" value="{f:translate(key: 'reset')}" onclick="window.location.href = '{f:uri.action(action:'new')}';"><span class="button-div"></span><f:form.submit value="{f:translate(key: 'preview')}" class="preview-button" /><f:form.submit value="{f:translate(key: 'save')}" class="save-button" style="display:none;" />
+						</f:else>
+					</f:if>
 				</fieldset>
 			</f:form>
 		</f:then>

@@ -48,6 +48,7 @@
 			<label index="image">Image</label>
 			<label index="back">« Back</label>
 			<label index="crop_info">Select an area to crop image</label>
+			<label index="move_failed">Moving the uploaded file to gallery directory failed</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_spgallery_domain_model_gallery">Bildergalerie</label>
@@ -92,6 +93,7 @@
 			<label index="image">Bild</label>
 			<label index="back">« Zurück</label>
 			<label index="crop_info">Einen Bereich auswählen um das Bild auszuschneiden</label>
+			<label index="move_failed">Verschieben der hogeladenen Datei ins Galerie-Verzeichnis fehlgeschlagen</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -44,9 +44,19 @@
 		protected $persistenceManager;
 
 		/**
+		 * @var Tx_SpGallery_Service_GalleryImage
+		 */
+		protected $imageService;
+
+		/**
 		 * @var array
 		 */
 		protected $ids;
+
+		/**
+		 * @var string
+		 */
+		protected $tempDirectory = 'typo3temp/pics/';
 
 
 		/**
@@ -64,6 +74,15 @@
 		 */
 		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
 			$this->imageRepository = $imageRepository;
+		}
+
+
+		/**
+		 * @param Tx_SpGallery_Service_GalleryImage $imageService
+		 * @return void
+		 */
+		public function injectImageService(Tx_SpGallery_Service_GalleryImage $imageService) {
+			$this->imageService = $imageService;
 		}
 
 
@@ -175,18 +194,14 @@
 		 * Display a form to create a new image
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage Existing image object to remove
+		 * @param array $coordinates The image size and position
 		 * @return void
 		 * @dontvalidate $newImage
-		 * @dontvalidate $image
+		 * @dontvalidate $coordinates
 		 */
-		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, Tx_SpGallery_Domain_Model_Image $image = NULL) {
-				// Remove image from edit action
-			if (!empty($image)) {
-				$this->imageRepository->remove($image);
-			}
-
+		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, $coordinates = NULL) {
 			$this->view->assign('newImage', $newImage);
+			$this->view->assign('coordinates', $coordinates);
 		}
 
 
@@ -194,9 +209,11 @@
 		 * Create a new image and forwards to defined redirect page
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
+		 * @param array $coordinates The image size and position
 		 * @return void
+		 * @dontvalidate $coordinates
 		 */
-		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage) {
+		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage, $coordinates = NULL) {
 			if (empty($this->settings['galleryUid'])) {
 				$this->forwardWithMessage('no_gallery_defined', 'new');
 			}
@@ -207,15 +224,44 @@
 				$this->forwardWithMessage('gallery_not_found', 'new');
 			}
 
-				// Override storagePid
-			$configuration = $this->configurationManager->getConfiguration(
-				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
-			);
-			$configuration['persistence']['storagePid'] = (int) $gallery->getPid();
-			$this->configurationManager->setConfiguration($configuration);
+				// Get arguments from request
+			$arguments = $this->request->getArguments();
+			$fileName = $newImage->getFileName();
 
-				// Create image and update directory hash
-			$this->uploadImage($gallery, $newImage);
+				// Upload image to temp directory
+			if (!empty($_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile'])) {
+				$fileName = $this->uploadImage($gallery, $newImage);
+				$arguments['newImage']['fileName'] = $fileName;
+				$arguments['newImage']['imageWidth'] = $newImage->getImageWidth();
+				$arguments['newImage']['imageHeight'] = $newImage->getImageHeight();
+				$this->request->setArguments($arguments);
+				$this->forward('new');
+			}
+
+				// Crop and go back to preview
+			if (!empty($coordinates['top']) || !empty($coordinates['left']) || !empty($coordinates['width']) || !empty($coordinates['height'])) {
+				$fileName = $this->cropImage($newImage, $coordinates);
+				$arguments['newImage']['fileName'] = $fileName;
+				$arguments['newImage']['imageWidth'] = $newImage->getImageWidth();
+				$arguments['newImage']['imageHeight'] = $newImage->getImageHeight();
+				$arguments['coordinates'] = array();
+				$this->request->setArguments($arguments);
+				$this->forward('new');
+			}
+
+				// Move image to gallery directory
+			$directory = $gallery->getImageDirectory();
+			if (empty($directory)) {
+				$this->forwardWithMessage('directory_invalid', 'new');
+			}
+			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
+			$newFileName = $directory . basename($fileName);
+			if (!Tx_SpGallery_Utility_File::moveFile($fileName, $newFileName)) {
+				$this->forwardWithMessage('move_failed', 'new');
+			}
+
+				// Complete image and gallery
+			$newImage->setFileName($newFileName);
 			$this->imageRepository->add($newImage);
 			$gallery->generateDirectoryHash();
 
@@ -223,113 +269,8 @@
 			$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
 			$persistenceManager->persistAll();
 
-				// Redirect to edit action for preview and cropping
-			$this->redirect('edit', NULL, NULL, array('image' => $newImage));
-		}
-
-
-		/**
-		 * Upload an image to given gallery
-		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery to create image
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage The new image
-		 * @return void
-		 */
-		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $newImage) {
-			if (empty($_FILES['tx_spgallery_gallery']['tmp_name']['newImage']['fileName'])) {
-				$this->forwardWithMessage('file_empty', 'new');
-			}
-
-				// Get upload directory
-			$directory = $gallery->getImageDirectory();
-			if (empty($directory)) {
-				$this->forwardWithMessage('directory_invalid', 'new');
-			}
-			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
-
-				// Move uploaded image to gallery directory
-			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile(
-				$_FILES['tx_spgallery_gallery']['tmp_name']['newImage']['fileName'],
-				$_FILES['tx_spgallery_gallery']['name']['newImage']['fileName'],
-				$directory
-			);
-			if (empty($fileName)) {
-				$this->forwardWithMessage('file_invalid', 'new');
-			}
-
-				// Hide image first
-			$newImage->setHidden(1);
-
-				// Complete image object
-			$newImage->setGallery($gallery);
-			$newImage->setFileName($directory . $fileName);
-			$newImage->generateImageInformation();
-			if (!empty($this->settings['generateName'])) {
-				$newImage->generateImageName();
-			}
-		}
-
-
-		/**
-		 * Display a form to crop an image
-		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
-		 * @param array $coordinates The image size and position
-		 * @return void
-		 * @dontvalidate $image
-		 * @dontvalidate $coordinates
-		 */
-		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL, $coordinates = NULL) {
-			$this->view->assign('settings', $this->settings);
-			$this->view->assign('plugin',   $this->plugin);
-			$this->view->assign('image',    $image);
-		}
-
-
-		/**
-		 * Crop given image image
-		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
-		 * @param array $coordinates The image size and position
-		 * @return void
-		 * @dontvalidate $image
-		 * @dontvalidate $coordinates
-		 */
-		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL, $coordinates = NULL) {
-				// Get filename
-			$fileName = $image->getFileName();
-			if (empty($fileName)) {
-				$this->forwardWithMessage('file_invalid', 'edit');
-			}
-
-				// Build crop settings
-			$factorY = ((int) $image->getImageWidth() / (int) $coordinates['imgWidth']);
-			$factorX = ((int) $image->getImageHeight() / (int) $coordinates['imgHeight']);
-			$y = ((int) $coordinates['top'] * $factorY);
-			$x = ((int) $coordinates['left'] * $factorX);
-			$w = ((int) $coordinates['width'] * $factorY);
-			$h = ((int) $coordinates['height'] * $factorX);
-
-			$imageService = $this->objectManager->get('Tx_SpGallery_Service_GalleryImage');
-
-				// Convert image
-			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
-				$fileName = $imageService->cropImageFile($fileName, $x, $y, $w, $h);
-				print_r($fileName);
-				if (!empty($fileName)) {
-					$image->setFileName($fileName);
-					$image->generateImageInformation();
-					if (!empty($this->settings['generateName'])) {
-						$image->generateImageName();
-					}
-				}
-			}
-
 				// Create all sizes
-			$imageService->generateImageFiles(array($fileName), $this->settings);
-
-				// Unhide image now
-			$image->setHidden(0);
+			$this->imageService->generateImageFiles(array($newFileName), $this->settings);
 
 				// Clear page cache
 			if (!empty($this->settings['clearCachePages'])) {
@@ -340,8 +281,114 @@
 			if (!empty($this->settings['redirectPage'])) {
 				$this->redirectToUri((int) $this->settings['redirectPage']);
 			} else {
-				$this->forward('edit');
+				$this->redirect('new');
 			}
+		}
+
+
+		/**
+		 * Display a form to update an image
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @return void
+		 * @dontvalidate $image
+		 */
+		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL) {
+			$this->redirect('new');
+		}
+
+
+		/**
+		 * Update given image
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @return void
+		 * @dontvalidate $image
+		 */
+		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL) {
+			$this->redirect('new');
+		}
+
+
+		/**
+		 * Upload an image to given gallery
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery to create image
+		 * @param Tx_SpGallery_Domain_Model_Image $image The new image
+		 * @return string Temp filename
+		 */
+		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image) {
+			if (empty($_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile']) ||
+			 $_FILES['tx_spgallery_gallery']['error']['uploadFile'] != UPLOAD_ERR_OK) {
+				$this->forwardWithMessage('file_empty', 'new');
+			}
+
+			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($this->tempDirectory);
+
+				// Move uploaded image to gallery directory
+			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile(
+				$_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile'],
+				$_FILES['tx_spgallery_gallery']['name']['uploadFile'],
+				$directory
+			);
+			if (empty($fileName)) {
+				$this->forwardWithMessage('file_invalid', 'new');
+			}
+
+				// Override storagePid
+			$configuration = $this->configurationManager->getConfiguration(
+				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
+			);
+			$configuration['persistence']['storagePid'] = (int) $gallery->getPid();
+			$this->configurationManager->setConfiguration($configuration);
+
+				// Complete image object
+			$image->setGallery($gallery);
+			$image->setFileName($directory . $fileName);
+			$image->generateImageInformation();
+			if (!empty($this->settings['generateName'])) {
+				$image->generateImageName();
+			}
+
+			return $directory . $fileName;
+		}
+
+
+		/**
+		 * Crop an image
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage The new image
+		 * @param array $coordinates The image size and position
+		 * @return string New filename
+		 */
+		protected function cropImage(Tx_SpGallery_Domain_Model_Image $image, $coordinates) {
+			if (empty($coordinates)) {
+				return '';
+			}
+
+				// Build crop settings
+			$factorX = (double) $coordinates['factorX'];
+			$factorY = (double) $coordinates['factorY'];
+			$y = round((int) $coordinates['top'] * $factorY);
+			$x = round((int) $coordinates['left'] * $factorX);
+			$w = round((int) $coordinates['width'] * $factorY);
+			$h = round((int) $coordinates['height'] * $factorX);
+
+
+				// Convert image
+			$fileName = $image->getFileName();
+			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
+				$fileName = $this->imageService->cropImageFile($fileName, $x, $y, $w, $h);
+				if (!empty($fileName)) {
+					$image->setFileName($fileName);
+					$image->generateImageInformation();
+					if (!empty($this->settings['generateName'])) {
+						$image->generateImageName();
+					}
+				}
+			}
+
+			return $fileName;
 		}
 
 	}
