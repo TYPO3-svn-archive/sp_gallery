@@ -166,11 +166,19 @@
 				$hash = md5(serialize($files));
 
 				if ($hash !== $gallery->getImageDirectoryHash()) {
+						// Get files
 					$imageFiles = $this->imageService->generateImageFiles($files, $this->settings);
 					$imageFiles = array_intersect_key($files, $imageFiles);
-					$images = $this->generateImageRecords($gallery, $imageFiles);
-					$gallery->setImages($images);
-					$gallery->setImageDirectoryHash($hash);
+					$imageFiles = array_unique($imageFiles);
+
+						// Remove images without file
+					$this->removeDeletedImages($gallery, $imageFiles);
+
+						// Create images from new files
+					$this->createNewImages($gallery, $imageFiles);
+
+						// Write new directory hash
+					// $gallery->setImageDirectoryHash($hash);
 					$modified = TRUE;
 				}
 			}
@@ -184,27 +192,56 @@
 
 
 		/**
-		 * Generate image records from given files
+		 * Remove image records without file
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery Parent gallery
-		 * @param array $files Image files
-		 * @return array Image objects
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * param array $files Image files
+		 * @return void
 		 */
-		protected function generateImageRecords(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
+		protected function removeDeletedImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
 			if (empty($files)) {
-				return array();
+				return;
 			}
 
 			$modified = FALSE;
-			$images = array();
+
+				// Find records with deleted image file
+			$images = $this->imageRepository->findByGallery($gallery);
+			foreach ($images as $image) {
+				$fileName = PATH_site . $image->getFileName();
+				if (in_array($fileName, $files)) {
+					continue;
+				}
+
+				$this->imageRepository->remove($image);
+				$modified = TRUE;
+			}
+
+			if ($modified) {
+				$this->persistenceManager->persistAll();
+			}
+		}
+
+
+		/**
+		 * Create image records from new files
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param array $files Image files
+		 * @return void
+		 */
+		protected function createNewImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
+			if (empty($files)) {
+				return;
+			}
+
+			$modified = FALSE;
 
 				// Generate image records
-			$files = array_unique($files);
 			foreach ($files as $key => $file) {
 				$fileName = str_replace(PATH_site, '', $file);
 				$result = $this->imageRepository->findOneByFileName($fileName);
 				if (!empty($result)) {
-					$images[] = $result;
 					continue;
 				}
 
@@ -213,19 +250,21 @@
 					'file_name' => $fileName,
 					'gallery'   => $gallery->getUid(),
 				);
-				$images[$key] = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
-				$images[$key]->generateImageInformation();
+				$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
+				$image->generateImageInformation();
 				if ($this->generateName) {
-					$images[$key]->generateImageName();
+					$image->generateImageName();
 				}
+
+				$image->setGallery($gallery);
+				$this->imageRepository->add($image);
+				$gallery->addImage($image);
 				$modified = TRUE;
 			}
 
 			if ($modified) {
 				$this->persistenceManager->persistAll();
 			}
-
-			return $images;
 		}
 
 
@@ -265,7 +304,15 @@
 		 */
 		public function __sleep() {
 			$attributes = get_object_vars($this);
-			$disallowed = array('settings', 'galleryRepository', 'imageRepository', 'imageService', 'persistenceManager', 'registry', 'objectBuilder');
+			$disallowed = array(
+				'settings',
+				'galleryRepository',
+				'imageRepository',
+				'imageService',
+				'persistenceManager',
+				'registry',
+				'objectBuilder',
+			);
 			return array_keys(array_diff_key($attributes, array_flip($disallowed)));
 		}
 

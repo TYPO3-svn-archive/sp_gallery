@@ -45,5 +45,21 @@
 			return $query->execute();
 		}
 
+		/**
+		 * Find an image by filename
+		 *
+		 * @param string $fileName The filename
+		 * @param boolean $enableFields Respect enable fields
+		 * @return Tx_SpGallery_Domain_Model_Image
+		 */
+		public function findOneByFileName($fileName, $enableFields = FALSE) {
+			$query = $this->createQuery();
+			$query->getQuerySettings()->setRespectEnableFields($enableFields);
+			$query->getQuerySettings()->setRespectStoragePage(FALSE);
+			$query->matching($query->equals('fileName', $fileName));
+			$query->setLimit(1);
+			return $query->execute()->getFirst();
+		}
+
 	}
 ?>
