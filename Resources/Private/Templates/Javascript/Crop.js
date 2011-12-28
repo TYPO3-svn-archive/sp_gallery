@@ -25,6 +25,9 @@ jQuery(document).ready(function($) {
       $form.find('input.height').val(0);
       $form.find('input.preview-button').hide();
       $form.find('input.save-button').show();
-    }
+    }<f:if condition="{options}">,</f:if>
+    <f:for each="{options}" as="option" key="key" iteration="iterator">
+      {key}: {option}<f:if condition="{iterator.isLast}"><f:then></f:then><f:else>,</f:else></f:if>
+    </f:for>
   });
 });

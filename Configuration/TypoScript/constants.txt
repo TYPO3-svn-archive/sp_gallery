@@ -283,8 +283,61 @@ plugin.tx_spgallery {
 			width = {$plugin.tx_spgallery.settings.width}
 		}
 
+		jcrop {
+			# cat=Gallery: Jcrop-Plugin/settings/2500; type=boolean; label=Allow select: Allow selecting
+			allowSelect = 1
+
+			# cat=Gallery: Jcrop-Plugin/settings/2510; type=boolean; label=Allow move: Allow moving the selection
+			allowMove = 1
+
+			# cat=Gallery: Jcrop-Plugin/settings/2520; type=boolean; label=Allow resize: Allow reiszing the selection
+			allowResize = 1
+
+			# cat=Gallery: Jcrop-Plugin/settings/2530; type=number; label=Animation delay: Delay of the animation
+			animationDelay = 20
+
+			# cat=Gallery: Jcrop-Plugin/settings/2540; type=number; label=Aspect ratio: Aspect ratio of width/height, use 1 for square
+			aspectRatio = 0
+
+			# cat=Gallery: Jcrop-Plugin/settings/2550; type=string; label=Background color: Set color of background container
+			bgColor = black
+
+			# cat=Gallery: Jcrop-Plugin/settings/2560; type=number; label=Background opacity: Opacity of outer image when cropping
+			bgOpacity = 0.6
+
+			# cat=Gallery: Jcrop-Plugin/settings/2570; type=boolean; label=Background fade: Fade to background opacity
+			bgFade = 0
+
+			# cat=Gallery: Jcrop-Plugin/settings/2580; type=number; label=Border opacity: Opacity of the border
+			borderOpacity = 0.4
+
+			# cat=Gallery: Jcrop-Plugin/settings/2590; type=number; label=Box height: Maximum height of cropping area (default: 0, no limit)
+			boxHeight = 0
+
+			# cat=Gallery: Jcrop-Plugin/settings/2600; type=number; label=Box width: Maximum width of cropping area, (default: 0, no limit)
+			boxWidth = 0
+
+			# cat=Gallery: Jcrop-Plugin/settings/2610; type=boolean; label=Draw borders: Draw borders of the selection
+			drawBorders = 1
+
+			# cat=Gallery: Jcrop-Plugin/settings/2620; type=boolean; label=Drag edges: Drag edges of the selection
+			dragEdges = 1
+
+			# cat=Gallery: Jcrop-Plugin/settings/2630; type=number; label=Fade time: Duration of the fade to background opacity
+			fadeTime = 400
+
+			# cat=Gallery: Jcrop-Plugin/settings/2640; type=string; label=Max size: Maximum width/height, use 0 for unbounded dimension
+			maxSize = [0, 0]
+
+			# cat=Gallery: Jcrop-Plugin/settings/2650; type=string; label=Min select: Minimum width/height of the selection, use 0 for unbounded dimension
+			minSelect = [0, 0]
+
+			# cat=Gallery: Jcrop-Plugin/settings/2660; type=string; label=Min size: Minimum width/height, use 0 for unbounded dimension
+			minSize = [0, 0]
+		}
+
 		backend {
-			# cat=Gallery: General/settings/2500; type=string; label=Backend stylesheet: Additional stylesheet file for the plugin configuration in backend
+			# cat=Gallery: General/settings/2800; type=string; label=Backend stylesheet: Additional stylesheet file for the plugin configuration in backend
 			stylesheet = EXT:sp_gallery/Resources/Public/Stylesheet/Backend.css
 		}
 	}

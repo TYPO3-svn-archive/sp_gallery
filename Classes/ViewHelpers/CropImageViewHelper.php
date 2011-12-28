@@ -56,8 +56,17 @@
 				throw new Exception('No valid image given to render');
 			}
 
+				// Escape options
+			$options = array();
+			if (!empty($this->settings['jcrop'])) {
+				foreach ($this->settings['jcrop'] as $key => $option) {
+					if ($option['value'] !== '') {
+						$options[$key] = $this->escapeValue($option['value'], $option['type']);
+					}
+				}
+			}
 
-			return $this->renderTemplate($image, $elementId, $formId);
+			return $this->renderTemplate($image, $elementId, $formId, $options);
 		}
 
 
@@ -67,9 +76,10 @@
 		 * @param Tx_SpGallery_Domain_Model_Image $image The image
 		 * @param string $elementId The id of the DIV container in HTML template
 		 * @param string $formId ID of the form to set coordinates
+		 * @param array $options Javascript options for the jcrop plugin
 		 * @return string Rendered content
 		 */
-		protected function renderTemplate(Tx_SpGallery_Domain_Model_Image $image, $elementId, $formId = NULL) {
+		protected function renderTemplate(Tx_SpGallery_Domain_Model_Image $image, $elementId, $formId, array $options) {
 				// Get settings
 			$extensionKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 			$templateFile = $this->getTemplatePathAndFilename();
@@ -79,6 +89,7 @@
 				'elementId' => $elementId,
 				'formId'    => $formId,
 				'image'     => $image,
+				'options'   => $options,
 				'settings'  => $this->settings,
 			);
 

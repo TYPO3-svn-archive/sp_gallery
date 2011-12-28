@@ -262,6 +262,77 @@ plugin.tx_spgallery {
 			}
 		}
 
+		jcrop {
+			allowSelect {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.allowSelect}
+				type                  = boolean
+			}
+			allowMove {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.allowMove}
+				type                  = boolean
+			}
+			allowResize {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.allowResize}
+				type                  = boolean
+			}
+			animationDelay {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.animationDelay}
+				type                  = number
+			}
+			aspectRatio {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.aspectRatio}
+				type                  = number
+			}
+			bgColor {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.bgColor}
+				type                  = string
+			}
+			bgOpacity {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.bgOpacity}
+				type                  = number
+			}
+			bgFade {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.bgFade}
+				type                  = boolean
+			}
+			borderOpacity {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.borderOpacity}
+				type                  = number
+			}
+			boxHeight {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.boxHeight}
+				type                  = number
+			}
+			boxWidth {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.boxWidth}
+				type                  = number
+			}
+			drawBorders {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.drawBorders}
+				type                  = boolean
+			}
+			dragEdges {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.dragEdges}
+				type                  = boolean
+			}
+			fadeTime {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.fadeTime}
+				type                  = number
+			}
+			maxSize {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.maxSize}
+				type                  = array
+			}
+			minSelect {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.minSelect}
+				type                  = array
+			}
+			minSize {
+				value                 = {$plugin.tx_spgallery.settings.jcrop.minSize}
+				type                  = array
+			}
+		}
+
 		## Backend options
 		backend {
 			stylesheet              = {$plugin.tx_spgallery.settings.backend.stylesheet}
