@@ -261,13 +261,14 @@
 			}
 
 				// Complete image and gallery
+			$newImage->setGallery($gallery);
 			$newImage->setFileName($newFileName);
+			$newImage->generateImageInformation();
+			if (!empty($this->settings['generateName'])) {
+				$newImage->generateImageName();
+			}
 			$this->imageRepository->add($newImage);
 			$gallery->generateDirectoryHash();
-
-				// Persist now to get the UID
-			$persistenceManager = $this->objectManager->get('Tx_Extbase_Persistence_Manager');
-			$persistenceManager->persistAll();
 
 				// Create all sizes
 			$this->imageService->generateImageFiles(array($newFileName), $this->settings);
@@ -279,6 +280,7 @@
 
 				// Redirect
 			if (!empty($this->settings['redirectPage'])) {
+				$this->clearPageCache((int) $this->settings['redirectPage']);
 				$this->redirectToUri((int) $this->settings['redirectPage']);
 			} else {
 				$this->redirect('new');
