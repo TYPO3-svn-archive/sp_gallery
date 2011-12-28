@@ -374,7 +374,6 @@
 			$w = round((int) $coordinates['width'] * $factorY);
 			$h = round((int) $coordinates['height'] * $factorX);
 
-
 				// Convert image
 			$fileName = $image->getFileName();
 			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {

@@ -68,11 +68,6 @@
 					continue;
 				}
 
-					// Generate only defined count of files for teaser view
-				if ($size === 'teaser' && !empty($settings['teaserImageCount'])) {
-					$files = reset(array_chunk($files, (int) $settings['teaserImageCount']));
-				}
-
 					// Generate images in filesystem
 				$result = $this->processImageFiles($files, $settings[$size . 'Image']);
 				$imageFiles = array_merge($imageFiles, $result);
@@ -165,26 +160,24 @@
 			$w = (int) $w;
 			$h = (int) $h;
 
-			$settings = array(
-				'XY' =>  ($y + $w) . ',' . ($x + $h),
-				'format' => $fileType,
-				'quality' => 100,
-				'10' => 'IMAGE',
-				'10.' => array(
-					'file' => $fileName,
-				),
-				'20' => 'CROP',
-				'20.' => array(
-					'crop' => $x . ',' . $y . ',' . $w . ',' . $h,
-				),
-			);
+			$stdGraphic = t3lib_div::makeInstance('t3lib_stdGraphic');
+			$stdGraphic->init();
 
-			$info = $this->contentObject->getImgResource('GIFBUILDER', $settings);
-			if (!empty($info[3])) {
-				$fileName = $info[3];
-			}
+				// Crop image
+			$image = $stdGraphic->imageCreateFromFile($fileName);
+			$crop = imagecreatetruecolor($w, $h);
+			$stdGraphic->imagecopyresized($crop, $image, 0, 0, $x, $y, $w, $h, $w, $h);
+			ImageDestroy($image);
 
-			return $fileName;
+				// Write to temporary directory
+			$tempName = $stdGraphic->randomName() . '.' . $fileType;
+			$stdGraphic->ImageWrite($crop, $tempName);
+			ImageDestroy($crop);
+
+				// Revert working directory
+			$this->resetFrontendEnvironment();
+
+			return $tempName;
 		}
 
 
