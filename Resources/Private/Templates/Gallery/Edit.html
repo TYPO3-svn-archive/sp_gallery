@@ -3,39 +3,5 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:flashMessages />
-	<f:render partial="FormErrors" />
 
-	<f:if condition="{image}">
-		<f:then>
-			<div class="crop-window">
-				<f:form method="post" action="update" name="image" object="{image}" id="crop-form-{plugin.uid}">
-				<fieldset class="image-edit">
-					<f:form.hidden name="coordinates[top]" value="0" class="top" />
-					<f:form.hidden name="coordinates[left]" value="0" class="left" />
-					<f:form.hidden name="coordinates[width]" value="0" class="width" />
-					<f:form.hidden name="coordinates[height]" value="0" class="height" />
-					<f:form.hidden name="coordinates[imgWidth]" value="0" class="imgWidth" />
-					<f:form.hidden name="coordinates[imgHeight]" value="0" class="imgHeight" />
-
-					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
-					<f:form.textfield property="name" value="{image.name}" /><br />
-
-					<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
-					<f:form.textarea property="description" value="{image.description}" cols="30" rows="5" /><br />
-
-					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
-					<f:image src="{image.fileName}" alt="{image.name}" maxWidth="{settings.smallImage.maxW}" maxHeight="{settings.smallImage.maxH}" id="crop-{plugin.uid}" />
-					<span class="crop-info"><f:translate key="crop_info" /></span>
-					<hr />
-					<input type="button" value="{f:translate(key: 'back')}" onclick="window.location.href = '<f:uri.action action="new" arguments="{image: '{image.uid}'}"></f:uri.action>'" /><span class="button-div"></span><f:form.submit value="{f:translate(key: 'save')}" />
-				</fieldset>
-			</f:form>
-			</div>
-      <spgallery:cropImage elementId="crop-{plugin.uid}" formId="crop-form-{plugin.uid}">{image}</spgallery:cropImage>
-		</f:then>
-		<f:else>
-			<p><f:translate key="image_not_found"/></p>
-		</f:else>
-	</f:if>
 </f:section>
