@@ -229,7 +229,7 @@
 			$fileName = $newImage->getFileName();
 			$fileInfo = Tx_SpGallery_Utility_File::getFileInfo('tx_spgallery_gallery.uploadFile');
 
-				// Upload image to temp directory
+				// Upload image to temp directory and go back to preview
 			if ($this->isValidImage($fileInfo)) {
 				$fileName = $this->uploadImage($gallery, $newImage, $fileInfo);
 				$arguments['newImage']['fileName'] = $fileName;
@@ -239,7 +239,7 @@
 				$this->forward('new');
 			}
 
-				// Crop and go back to preview
+				// Crop image and go back to preview
 			if (!empty($coordinates['top']) || !empty($coordinates['left']) || !empty($coordinates['width']) || !empty($coordinates['height'])) {
 				$fileName = $this->cropImage($newImage, $coordinates);
 				$arguments['newImage']['fileName'] = $fileName;
