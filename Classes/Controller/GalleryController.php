@@ -227,10 +227,11 @@
 				// Get arguments from request
 			$arguments = $this->request->getArguments();
 			$fileName = $newImage->getFileName();
+			$fileInfo = Tx_SpGallery_Utility_File::getFileInfo('tx_spgallery_gallery.uploadFile');
 
 				// Upload image to temp directory
-			if (!empty($_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile'])) {
-				$fileName = $this->uploadImage($gallery, $newImage);
+			if ($this->isValidImage($fileInfo)) {
+				$fileName = $this->uploadImage($gallery, $newImage, $fileInfo);
 				$arguments['newImage']['fileName'] = $fileName;
 				$arguments['newImage']['imageWidth'] = $newImage->getImageWidth();
 				$arguments['newImage']['imageHeight'] = $newImage->getImageHeight();
@@ -249,29 +250,8 @@
 				$this->forward('new');
 			}
 
-				// Move image to gallery directory
-			$directory = $gallery->getImageDirectory();
-			if (empty($directory)) {
-				$this->forwardWithMessage('directory_invalid', 'new');
-			}
-			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
-			$newFileName = $directory . basename($fileName);
-			if (!Tx_SpGallery_Utility_File::moveFile($fileName, $newFileName)) {
-				$this->forwardWithMessage('move_failed', 'new');
-			}
-
-				// Complete image and gallery
-			$newImage->setGallery($gallery);
-			$newImage->setFileName($newFileName);
-			$newImage->generateImageInformation();
-			if (!empty($this->settings['generateName'])) {
-				$newImage->generateImageName();
-			}
-			$this->imageRepository->add($newImage);
-			$gallery->generateDirectoryHash();
-
-				// Create all sizes
-			$this->imageService->generateImageFiles(array($newFileName), $this->settings);
+				// Add image to gallery
+			$this->addImageToGallery($gallery, $newImage, $fileName);
 
 				// Clear page cache
 			if (!empty($this->settings['clearCachePages'])) {
@@ -313,26 +293,50 @@
 
 
 		/**
-		 * Upload an image to given gallery
+		 * Validate image file
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery to create image
-		 * @param Tx_SpGallery_Domain_Model_Image $image The new image
-		 * @return string Temp filename
+		 * @param array $fileInfo Information about upload file
+		 * @return boolean TRUE if the image is valid
 		 */
-		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image) {
-			if (empty($_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile']) ||
-			 $_FILES['tx_spgallery_gallery']['error']['uploadFile'] != UPLOAD_ERR_OK) {
+		protected function isValidImage(array $fileInfo) {
+				// Check if a file was uploaded
+			if (empty($fileInfo) || empty($fileInfo['tmp_name']) || $fileInfo['error'] != UPLOAD_ERR_OK) {
 				$this->forwardWithMessage('file_empty', 'new');
 			}
 
+				// Check type
+			$types = trim(strtolower($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']));
+			$fileType = Tx_SpGallery_Utility_File::getFileType($fileInfo['name']);
+			if (!t3lib_div::inList($types, $fileType)) {
+				$this->forwardWithMessage('file_type_invalid', 'new');
+			}
+
+				// Check size
+			if (!empty($this->settings['uploadFileSize'])) {
+				$size = (int) $this->settings['uploadFileSize'];
+				if (empty($fileInfo['size']) || (int) $fileInfo['size'] > $size) {
+					$this->forwardWithMessage('file_size_invalid', 'new');
+				}
+			}
+
+			return TRUE;
+		}
+
+
+		/**
+		 * Upload an image to given gallery
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param Tx_SpGallery_Domain_Model_Image $image The  image
+		 * @param array $fileInfo Information about upload file
+		 * @return string Temp filename
+		 */
+		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image, array $fileInfo) {
+				// Get temporary directory
 			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($this->tempDirectory);
 
 				// Move uploaded image to gallery directory
-			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile(
-				$_FILES['tx_spgallery_gallery']['tmp_name']['uploadFile'],
-				$_FILES['tx_spgallery_gallery']['name']['uploadFile'],
-				$directory
-			);
+			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile($fileInfo['tmp_name'], $fileInfo['name'], $directory);
 			if (empty($fileName)) {
 				$this->forwardWithMessage('file_invalid', 'new');
 			}
@@ -359,7 +363,7 @@
 		/**
 		 * Crop an image
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage The new image
+		 * @param Tx_SpGallery_Domain_Model_Image $newImage The image
 		 * @param array $coordinates The image size and position
 		 * @return string New filename
 		 */
@@ -390,6 +394,45 @@
 			}
 
 			return $fileName;
+		}
+
+
+		/**
+		 * Add an image to given gallery
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param Tx_SpGallery_Domain_Model_Image $image The image
+		 * @param string $tempName Path to temporary file
+		 * @return void
+		 */
+		protected function addImageToGallery(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image, $tempName) {
+			if (empty($tempName)) {
+				$this->forwardWithMessage('file_invalid', 'new');
+			}
+
+				// Get gallery directory
+			$directory = $gallery->getImageDirectory();
+			if (empty($directory)) {
+				$this->forwardWithMessage('directory_invalid', 'new');
+			}
+			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
+			$newFileName = $directory . basename($tempName);
+			if (!Tx_SpGallery_Utility_File::moveFile($tempName, $newFileName)) {
+				$this->forwardWithMessage('move_failed', 'new');
+			}
+
+				// Complete image and gallery
+			$image->setGallery($gallery);
+			$image->setFileName($newFileName);
+			$image->generateImageInformation();
+			if (!empty($this->settings['generateName'])) {
+				$image->generateImageName();
+			}
+			$this->imageRepository->add($image);
+			$gallery->generateDirectoryHash();
+
+				// Create all sizes
+			$this->imageService->generateImageFiles(array($newFileName), $this->settings);
 		}
 
 	}

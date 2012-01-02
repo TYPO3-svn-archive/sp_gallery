@@ -40,6 +40,8 @@
 			<label index="directory_invalid">Gallery directory is invalid</label>
 			<label index="file_invalid">Uploaded file is invalid</label>
 			<label index="file_empty">No image selected</label>
+			<label index="file_type_invalid">Uploaded file is not allowed</label>
+			<label index="file_size_invalid">Uploaded file is to big</label>
 			<label index="return_to_list">Return to previous page</label>
 			<label index="create_new_image">Create image</label>
 			<label index="save">Save »</label>
@@ -85,6 +87,8 @@
 			<label index="directory_invalid">Galerie-Verzeichnis ist nicht valide</label>
 			<label index="file_invalid">Die hochgeladene Datei ist nicht valide</label>
 			<label index="file_empty">Kein Bild ausgewählt</label>
+			<label index="file_type_invalid">Die hochgeladene Datei ist nicht erlaubt</label>
+			<label index="file_size_invalid">Die hochgeladene Datei ist zu groß</label>
 			<label index="return_to_list">Zurück zur vorherigen Seite</label>
 			<label index="create_new_image">Bild erstellen</label>
 			<label index="save">Speichern »</label>

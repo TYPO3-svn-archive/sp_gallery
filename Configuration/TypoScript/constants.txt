@@ -36,6 +36,9 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/1110; type=boolean; label=Show image info: Show detailed image info below gallery
 		showImageInfo = 0
 
+		# cat=Gallery: General/settings/1120; type=int; label=Upload file size: Maximal size of uploaded file in bytes
+		uploadFileSize = 10485760
+
 		libraries {
 				# cat=Gallery: General/settings/1200; type=boolean; label=Load jQuery: Load jQuery library
 			jquery = 1

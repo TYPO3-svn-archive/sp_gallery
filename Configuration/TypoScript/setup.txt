@@ -15,6 +15,7 @@ plugin.tx_spgallery {
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
 		redirectPage              = {$plugin.tx_spgallery.settings.redirectPage}
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
+		uploadFileSize            = {$plugin.tx_spgallery.settings.uploadFileSize}
 
 		galleries {
 			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}
