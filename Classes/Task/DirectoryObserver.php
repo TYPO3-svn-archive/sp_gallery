@@ -178,7 +178,7 @@
 					$this->createNewImages($gallery, $imageFiles);
 
 						// Write new directory hash
-					// $gallery->setImageDirectoryHash($hash);
+					$gallery->setImageDirectoryHash($hash);
 					$modified = TRUE;
 				}
 			}
