@@ -24,7 +24,7 @@
 	 ********************************************************************/
 
 	/**
-	 * Utilities to manage and convert Typoscript Code
+	 * Utility to manage and convert Typoscript Code
 	 */
 	class Tx_SpGallery_Utility_TypoScript {
 

@@ -24,7 +24,7 @@
 	 ******************************************************************/
 
 	/**
-	 * Utilities to manage templates
+	 * Utility to manage templates
 	 */
 	class Tx_SpGallery_Utility_Template {
 

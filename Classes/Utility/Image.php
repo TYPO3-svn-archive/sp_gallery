@@ -24,27 +24,52 @@
 	 ********************************************************************/
 
 	/**
-	 * Service for gallery images
+	 * Utility to manage images
 	 */
-	class Tx_SpGallery_Service_ImageService implements t3lib_Singleton {
+	class Tx_SpGallery_Utility_Image {
 
 		/**
 		 * @var tslib_cObj
 		 */
-		protected $contentObject;
+		static protected $contentObject = NULL;
+
+		/**
+		 * @var t3lib_stdGraphic
+		 */
+		static protected $graphicLibrary = NULL;
 
 		/**
 		 * @var string
 		 */
-		protected $currentDir;
+		static protected $currentDir;
 
 
 		/**
-		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
-		 * @return void
+		 * Return content object
+		 *
+		 * @return tslib_cObj
 		 */
-		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
-			$this->contentObject = $configurationManager->getContentObject();
+		static protected function getContentObject() {
+			if (self::$contentObject === NULL) {
+				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+				$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
+				self::$contentObject = $configurationManager->getContentObject();
+			}
+			return self::$contentObject;
+		}
+
+
+		/**
+		 * Return graphic library
+		 *
+		 * @return t3lib_stdGraphic
+		 */
+		static protected function getGraphicLibrary() {
+			if (self::$graphicLibrary === NULL) {
+				self::$graphicLibrary = t3lib_div::makeInstance('t3lib_stdGraphic');
+				self::$graphicLibrary->init();
+			}
+			return self::$graphicLibrary;
 		}
 
 
@@ -55,7 +80,7 @@
 		 * @param array $settings TypoScript configuration
 		 * @return array Resulting image files
 		 */
-		public function generate(array $files, array $settings) {
+		static public function generate(array $files, array $settings) {
 			if (empty($files) || empty($settings)) {
 				return array();
 			}
@@ -69,7 +94,7 @@
 				}
 
 					// Generate images in filesystem
-				$result = $this->convert($files, $settings[$size . 'Image']);
+				$result = self::convert($files, $settings[$size . 'Image']);
 				$imageFiles = array_merge($imageFiles, $result);
 			}
 
@@ -85,7 +110,7 @@
 		 * @param boolean $tag Returns images with complete tag
 		 * @return array Relative image paths
 		 */
-		public function convert(array $files, array $settings = array(), $tag = FALSE) {
+		static public function convert(array $files, array $settings = array(), $tag = FALSE) {
 			if (empty($files)) {
 				return array();
 			}
@@ -94,37 +119,34 @@
 				return $files;
 			}
 
-				// Get allowed file types
-			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-
 				// Simulate working directory
-			$this->simulateFrontendEnvironment();
+			self::simulateFrontendEnvironment();
 
 				// Process images
-			foreach ($files as $key => $file) {
+			$contentObject = self::getContentObject();
+			foreach ($files as $key => $fileName) {
 					// Check if converting is allowed for this file type
-				$fileType = Tx_SpGallery_Utility_File::getFileType($file);
-				if (!t3lib_div::inList($allowedTypes, $fileType)) {
+				if (!self::isValidImageType($fileName)) {
 					unset($files[$key]);
 					continue;
 				}
 
 					// Get relative path
-				$file = str_replace(PATH_site, '', $file);
+				$fileName = str_replace(PATH_site, '', $fileName);
 
 					// Modify image
 				if (!empty($settings) && !$tag) {
-					$info = $this->contentObject->getImgResource($file, $settings);
-					$file = (!empty($info[3]) ? $info[3] : $file);
+					$info = $contentObject->getImgResource($fileName, $settings);
+					$result = (!empty($info[3]) ? $info[3] : $fileName);
 				} else if ($tag) {
-					$file = $this->contentObject->cImage($file, array('file.' => $settings));
+					$result = $contentObject->cImage($fileName, array('file.' => $settings));
 				}
 
-				$files[$key] = $file;
+				$files[$key] = $result;
 			}
 
 				// Revert working directory
-			$this->resetFrontendEnvironment();
+			self::resetFrontendEnvironment();
 
 			return $files;
 		}
@@ -140,45 +162,60 @@
 		 * @param array $h Height
 		 * @return string Relative image path
 		 */
-		public function crop($fileName, $x, $y, $w, $h) {
+		static public function crop($fileName, $x, $y, $w, $h) {
 			if (empty($fileName)) {
 				return '';
 			}
-
-				// Check if converting is allowed for this file type
-			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$fileType = Tx_SpGallery_Utility_File::getFileType($fileName);
-			if (!t3lib_div::inList($allowedTypes, $fileType)) {
-				return $fileName;
-			}
-
-				// Simulate working directory
-			$this->simulateFrontendEnvironment();
 
 			$x = (int) $x;
 			$y = (int) $y;
 			$w = (int) $w;
 			$h = (int) $h;
 
-			$stdGraphic = t3lib_div::makeInstance('t3lib_stdGraphic');
-			$stdGraphic->init();
+				// Check if converting is allowed for this file type
+			if (!self::isValidImageType($fileName)) {
+				return $fileName;
+			}
+
+				// Simulate working directory
+			self::simulateFrontendEnvironment();
 
 				// Crop image
-			$image = $stdGraphic->imageCreateFromFile($fileName);
+			$graphicLibrary = self::getGraphicLibrary();
+			$image = $graphicLibrary->imageCreateFromFile($fileName);
 			$crop = imagecreatetruecolor($w, $h);
-			$stdGraphic->imagecopyresized($crop, $image, 0, 0, $x, $y, $w, $h, $w, $h);
+			$graphicLibrary->imagecopyresized($crop, $image, 0, 0, $x, $y, $w, $h, $w, $h);
 			ImageDestroy($image);
 
 				// Write to temporary directory
-			$tempName = $stdGraphic->randomName() . '.' . $fileType;
-			$stdGraphic->ImageWrite($crop, $tempName);
+			$tempName = $graphicLibrary->randomName() . '.' . $fileType;
+			$graphicLibrary->ImageWrite($crop, $tempName);
 			ImageDestroy($crop);
 
 				// Revert working directory
-			$this->resetFrontendEnvironment();
+			self::resetFrontendEnvironment();
 
 			return $tempName;
 		}
+
+
+		/**
+		 * Check image type
+		 *
+		 * @param string $fileName The image file
+		 * @return boolean TRUE if file type is valid
+		 */
+		static public function isValidImageType($fileName) {
+			if (empty($fileName)) {
+				return FALSE;
+			}
+
+			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
+			$fileType = Tx_SpGallery_Utility_File::getFileType($fileName);
+
+			return t3lib_div::inList($allowedTypes, $fileType);
+		}
+
 
 
 		/**
@@ -188,8 +225,8 @@
 		 *
 		 * @return void
 		 */
-		protected function simulateFrontendEnvironment() {
-			$this->currentDir = getcwd();
+		static protected function simulateFrontendEnvironment() {
+			self::$currentDir = getcwd();
 			chdir(PATH_site);
 		}
 
@@ -199,9 +236,9 @@
 		 *
 		 * @return void
 		 */
-		protected function resetFrontendEnvironment() {
-			if (!empty($this->currentDir)) {
-				chdir($this->currentDir);
+		static protected function resetFrontendEnvironment() {
+			if (!empty(self::$currentDir)) {
+				chdir(self::$currentDir);
 			}
 		}
 

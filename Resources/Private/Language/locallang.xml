@@ -24,7 +24,7 @@
 			<label index="tx_spgallery_task_directoryobserver.elementsPerRun">Count of galleries to process at once</label>
 			<label index="tx_spgallery_task_directoryobserver.clearCachePages">Clear cache of these pages after run</label>
 			<label index="tx_spgallery_task_directoryobserver.storagePid">Create images with this PID</label>
-			<label index="tx_spgallery_task_directoryobserver.generateName">Generate image names from file names</label>
+			<label index="tx_spgallery_task_directoryobserver.generateNames">Generate image names from file names</label>
 
 			<label index="newContentElement.wizardItem.title">Image gallery</label>
 			<label index="newContentElement.wizardItem.description">Adds an image gallery to current page.</label>
@@ -71,7 +71,7 @@
 			<label index="tx_spgallery_task_directoryobserver.elementsPerRun">Anzahl Galerien pro Durchlauf</label>
 			<label index="tx_spgallery_task_directoryobserver.clearCachePages">Cache dieser Seiten nach einem Durchlauf leeren</label>
 			<label index="tx_spgallery_task_directoryobserver.storagePid">Erzeuge Bilder mit dieser PID</label>
-			<label index="tx_spgallery_task_directoryobserver.generateName">Erzeuge Bildnamen aus den Dateinamen</label>
+			<label index="tx_spgallery_task_directoryobserver.generateNames">Erzeuge Bildnamen aus den Dateinamen</label>
 
 			<label index="newContentElement.wizardItem.title">Bildergalerie</label>
 			<label index="newContentElement.wizardItem.description">Fügt der aktuellen Seite eine Bildergalerie hinzu.</label>

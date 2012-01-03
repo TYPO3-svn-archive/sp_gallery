@@ -44,11 +44,6 @@
 		protected $persistenceManager;
 
 		/**
-		 * @var Tx_SpGallery_Service_ImageService
-		 */
-		protected $imageService;
-
-		/**
 		 * @var array
 		 */
 		protected $ids;
@@ -74,15 +69,6 @@
 		 */
 		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
 			$this->imageRepository = $imageRepository;
-		}
-
-
-		/**
-		 * @param Tx_SpGallery_Service_ImageService $imageService
-		 * @return void
-		 */
-		public function injectImageService(Tx_SpGallery_Service_ImageService $imageService) {
-			$this->imageService = $imageService;
 		}
 
 
@@ -383,7 +369,7 @@
 				// Crop image
 			$fileName = $image->getFileName();
 			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
-				$fileName = $this->imageService->crop($fileName, $x, $y, $w, $h);
+				$fileName = Tx_SpGallery_Utility_Image::crop($fileName, $x, $y, $w, $h);
 				if (!empty($fileName)) {
 					$image->setFileName($fileName);
 					$image->generateImageInformation();
@@ -432,7 +418,7 @@
 			$gallery->generateDirectoryHash();
 
 				// Generate image files
-			$this->imageService->generate(array($newFileName), $this->settings);
+			Tx_SpGallery_Utility_Image::generate(array($newFileName), $this->settings);
 		}
 
 	}

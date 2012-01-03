@@ -24,7 +24,7 @@
 	 ******************************************************************/
 
 	/**
-	 * Utilities to manage the backend
+	 * Utility to manage the backend
 	 */
 	class Tx_SpGallery_Utility_Backend {
 

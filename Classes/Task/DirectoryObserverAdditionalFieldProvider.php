@@ -73,7 +73,7 @@
 			$this->addInputField('elementsPerRun', 3);
 			$this->addInputField('clearCachePages', 0);
 			$this->addInputField('storagePid', 0);
-			$this->addCheckboxField('generateName', FALSE);
+			$this->addCheckboxField('generateNames', FALSE);
 
 			return $this->structure;
 		}

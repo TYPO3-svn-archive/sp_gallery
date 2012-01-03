@@ -46,7 +46,7 @@
 		/**
 		 * @var boolean
 		 */
-		public $generateName = FALSE;
+		public $generateNames = FALSE;
 
 		/**
 		 * @var array
@@ -54,34 +54,14 @@
 		protected $settings = array();
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_GalleryRepository
-		 */
-		protected $galleryRepository;
-
-		/**
-		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
-		 */
-		protected $imageRepository;
-
-		/**
-		 * @var Tx_SpGallery_Service_ImageService
-		 */
-		protected $imageService;
-
-		/**
-		 * @var Tx_Extbase_Persistence_Manager
-		 */
-		protected $persistenceManager;
-
-		/**
 		 * @var Tx_SpGallery_Persistence_Registry
 		 */
 		protected $registry;
 
 		/**
-		 * @var Tx_SpGallery_Object_ObjectBuilder
+		 * @var Tx_SpGallery_Service_GalleryService
 		 */
-		protected $objectBuilder;
+		protected $galleryService;
 
 
 		/**
@@ -93,26 +73,19 @@
 			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 
 				// Load plugin settings
-			$configuration  = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
+			$configuration = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
 			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($configuration['settings.'], FALSE);
-
-				// Set new configuration for persistence handling
-			if (empty($configuration['persistence.']['storagePid'])) {
-				$configuration['persistence.']['storagePid'] = 1;
-			}
-			if (!empty($this->storagePid)) {
-				$configuration['persistence.']['storagePid'] = (int) $this->storagePid;
-			}
 			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 			$configurationManager->setConfiguration($configuration);
 
 				// Load required objects
-			$this->galleryRepository  = $objectManager->get('Tx_SpGallery_Domain_Repository_GalleryRepository');
-			$this->imageRepository    = $objectManager->get('Tx_SpGallery_Domain_Repository_ImageRepository');
-			$this->imageService       = $objectManager->get('Tx_SpGallery_Service_ImageService');
-			$this->persistenceManager = $objectManager->get('Tx_Extbase_Persistence_Manager');
-			$this->registry           = $objectManager->get('Tx_SpGallery_Persistence_Registry');
-			$this->objectBuilder      = $objectManager->get('Tx_SpGallery_Object_ObjectBuilder');
+			$this->registry = $objectManager->get('Tx_SpGallery_Persistence_Registry');
+			$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
+
+				// Set new storagePid for persistence handling
+			if (!empty($this->storagePid)) {
+				$this->galleryService->setStoragePid($this->storagePid);
+			}
 		}
 
 
@@ -122,149 +95,24 @@
 		 * @return boolean TRUE if success
 		 */
 		public function execute() {
-				// Get offset and limit
+				// Get attributes
 			$limit  = (int) $this->elementsPerRun;
 			$offset = (int) $this->registry->get('offset');
+			$names  = (bool) $this->generateNames;
 
 				// Process galleries
-			$result = $this->processGalleries($offset, $limit);
+			$modified = $this->galleryService->processAll($names, $offset, $limit);
 
 				// Store new offset to registry
-			$offset = (!empty($result) ? $offset + $limit : 0);
+			$offset = ($modified ? $offset + $limit : 0);
 			$this->registry->add('offset', $offset);
 
 				// Clear page cache
-			if (!empty($result) && !empty($this->clearCachePages)) {
+			if ($modified && !empty($this->clearCachePages)) {
 				$this->clearPageCache($this->clearCachePages);
 			}
 
 			return TRUE;
-		}
-
-
-		/**
-		 * Process all galleries
-		 *
-		 * @param integer $offset Gallery to start with
-		 * @param string $limit Limit of the galleries
-		 * @return boolean TRUE if success
-		 */
-		protected function processGalleries($offset, $limit) {
-				// Find all galleries
-			$galleries = $this->galleryRepository->findAll($offset, $limit);
-			if (!$galleries->count()) {
-				return FALSE;
-			}
-
-			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$modified = FALSE;
-
-				// Find changes in directory and generate images
-			foreach ($galleries as $gallery) {
-				$directory = $gallery->getImageDirectory();
-				$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
-				$hash = md5(serialize($files));
-
-				if ($hash !== $gallery->getImageDirectoryHash()) {
-						// Generate image files
-					$imageFiles = $this->imageService->generate($files, $this->settings);
-					$imageFiles = array_intersect_key($files, $imageFiles);
-					$imageFiles = array_unique($imageFiles);
-
-						// Remove images without file
-					$this->removeDeletedImages($gallery, $imageFiles);
-
-						// Create images from new files
-					$this->createNewImages($gallery, $imageFiles);
-
-						// Write new directory hash
-					$gallery->setImageDirectoryHash($hash);
-					$modified = TRUE;
-				}
-			}
-
-			if ($modified) {
-				$this->persistenceManager->persistAll();
-			}
-
-			return $modified;
-		}
-
-
-		/**
-		 * Remove image records without file
-		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
-		 * param array $files Image files
-		 * @return void
-		 */
-		protected function removeDeletedImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
-			if (empty($files)) {
-				return;
-			}
-
-			$modified = FALSE;
-
-				// Find records with deleted image file
-			$images = $this->imageRepository->findByGallery($gallery);
-			foreach ($images as $image) {
-				$fileName = PATH_site . $image->getFileName();
-				if (in_array($fileName, $files)) {
-					continue;
-				}
-
-				$this->imageRepository->remove($image);
-				$modified = TRUE;
-			}
-
-			if ($modified) {
-				$this->persistenceManager->persistAll();
-			}
-		}
-
-
-		/**
-		 * Create image records from new files
-		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
-		 * @param array $files Image files
-		 * @return void
-		 */
-		protected function createNewImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
-			if (empty($files)) {
-				return;
-			}
-
-			$modified = FALSE;
-
-				// Generate image records
-			foreach ($files as $key => $file) {
-				$fileName = str_replace(PATH_site, '', $file);
-				$result = $this->imageRepository->findOneByFileName($fileName);
-				if (!empty($result)) {
-					continue;
-				}
-
-					// Create image object
-				$imageRow = array(
-					'file_name' => $fileName,
-					'gallery'   => $gallery->getUid(),
-				);
-				$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
-				$image->generateImageInformation();
-				if ($this->generateName) {
-					$image->generateImageName();
-				}
-
-				$image->setGallery($gallery);
-				$this->imageRepository->add($image);
-				$gallery->addImage($image);
-				$modified = TRUE;
-			}
-
-			if ($modified) {
-				$this->persistenceManager->persistAll();
-			}
 		}
 
 
@@ -304,15 +152,7 @@
 		 */
 		public function __sleep() {
 			$attributes = get_object_vars($this);
-			$disallowed = array(
-				'settings',
-				'galleryRepository',
-				'imageRepository',
-				'imageService',
-				'persistenceManager',
-				'registry',
-				'objectBuilder',
-			);
+			$disallowed = array('settings', 'registry', 'galleryService');
 			return array_keys(array_diff_key($attributes, array_flip($disallowed)));
 		}
 

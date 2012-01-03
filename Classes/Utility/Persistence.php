@@ -24,7 +24,7 @@
 	 ******************************************************************/
 
 	/**
-	 * Utilities to manage persistence
+	 * Utility to manage persistence
 	 */
 	class Tx_SpGallery_Utility_Persistence {
 

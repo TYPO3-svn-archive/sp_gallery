@@ -30,9 +30,9 @@
 	class ux_t3lib_TCEforms_inline extends t3lib_TCEforms_inline {
 
 		/**
-		 * @var Tx_SpGallery_Service_ImageService
+		 * @var boolean
 		 */
-		protected $imageService;
+		protected $isLoaded = FALSE;
 
 
 		/**
@@ -140,14 +140,10 @@
 				return '';
 			}
 
-			if (empty($this->imageService)) {
+			if (!$this->isLoaded) {
 					// Load TypoScript settings
 				$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
 				$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
-
-					// Load image service
-				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-				$this->imageService  = $objectManager->get('Tx_SpGallery_Service_ImageService');
 
 					// Add stylesheet file
 				if (!empty($settings['backend']['stylesheet'])) {
@@ -155,6 +151,8 @@
 					$stylesheet = t3lib_div::resolveBackPath(str_replace(PATH_site, $this->backPath . '../', $stylesheet));
 					$GLOBALS['SOBE']->doc->getPageRenderer()->addCssFile($stylesheet);
 				}
+
+				$this->isLoaded = TRUE;
 			}
 
 				// Get image filename
@@ -162,7 +160,7 @@
 			unset($configuration['foreign_field']);
 
 				// Convert image
-			$result = $this->imageService->convert(array($filename), $configuration, FALSE);
+			$result = Tx_SpGallery_Utility_Image::convert(array($filename), $configuration, FALSE);
 			$filename = reset($result);
 
 			$filename = t3lib_div::resolveBackPath($this->backPath . '../' . $filename);

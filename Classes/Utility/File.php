@@ -24,7 +24,7 @@
 	 ******************************************************************/
 
 	/**
-	 * Utilities to manage files
+	 * Utility to manage files
 	 */
 	class Tx_SpGallery_Utility_File {
 
