@@ -26,7 +26,7 @@
 	/**
 	 * Service for gallery images
 	 */
-	class Tx_SpGallery_Service_GalleryImage implements t3lib_Singleton {
+	class Tx_SpGallery_Service_ImageService implements t3lib_Singleton {
 
 		/**
 		 * @var tslib_cObj
@@ -55,7 +55,7 @@
 		 * @param array $settings TypoScript configuration
 		 * @return array Resulting image files
 		 */
-		public function generateImageFiles(array $files, array $settings) {
+		public function generate(array $files, array $settings) {
 			if (empty($files) || empty($settings)) {
 				return array();
 			}
@@ -69,7 +69,7 @@
 				}
 
 					// Generate images in filesystem
-				$result = $this->processImageFiles($files, $settings[$size . 'Image']);
+				$result = $this->convert($files, $settings[$size . 'Image']);
 				$imageFiles = array_merge($imageFiles, $result);
 			}
 
@@ -85,7 +85,7 @@
 		 * @param boolean $tag Returns images with complete tag
 		 * @return array Relative image paths
 		 */
-		public function processImageFiles(array $files, array $settings = array(), $tag = FALSE) {
+		public function convert(array $files, array $settings = array(), $tag = FALSE) {
 			if (empty($files)) {
 				return array();
 			}
@@ -140,7 +140,7 @@
 		 * @param array $h Height
 		 * @return string Relative image path
 		 */
-		public function cropImageFile($fileName, $x, $y, $w, $h) {
+		public function crop($fileName, $x, $y, $w, $h) {
 			if (empty($fileName)) {
 				return '';
 			}

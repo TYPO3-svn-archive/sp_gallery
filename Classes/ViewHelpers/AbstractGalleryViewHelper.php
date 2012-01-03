@@ -29,7 +29,7 @@
 	abstract class Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper extends Tx_SpGallery_ViewHelpers_AbstractTemplateBasedViewHelper {
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryImage
+		 * @var Tx_SpGallery_Service_ImageService
 		 */
 		protected $imageService;
 
@@ -40,10 +40,10 @@
 
 
 		/**
-		 * @param Tx_SpGallery_Service_GalleryImage $imageService
+		 * @param Tx_SpGallery_Service_ImageService $imageService
 		 * @return void
 		 */
-		public function injectImageService(Tx_SpGallery_Service_GalleryImage $imageService) {
+		public function injectImageService(Tx_SpGallery_Service_ImageService $imageService) {
 			$this->imageService = $imageService;
 		}
 
@@ -111,7 +111,7 @@
 				}
 
 					// Convert images
-				$processedFiles = $this->imageService->processImageFiles($imageFiles, $settings[$format . 'Image.'], $tag);
+				$processedFiles = $this->imageService->convert($imageFiles, $settings[$format . 'Image.'], $tag);
 				foreach ($processedFiles as $uid => $file) {
 					$result[$uid]['converted'][$format] = $file;
 				}

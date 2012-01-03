@@ -64,7 +64,7 @@
 		protected $imageRepository;
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryImage
+		 * @var Tx_SpGallery_Service_ImageService
 		 */
 		protected $imageService;
 
@@ -109,7 +109,7 @@
 				// Load required objects
 			$this->galleryRepository  = $objectManager->get('Tx_SpGallery_Domain_Repository_GalleryRepository');
 			$this->imageRepository    = $objectManager->get('Tx_SpGallery_Domain_Repository_ImageRepository');
-			$this->imageService       = $objectManager->get('Tx_SpGallery_Service_GalleryImage');
+			$this->imageService       = $objectManager->get('Tx_SpGallery_Service_ImageService');
 			$this->persistenceManager = $objectManager->get('Tx_Extbase_Persistence_Manager');
 			$this->registry           = $objectManager->get('Tx_SpGallery_Persistence_Registry');
 			$this->objectBuilder      = $objectManager->get('Tx_SpGallery_Object_ObjectBuilder');
@@ -166,8 +166,8 @@
 				$hash = md5(serialize($files));
 
 				if ($hash !== $gallery->getImageDirectoryHash()) {
-						// Get files
-					$imageFiles = $this->imageService->generateImageFiles($files, $this->settings);
+						// Generate image files
+					$imageFiles = $this->imageService->generate($files, $this->settings);
 					$imageFiles = array_intersect_key($files, $imageFiles);
 					$imageFiles = array_unique($imageFiles);
 

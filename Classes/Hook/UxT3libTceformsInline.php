@@ -30,7 +30,7 @@
 	class ux_t3lib_TCEforms_inline extends t3lib_TCEforms_inline {
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryImage
+		 * @var Tx_SpGallery_Service_ImageService
 		 */
 		protected $imageService;
 
@@ -147,7 +147,7 @@
 
 					// Load image service
 				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-				$this->imageService  = $objectManager->get('Tx_SpGallery_Service_GalleryImage');
+				$this->imageService  = $objectManager->get('Tx_SpGallery_Service_ImageService');
 
 					// Add stylesheet file
 				if (!empty($settings['backend']['stylesheet'])) {
@@ -161,8 +161,8 @@
 			$filename = $record[$configuration['foreign_field']];
 			unset($configuration['foreign_field']);
 
-				// Process image
-			$result = $this->imageService->processImageFiles(array($filename), $configuration, FALSE);
+				// Convert image
+			$result = $this->imageService->convert(array($filename), $configuration, FALSE);
 			$filename = reset($result);
 
 			$filename = t3lib_div::resolveBackPath($this->backPath . '../' . $filename);

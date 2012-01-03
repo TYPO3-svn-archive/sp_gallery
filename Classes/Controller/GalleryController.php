@@ -44,7 +44,7 @@
 		protected $persistenceManager;
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryImage
+		 * @var Tx_SpGallery_Service_ImageService
 		 */
 		protected $imageService;
 
@@ -78,10 +78,10 @@
 
 
 		/**
-		 * @param Tx_SpGallery_Service_GalleryImage $imageService
+		 * @param Tx_SpGallery_Service_ImageService $imageService
 		 * @return void
 		 */
-		public function injectImageService(Tx_SpGallery_Service_GalleryImage $imageService) {
+		public function injectImageService(Tx_SpGallery_Service_ImageService $imageService) {
 			$this->imageService = $imageService;
 		}
 
@@ -230,7 +230,7 @@
 			$fileInfo = Tx_SpGallery_Utility_File::getFileInfo('tx_spgallery_gallery.uploadFile');
 
 				// Upload image to temp directory and go back to preview
-			if ($this->isValidImage($fileInfo)) {
+			if (!empty($fileInfo['tmp_name']) && $this->isValidImage($fileInfo)) {
 				$fileName = $this->uploadImage($gallery, $newImage, $fileInfo);
 				$arguments['newImage']['fileName'] = $fileName;
 				$arguments['newImage']['imageWidth'] = $newImage->getImageWidth();
@@ -380,10 +380,10 @@
 			$w = round((int) $coordinates['width'] * $factorY);
 			$h = round((int) $coordinates['height'] * $factorX);
 
-				// Convert image
+				// Crop image
 			$fileName = $image->getFileName();
 			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
-				$fileName = $this->imageService->cropImageFile($fileName, $x, $y, $w, $h);
+				$fileName = $this->imageService->crop($fileName, $x, $y, $w, $h);
 				if (!empty($fileName)) {
 					$image->setFileName($fileName);
 					$image->generateImageInformation();
@@ -431,8 +431,8 @@
 			$this->imageRepository->add($image);
 			$gallery->generateDirectoryHash();
 
-				// Create all sizes
-			$this->imageService->generateImageFiles(array($newFileName), $this->settings);
+				// Generate image files
+			$this->imageService->generate(array($newFileName), $this->settings);
 		}
 
 	}

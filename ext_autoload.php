@@ -13,7 +13,7 @@
 		'tx_spgallery_hook_uxt3libtceformsinline'                    => $extensionClassesPath . 'Hook/UxT3libTceformsInline.php',
 		'tx_spgallery_object_objectbuilder'                          => $extensionClassesPath . 'Object/ObjectBuilder.php',
 		'tx_spgallery_persistence_registry'                          => $extensionClassesPath . 'Persistence/Registry.php',
-		'tx_spgallery_service_galleryimage'                          => $extensionClassesPath . 'Service/GalleryImage.php',
+		'tx_spgallery_service_imageservice'                          => $extensionClassesPath . 'Service/ImageService.php',
 		'tx_spgallery_task_directoryobserver'                        => $extensionClassesPath . 'Task/DirectoryObserver.php',
 		'tx_spgallery_task_directoryobserveradditionalfieldprovider' => $extensionClassesPath . 'Task/DirectoryObserverAdditionalFieldProvider.php',
 		'tx_spgallery_utility_backend'                               => $extensionClassesPath . 'Utility/Backend.php',
