@@ -3,3 +3,9 @@
 # ======================================================================
 # cat=Default Configuration/settings/100; type=options[List module=list, Selector in plugin=plugin]; label=Gallery Ordering Type: Order galleries manually by the sorting in list module or by the order of selected galleries in plugin record
 gallerySortingType = list
+
+# cat=Default Configuration/settings/110; type=boolean; label=Generate when saving: Generate images of a gallery directory when saving the gallery record in backend
+generateWhenSaving = 1
+
+# cat=Default Configuration/settings/120; type=boolean; label=Generate image name when saving: Generate image name from file name while generating images when saving a gallery record in backend
+generateNameWhenSaving = 1

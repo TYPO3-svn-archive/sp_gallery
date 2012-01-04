@@ -29,29 +29,49 @@
 	class Tx_SpGallery_Hook_TceMain implements t3lib_Singleton {
 
 		/**
+		 * @var array
+		 */
+		protected $extensionConfiguration = array();
+
+		/**
 		 * @var Tx_SpGallery_Service_GalleryService
 		 */
-		protected $galleryService;
+		protected $galleryService = NULL;
 
 
 		/**
-		 * Initialize the environment
-		 * 
+		 * Get extension configuration
+		 *
 		 * @return void
 		 */
-		protected function initialize() {
-			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-			$configuration = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
-			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
-			$configurationManager->setConfiguration($configuration);
-			$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
+		public function __construct() {
+			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery'])) {
+				$this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery']);
+			}
+		}
+
+
+		/**
+		 * Return an instance of the gallery service
+		 *
+		 * @return Tx_SpGallery_Service_GalleryService
+		 */
+		protected function getGalleryService() {
+			if ($this->galleryService === NULL) {
+				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+				$configuration = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
+				$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
+				$configurationManager->setConfiguration($configuration);
+				$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
+			}
+			return $this->galleryService;
 		}
 
 
 		/**
 		 * Generate images when saving a gallery
 		 *
-		 * @param string $status Status of the current operation, 'new' or 'update
+		 * @param string $status Status of the current operation
 		 * @param string $table The table currently processing data for
 		 * @param string $uid The record uid currently processing data for
 		 * @param array $fields The field array of the record
@@ -59,19 +79,21 @@
 		 * @return void
 		 */
 		public function processDatamap_afterDatabaseOperations($status, $table, $uid, &$fields, &$parent) {
+			if (empty($this->extensionConfiguration['generateWhenSaving'])) {
+				return;
+			}
+
+				// Check record type
 			if ($table !== 'tx_spgallery_domain_model_gallery') {
 				return;
 			}
 
-				// Get whole record row
-			if (!empty($parent->datamap[$table][$uid])) {
-				$fields = $parent->datamap[$table][$uid];
+				// Return if image_directory has not been changed
+			if (empty($fields['image_directory']) || empty($fields['tstamp'])) {
+				return;
 			}
 
 				// Return if no valid directory is defined
-			if (empty($fields['image_directory'])) {
-				return;
-			}
 			$fileName = t3lib_div::getFileAbsFileName($fields['image_directory']);
 			if (!Tx_SpGallery_Utility_File::fileExists($fileName)) {
 				return;
@@ -82,17 +104,25 @@
 				$uid = $parent->substNEWwithIDs[$uid];
 			}
 
-				// Initialize the environment
-			$this->initialize();
-
 				// Set new storagePid for persistence handling
+			$galleryService = $this->getGalleryService();
 			$pid = $parent->getPID($table, $uid);
 			if (!empty($pid)) {
-				$this->galleryService->setStoragePid($pid);
+				$galleryService->setStoragePid($pid);
 			}
 
-				// Generate images
-			$this->galleryService->processByUid($uid);
+				// Get gallery by uid
+			$gallery = $galleryService->getGallery($uid);
+			if (empty($gallery)) {
+				return;
+			}
+
+				// Remove all existing images records from old directory
+			$galleryService->removeAllImages($gallery);
+
+				// Generate image records from new directory
+			$generateNames = !empty($this->extensionConfiguration['generateNameWhenSaving']);
+			$galleryService->process($gallery, $generateNames);
 		}
 
 	}

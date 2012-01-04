@@ -45,18 +45,25 @@
 			return $query->execute();
 		}
 
+
 		/**
-		 * Find an image by filename
+		 * Find an image by gallery and filename
 		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
 		 * @param string $fileName The filename
 		 * @param boolean $enableFields Respect enable fields
 		 * @return Tx_SpGallery_Domain_Model_Image
 		 */
-		public function findOneByFileName($fileName, $enableFields = FALSE) {
+		public function findOneByGalleryAndFileName(Tx_SpGallery_Domain_Model_Gallery $gallery, $fileName, $enableFields = FALSE) {
 			$query = $this->createQuery();
 			$query->getQuerySettings()->setRespectEnableFields($enableFields);
 			$query->getQuerySettings()->setRespectStoragePage(FALSE);
-			$query->matching($query->equals('fileName', $fileName));
+			$query->matching(
+				$query->logicalAnd(
+					$query->equals('gallery', $gallery),
+					$query->equals('fileName', $fileName)
+				)
+			);
 			$query->setLimit(1);
 			return $query->execute()->getFirst();
 		}

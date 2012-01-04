@@ -128,6 +128,20 @@
 
 
 		/**
+		 * Return one gallery by uid
+		 *
+		 * @param integer $uid UID of the gallery
+		 * @return Tx_SpGallery_Domain_Model_Gallery
+		 */
+		public function getGallery($uid) {
+			if (empty($uid) || !is_numeric($uid)) {
+				return NULL;
+			}
+			return $this->galleryRepository->findByUid($uid);
+		}
+
+
+		/**
 		 * Process all galleries in repository
 		 *
 		 * @param boolean $generateNames Generate image names from file names
@@ -148,28 +162,6 @@
 			}
 
 			return $modified;
-		}
-
-
-		/**
-		 * Process one gallery by uid
-		 *
-		 * @param integer $uid UID of the gallery
-		 * @param boolean $generateName Generate image name from file name
-		 * @return boolean TRUE if gallery was modified
-		 */
-		public function processByUid($uid, $generateName = FALSE) {
-			if (empty($uid)) {
-				return FALSE;
-			}
-
-				// Find and process gallery
-			$gallery = $this->galleryRepository->findByUid($uid);
-			if (!empty($gallery)) {
-				return $this->process($gallery, $generateName);
-			}
-
-			return FALSE;
 		}
 
 
@@ -242,6 +234,21 @@
 
 
 		/**
+		 * Remove all gallery images
+		 *
+		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @return void
+		 */
+		public function removeAllImages(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+			$images = $this->imageRepository->findByGallery($gallery);
+			foreach ($images as $image) {
+				$this->imageRepository->remove($image);
+			}
+			$this->persistenceManager->persistAll();
+		}
+
+
+		/**
 		 * Create image records from new files
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
@@ -258,24 +265,26 @@
 
 				// Generate image records
 			foreach ($files as $key => $file) {
+					// Search for an existing image
 				$fileName = str_replace(PATH_site, '', $file);
-				$result = $this->imageRepository->findOneByFileName($fileName);
-				if (!empty($result)) {
-					continue;
+				$image = $this->imageRepository->findOneByGalleryAndFileName($gallery, $fileName);
+
+					// Create new image object
+				if (empty($image)) {
+					$imageRow = array(
+						'file_name' => $fileName,
+						'gallery'   => $gallery,
+					);
+					$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
 				}
 
-					// Create image object
-				$imageRow = array(
-					'file_name' => $fileName,
-					'gallery'   => $gallery->getUid(),
-				);
-				$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
+					// Generate file information
 				$image->generateImageInformation();
 				if ($generateName) {
 					$image->generateImageName();
 				}
 
-				$image->setGallery($gallery);
+					// Complete gallery
 				$this->imageRepository->add($image);
 				$gallery->addImage($image);
 				$modified = TRUE;
