@@ -2,7 +2,7 @@
 	/*********************************************************************
 	 *  Copyright notice
 	 *
-	 *  (c) 2011 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
+	 *  (c) 2012 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
 	 *
 	 *  All rights reserved
 	 *
@@ -26,7 +26,7 @@
 	/**
 	 * TCA helper class
 	 */
-	class Tx_SpGallery_Hook_Tca {
+	class Tx_SpGallery_Hook_Tca implements t3lib_Singleton {
 
 		/**
 		 * Render message for emtpy images tab

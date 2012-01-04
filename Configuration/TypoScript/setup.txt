@@ -351,6 +351,10 @@ plugin.tx_spgallery {
 	persistence {
 		storagePid                = {$plugin.tx_spgallery.persistence.storagePid}
 	}
+
+	## Backend specific settings
+	extensionName               = SpGallery
+	pluginName                  = Gallery
 }
 
 

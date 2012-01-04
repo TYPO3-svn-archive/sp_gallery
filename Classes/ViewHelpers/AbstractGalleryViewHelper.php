@@ -2,7 +2,7 @@
 	/*********************************************************************
 	 *  Copyright notice
 	 *
-	 *  (c) 2011 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
+	 *  (c) 2012 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
 	 *
 	 *  All rights reserved
 	 *

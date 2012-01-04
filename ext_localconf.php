@@ -26,4 +26,7 @@
 		// Add XCLASS for TCA fields of type "inline"
 	$GLOBALS['TYPO3_CONF_VARS']['BE']['XCLASS']['t3lib/class.t3lib_tceforms_inline.php'] = t3lib_extMgm::extPath('sp_gallery', 'Classes/Hook/UxT3libTceformsInline.php');
 
+		// Hook implementation to generate images when saving a gallery
+  $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:sp_gallery/Classes/Hook/TceMain.php:&Tx_SpGallery_Hook_TceMain';
+
 ?>

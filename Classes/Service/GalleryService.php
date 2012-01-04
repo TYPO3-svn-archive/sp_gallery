@@ -2,7 +2,7 @@
 	/*********************************************************************
 	 *  Copyright notice
 	 *
-	 *  (c) 2011 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
+	 *  (c) 2012 Kai Vogel <kai.vogel@speedprogs.de>, Speedprogs.de
 	 *
 	 *  All rights reserved
 	 *
@@ -148,6 +148,28 @@
 			}
 
 			return $modified;
+		}
+
+
+		/**
+		 * Process one gallery by uid
+		 *
+		 * @param integer $uid UID of the gallery
+		 * @param boolean $generateName Generate image name from file name
+		 * @return boolean TRUE if gallery was modified
+		 */
+		public function processByUid($uid, $generateName = FALSE) {
+			if (empty($uid)) {
+				return FALSE;
+			}
+
+				// Find and process gallery
+			$gallery = $this->galleryRepository->findByUid($uid);
+			if (!empty($gallery)) {
+				return $this->process($gallery, $generateName);
+			}
+
+			return FALSE;
 		}
 
 

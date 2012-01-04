@@ -10,6 +10,7 @@
 		'tx_spgallery_domain_repository_galleryrepository'           => $extensionClassesPath . 'Domain/Repository/GalleryRepository.php',
 		'tx_spgallery_domain_repository_imagerepository'             => $extensionClassesPath . 'Domain/Repository/ImageRepository.php',
 		'tx_spgallery_hook_tca'                                      => $extensionClassesPath . 'Hook/Tca.php',
+		'tx_spgallery_hook_tcemain'                                  => $extensionClassesPath . 'Hook/TceMain.php',
 		'tx_spgallery_hook_uxt3libtceformsinline'                    => $extensionClassesPath . 'Hook/UxT3libTceformsInline.php',
 		'tx_spgallery_object_objectbuilder'                          => $extensionClassesPath . 'Object/ObjectBuilder.php',
 		'tx_spgallery_persistence_registry'                          => $extensionClassesPath . 'Persistence/Registry.php',
