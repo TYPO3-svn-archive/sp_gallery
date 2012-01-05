@@ -128,16 +128,23 @@
 
 
 		/**
-		 * Return one gallery by uid
+		 * Process one gallery by uid
 		 *
 		 * @param integer $uid UID of the gallery
-		 * @return Tx_SpGallery_Domain_Model_Gallery
+		 * @param boolean $generateNames Generate image names from file names
+		 * @return boolean TRUE if gallery was modified
 		 */
-		public function getGallery($uid) {
+		public function processByUid($uid, $generateNames = FALSE) {
 			if (empty($uid) || !is_numeric($uid)) {
-				return NULL;
+				return FALSE;
 			}
-			return $this->galleryRepository->findByUid($uid);
+
+			$gallery = $this->galleryRepository->findByUid($uid);
+			if (empty($gallery)) {
+				return FALSE;
+			}
+
+			return $this->process($gallery, $generateNames);
 		}
 
 
@@ -184,14 +191,18 @@
 				$imageFiles = array_intersect_key($files, $imageFiles);
 				$imageFiles = array_unique($imageFiles);
 
+					// Remove old images
+				$this->removeOldImages($gallery);
+
 					// Remove images without file
 				$this->removeDeletedImages($gallery, $imageFiles);
 
 					// Create images from new files
 				$this->createNewImages($gallery, $imageFiles, $generateNames);
 
-					// Write new directory hash
+					// Set new directory
 				$gallery->setImageDirectoryHash($hash);
+				$gallery->setLastImageDirectory($directory);
 				$this->persistenceManager->persistAll();
 
 				return TRUE;
@@ -234,17 +245,37 @@
 
 
 		/**
-		 * Remove all gallery images
+		 * Remove all gallery images from old path
 		 *
 		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
 		 * @return void
 		 */
-		public function removeAllImages(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+		public function removeOldImages(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+			$directory = $gallery->getLastImageDirectory();
+			if (empty($directory)) {
+				return;
+			}
+
+				// Directory has not changed
+			if ($directory === $gallery->getImageDirectory()) {
+				return;
+			}
+
+			$modified = FALSE;
+
+				// Find records with old image directory
 			$images = $this->imageRepository->findByGallery($gallery);
 			foreach ($images as $image) {
-				$this->imageRepository->remove($image);
+				$fileName = $image->getFileName();
+				if (strpos($fileName, $directory) === 0) {
+					$this->imageRepository->remove($image);
+					$modified = TRUE;
+				}
 			}
-			$this->persistenceManager->persistAll();
+
+			if ($modified) {
+				$this->persistenceManager->persistAll();
+			}
 		}
 
 
@@ -265,12 +296,13 @@
 
 				// Generate image records
 			foreach ($files as $key => $file) {
-					// Search for an existing image
 				$fileName = str_replace(PATH_site, '', $file);
-				$image = $this->imageRepository->findOneByGalleryAndFileName($gallery, $fileName);
 
-					// Create new image object
-				if (empty($image)) {
+					// Search for an existing image or create new
+				$image = $this->imageRepository->findOneByGalleryAndFileName($gallery, $fileName);
+				if (!empty($image)) {
+					$image->setDeleted(FALSE);
+				} else {
 					$imageRow = array(
 						'file_name' => $fileName,
 						'gallery'   => $gallery,

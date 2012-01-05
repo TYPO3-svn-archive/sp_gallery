@@ -59,6 +59,13 @@
 		protected $imageDirectoryHash;
 
 		/**
+		 * Last image directory
+		 *
+		 * @var string
+		 */
+		protected $lastImageDirectory;
+
+		/**
 		 * Images
 		 *
 		 * @var Tx_Extbase_Persistence_ObjectStorage<Tx_SpGallery_Domain_Model_Image>
@@ -107,6 +114,9 @@
 		 */
 		public function setImageDirectory($imageDirectory) {
 			$this->imageDirectory = $imageDirectory;
+			if (empty($this->lastImageDirectory)) {
+				$this->setLastImageDirectory($imageDirectory);
+			}
 		}
 
 
@@ -132,6 +142,23 @@
 		 */
 		public function getImageDirectoryHash() {
 			return $this->imageDirectoryHash;
+		}
+
+
+		/**
+		 * @param string $lastImageDirectory
+		 * @return void
+		 */
+		public function setLastImageDirectory($lastImageDirectory) {
+			$this->lastImageDirectory = $lastImageDirectory;
+		}
+
+
+		/**
+		 * @return string
+		 */
+		public function getLastImageDirectory() {
+			return $this->lastImageDirectory;
 		}
 
 

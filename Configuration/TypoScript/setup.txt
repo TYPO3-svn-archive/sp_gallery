@@ -350,11 +350,14 @@ plugin.tx_spgallery {
 	## Persistence specific settings
 	persistence {
 		storagePid                = {$plugin.tx_spgallery.persistence.storagePid}
-	}
 
-	## Backend specific settings
-	extensionName               = SpGallery
-	pluginName                  = Gallery
+		classes {
+			## Allow undeleting of image records
+			Tx_SpGallery_Domain_Model_Image.mapping.columns {
+				deleted.mapOnProperty = deleted
+			}
+		}
+	}
 }
 
 

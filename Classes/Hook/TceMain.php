@@ -104,25 +104,17 @@
 				$uid = $parent->substNEWwithIDs[$uid];
 			}
 
-				// Set new storagePid for persistence handling
 			$galleryService = $this->getGalleryService();
+
+				// Set storagePid for new images to current pid
 			$pid = $parent->getPID($table, $uid);
 			if (!empty($pid)) {
 				$galleryService->setStoragePid($pid);
 			}
 
-				// Get gallery by uid
-			$gallery = $galleryService->getGallery($uid);
-			if (empty($gallery)) {
-				return;
-			}
-
-				// Remove all existing images records from old directory
-			$galleryService->removeAllImages($gallery);
-
-				// Generate image records from new directory
+				// Process gallery by uid
 			$generateNames = !empty($this->extensionConfiguration['generateNameWhenSaving']);
-			$galleryService->process($gallery, $generateNames);
+			$galleryService->processByUid($uid, $generateNames);
 		}
 
 	}

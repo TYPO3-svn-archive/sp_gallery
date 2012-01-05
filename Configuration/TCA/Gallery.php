@@ -6,7 +6,7 @@
 	$GLOBALS['TCA']['tx_spgallery_domain_model_gallery'] = array(
 		'ctrl'      => $GLOBALS['TCA']['tx_spgallery_domain_model_gallery']['ctrl'],
 		'interface' => array(
-			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, image_directory, image_directory_hash, system_message, images',
+			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, image_directory, image_directory_hash, last_image_directory, system_message, images',
 		),
 		'types' => array(
 			'1'     => array(
@@ -139,6 +139,11 @@
 				),
 			),
 			'image_directory_hash' => array(
+				'config' => array(
+					'type'   => 'passthrough',
+				),
+			),
+			'last_image_directory' => array(
 				'config' => array(
 					'type'   => 'passthrough',
 				),

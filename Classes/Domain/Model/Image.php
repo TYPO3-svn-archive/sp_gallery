@@ -29,6 +29,13 @@
 	class Tx_SpGallery_Domain_Model_Image extends Tx_Extbase_DomainObject_AbstractEntity {
 
 		/**
+		 * Deleted state
+		 *
+		 * @var boolean
+		 */
+		protected $deleted;
+
+		/**
 		 * Name of the image
 		 *
 		 * @var string
@@ -83,6 +90,23 @@
 		 * @var Tx_SpGallery_Domain_Model_Gallery
 		 */
 		protected $gallery;
+
+
+		/**
+		 * @param boolean $deleted
+		 * @return void
+		 */
+		public function setDeleted($deleted) {
+			$this->deleted = (bool) $deleted;
+		}
+
+
+		/**
+		 * @return boolean
+		 */
+		public function getDeleted() {
+			return (bool) $this->deleted;
+		}
 
 
 		/**
