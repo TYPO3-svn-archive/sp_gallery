@@ -13,9 +13,9 @@
 
 			<label index="tx_spgallery_domain_model_image.name">Name</label>
 			<label index="tx_spgallery_domain_model_image.description">Description</label>
-			<label index="tx_spgallery_domain_model_image.file_name">File name</label>
-			<label index="tx_spgallery_domain_model_image.file_size">File size</label>
-			<label index="tx_spgallery_domain_model_image.file_type">File type</label>
+			<label index="tx_spgallery_domain_model_image.file_name">Filename</label>
+			<label index="tx_spgallery_domain_model_image.file_size">Filesize</label>
+			<label index="tx_spgallery_domain_model_image.file_type">Filetype</label>
 			<label index="tx_spgallery_domain_model_image.image_height">Image height</label>
 			<label index="tx_spgallery_domain_model_image.image_width">Image width</label>
 
@@ -24,7 +24,7 @@
 			<label index="tx_spgallery_task_directoryobserver.elementsPerRun">Count of galleries to process at once</label>
 			<label index="tx_spgallery_task_directoryobserver.clearCachePages">Clear cache of these pages after run</label>
 			<label index="tx_spgallery_task_directoryobserver.storagePid">Create images with this PID</label>
-			<label index="tx_spgallery_task_directoryobserver.generateNames">Generate image names from file names</label>
+			<label index="tx_spgallery_task_directoryobserver.generateNames">Generate image names from filenames</label>
 
 			<label index="newContentElement.wizardItem.title">Image gallery</label>
 			<label index="newContentElement.wizardItem.description">Adds an image gallery to current page.</label>

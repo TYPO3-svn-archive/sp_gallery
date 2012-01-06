@@ -42,7 +42,13 @@
 			}
 
 				// Get images
-			$imageCount = (!empty($this->settings['teaserImageCount']) ? (int) $this->settings['teaserImageCount'] : 5);
+			$imageCount = 5;
+			if (!empty($this->settings['teaserImageCount'])) {
+				$imageCount = (int) $this->settings['teaserImageCount'];
+			}
+			if (!empty($this->settings['images']['limit'])) {
+				$imageCount = (int) $this->settings['images']['limit'];
+			}
 			$images = $this->getGalleryImages($gallery, 'teaser', FALSE, $imageCount);
 
 			$content = '';

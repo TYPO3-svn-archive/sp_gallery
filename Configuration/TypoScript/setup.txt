@@ -32,29 +32,29 @@ plugin.tx_spgallery {
 		}
 
 		thumbImage {
-			maxW                    = {$plugin.tx_spgallery.settings.thumbImage.maxW}
-			maxH                    = {$plugin.tx_spgallery.settings.thumbImage.maxH}
+			width                   = {$plugin.tx_spgallery.settings.thumbImage.width}
+			height                  = {$plugin.tx_spgallery.settings.thumbImage.height}
 			quality                 = {$plugin.tx_spgallery.settings.thumbImage.quality}
 			ext                     = {$plugin.tx_spgallery.settings.thumbImage.ext}
 		}
 
 		smallImage {
-			maxW                    = {$plugin.tx_spgallery.settings.smallImage.maxW}
-			maxH                    = {$plugin.tx_spgallery.settings.smallImage.maxH}
+			width                   = {$plugin.tx_spgallery.settings.smallImage.width}
+			height                  = {$plugin.tx_spgallery.settings.smallImage.height}
 			quality                 = {$plugin.tx_spgallery.settings.smallImage.quality}
 			ext                     = {$plugin.tx_spgallery.settings.smallImage.ext}
 		}
 
 		largeImage {
-			maxW                    = {$plugin.tx_spgallery.settings.largeImage.maxW}
-			maxH                    = {$plugin.tx_spgallery.settings.largeImage.maxH}
+			width                   = {$plugin.tx_spgallery.settings.largeImage.width}
+			height                  = {$plugin.tx_spgallery.settings.largeImage.height}
 			quality                 = {$plugin.tx_spgallery.settings.largeImage.quality}
 			ext                     = {$plugin.tx_spgallery.settings.largeImage.ext}
 		}
 
 		teaserImage {
-			maxW                    = {$plugin.tx_spgallery.settings.teaserImage.maxW}
-			maxH                    = {$plugin.tx_spgallery.settings.teaserImage.maxH}
+			width                   = {$plugin.tx_spgallery.settings.teaserImage.width}
+			height                  = {$plugin.tx_spgallery.settings.teaserImage.height}
 			quality                 = {$plugin.tx_spgallery.settings.teaserImage.quality}
 			ext                     = {$plugin.tx_spgallery.settings.teaserImage.ext}
 		}

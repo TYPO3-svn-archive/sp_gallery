@@ -257,8 +257,8 @@
 										<numIndex index="1">name</numIndex>
 									</numIndex>
 									<numIndex index="2">
-										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.directory</numIndex>
-										<numIndex index="1">directory</numIndex>
+										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.filename</numIndex>
+										<numIndex index="1">filename</numIndex>
 									</numIndex>
 									<numIndex index="3">
 										<numIndex index="0">LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_images.orderBy.tstamp</numIndex>

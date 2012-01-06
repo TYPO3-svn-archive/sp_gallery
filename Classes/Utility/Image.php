@@ -188,6 +188,7 @@
 			ImageDestroy($image);
 
 				// Write to temporary directory
+			$fileType = Tx_SpGallery_Utility_File::getFileType($fileName);
 			$tempName = $graphicLibrary->randomName() . '.' . $fileType;
 			$graphicLibrary->ImageWrite($crop, $tempName);
 			ImageDestroy($crop);

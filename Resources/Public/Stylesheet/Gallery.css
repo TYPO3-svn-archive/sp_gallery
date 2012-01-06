@@ -11,9 +11,14 @@ div.tx-sp-gallery li.teaser-images a {
 
 div.tx-sp-gallery div.teaser-images img,
 div.tx-sp-gallery li.teaser-images img {
-	border: 3px solid #ffffff;
-	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
+	border: 3px solid #FFFFFF;
 	margin: 0 9px 0 0;
+	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
+}
+
+div.tx-sp-gallery div.teaser-images img:hover,
+div.tx-sp-gallery li.teaser-images img:hover {
+	border-color: #CCCCCC;
 }
 
 div.tx-sp-gallery li.teaser-images {
@@ -84,7 +89,7 @@ div.tx-sp-gallery span.crop-info {
 div.tx-sp-gallery fieldset.image-new,
 div.tx-sp-gallery fieldset.image-edit {
 	background: #EFEFEF;
-	border: 3px solid #ffffff;
+	border: 3px solid #FFFFFF;
 	padding: 12px 12px 0 12px;
 	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
 	background-image: linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);

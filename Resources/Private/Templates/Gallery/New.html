@@ -32,7 +32,7 @@
 					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
 					<f:if condition="{newImage.fileName}">
 						<div class="crop-image">
-							<f:image src="{newImage.fileName}" alt="{newImage.name}" maxWidth="{settings.smallImage.maxW}" maxHeight="{settings.smallImage.maxH}" id="crop-{plugin.uid}" />
+							<f:image src="{newImage.fileName}" alt="{newImage.name}" maxWidth="{settings.smallImage.width}" maxHeight="{settings.smallImage.height}" id="crop-{plugin.uid}" />
 							<span class="crop-info"><f:translate key="crop_info" /></span>
 							<spgallery:cropImage elementId="crop-{plugin.uid}" formId="crop-form-{plugin.uid}">{newImage}</spgallery:cropImage>
 						</div>

@@ -29,6 +29,12 @@
 	class Tx_SpGallery_Utility_Persistence {
 
 		/**
+		 * @var string
+		 */
+		static protected $allowedOrderings = 'name,tstamp,crdate,sorting,imageDirectory,fileName';
+
+
+		/**
 		 * Returns ordering of record list
 		 *
 		 * @param array $settings TypoScript setup
@@ -44,7 +50,8 @@
 				// Get order field
 			$orderBy = (!empty($settings['orderBy']) ? $settings['orderBy'] : 'crdate');
 			$orderBy = ($orderBy === 'directory' ? 'imageDirectory' : $orderBy);
-			if (!in_array($orderBy, array('name', 'tstamp', 'crdate', 'sorting'))) {
+			$orderBy = (strtolower($orderBy) === 'filename' ? 'fileName' : $orderBy);
+			if (!t3lib_div::inList(self::$allowedOrderings, $orderBy)) {
 				$orderBy = 'crdate';
 			}
 

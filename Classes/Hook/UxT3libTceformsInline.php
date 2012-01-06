@@ -140,20 +140,8 @@
 				return '';
 			}
 
-			if (!$this->isLoaded) {
-					// Load TypoScript settings
-				$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
-				$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
-
-					// Add stylesheet file
-				if (!empty($settings['backend']['stylesheet'])) {
-					$stylesheet = t3lib_div::getFileAbsFilename($settings['backend']['stylesheet']);
-					$stylesheet = t3lib_div::resolveBackPath(str_replace(PATH_site, $this->backPath . '../', $stylesheet));
-					$GLOBALS['SOBE']->doc->getPageRenderer()->addCssFile($stylesheet);
-				}
-
-				$this->isLoaded = TRUE;
-			}
+				// Add the stylesheet
+			$this->addGalleryStyles();
 
 				// Get image filename
 			$filename = $record[$configuration['foreign_field']];
@@ -165,6 +153,31 @@
 
 			$filename = t3lib_div::resolveBackPath($this->backPath . '../' . $filename);
 			return '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($altText) . '" class="gallery-image" />';
+		}
+
+
+		/**
+		 * Add the gallery stylesheet
+		 *
+		 * @return void
+		 */
+		protected function addGalleryStyles() {
+			if ($this->isLoaded) {
+				return;
+			}
+
+				// Load TypoScript settings
+			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
+			$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
+
+				// Add stylesheet file
+			if (!empty($settings['backend']['stylesheet'])) {
+				$stylesheet = t3lib_div::getFileAbsFilename($settings['backend']['stylesheet']);
+				$stylesheet = t3lib_div::resolveBackPath(str_replace(PATH_site, $this->backPath . '../', $stylesheet));
+				$GLOBALS['SOBE']->doc->getPageRenderer()->addCssFile($stylesheet);
+			}
+
+			$this->isLoaded = TRUE;
 		}
 
 	}

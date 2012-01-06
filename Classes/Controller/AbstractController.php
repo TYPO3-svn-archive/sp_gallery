@@ -145,5 +145,23 @@
 			$this->forward($action, $controller, NULL, $arguments, $pageUid);
 		}
 
+
+		/**
+		 * Redirect to internal page
+		 *
+		 * @param integer $uid UID of the page
+		 * @return void
+		 */
+		protected function redirectToPage($uid) {
+			$configuration = array(
+				'parameter' => (int) $uid,
+			);
+			$contentObject = $this->configurationManager->getContentObject();
+			$uri = $contentObject->typoLink_URL($configuration);
+			if (!empty($uri)) {
+				$this->redirectToUri($uri);
+			}
+		}
+
 	}
 ?>

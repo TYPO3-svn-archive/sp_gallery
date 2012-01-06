@@ -17,9 +17,9 @@
 			<label index="tx_spgallery_domain_model_image">Image</label>
 			<label index="tx_spgallery_domain_model_image.name">Name</label>
 			<label index="tx_spgallery_domain_model_image.description">Description</label>
-			<label index="tx_spgallery_domain_model_image.file_name">File name</label>
-			<label index="tx_spgallery_domain_model_image.file_size">File size</label>
-			<label index="tx_spgallery_domain_model_image.file_type">File type</label>
+			<label index="tx_spgallery_domain_model_image.file_name">Filename</label>
+			<label index="tx_spgallery_domain_model_image.file_size">Filesize</label>
+			<label index="tx_spgallery_domain_model_image.file_type">Filetype</label>
 			<label index="tx_spgallery_domain_model_image.image_height">Image height</label>
 			<label index="tx_spgallery_domain_model_image.image_width">Image width</label>
 
@@ -52,7 +52,7 @@
 			<label index="tt_content.flexform_pi1.s_images">Images</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy">Order images by</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.name">Name</label>
-			<label index="tt_content.flexform_pi1.s_images.orderBy.directory">Directory</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.filename">Filename</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.tstamp">Last modification</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.crdate">Creation date</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.sorting">Manual sorting</label>
@@ -109,7 +109,7 @@
 			<label index="tt_content.flexform_pi1.s_images">Bilder</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy">Bilder sortieren nach</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.name">Name</label>
-			<label index="tt_content.flexform_pi1.s_images.orderBy.directory">Verzeichnis</label>
+			<label index="tt_content.flexform_pi1.s_images.orderBy.filename">Dateiname</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.tstamp">Letzte Änderung</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.crdate">Erstelldatum</label>
 			<label index="tt_content.flexform_pi1.s_images.orderBy.sorting">Manuelle Sortierung</label>

@@ -79,11 +79,11 @@ plugin.tx_spgallery {
 		}
 
 		thumbImage {
-			# cat=Gallery: General/settings/1500; type=int; label=Thumbnail maxW: Maximal thumbnail width
-			maxW = 100c
+			# cat=Gallery: General/settings/1500; type=int; label=Thumbnail width: Thumbnail width
+			width = 50c
 
-			# cat=Gallery: General/settings/1510; type=int; label=Thumbnail maxH: Maximal thumbnail height
-			maxH = 80c
+			# cat=Gallery: General/settings/1510; type=int; label=Thumbnail height: Thumbnail height
+			height = 40c
 
 			# cat=Gallery: General/settings/1520; type=int; label=Thumbnail quality: Quality of thumbnails
 			quality = 70
@@ -93,11 +93,11 @@ plugin.tx_spgallery {
 		}
 
 		smallImage {
-			# cat=Gallery: General/settings/1600; type=int; label=Small image maxW: Maximal width for small images
-			maxW = 480
+			# cat=Gallery: General/settings/1600; type=int; label=Small image width: Width of small images
+			width = 480m
 
-			# cat=Gallery: General/settings/1610; type=int; label=Small image maxH: Maximal height for small images
-			maxH = 330
+			# cat=Gallery: General/settings/1610; type=int; label=Small image height: Height of small images
+			height = 330m
 
 			# cat=Gallery: General/settings/1620; type=int; label=Small image quality: Quality of small images
 			quality = 70
@@ -107,11 +107,11 @@ plugin.tx_spgallery {
 		}
 
 		largeImage {
-			# cat=Gallery: General/settings/1700; type=int; label=Large image maxW: Maximal width for large images in fullscreen mode
-			maxW = 1024
+			# cat=Gallery: General/settings/1700; type=int; label=Large image width: Width of large images in fullscreen mode
+			width = 1024m
 
-			# cat=Gallery: General/settings/1710; type=int; label=Large image maxH: Maximal height for large images in fullscreen mode
-			maxH = 768
+			# cat=Gallery: General/settings/1710; type=int; label=Large image height: Height of large images in fullscreen mode
+			height = 768m
 
 			# cat=Gallery: General/settings/1720; type=int; label=Large image quality: Quality of large images
 			quality = 70
@@ -121,11 +121,11 @@ plugin.tx_spgallery {
 		}
 
 		teaserImage {
-			# cat=Gallery: General/settings/1800; type=int; label=Teaser image maxW: Maximal width of teaser images
-			maxW = 120c
+			# cat=Gallery: General/settings/1800; type=int; label=Teaser image width: Width of teaser images
+			width = 120c
 
-			# cat=Gallery: General/settings/1810; type=int; label=Teaser image maxH: Maximal height of teaser images
-			maxH = 80c
+			# cat=Gallery: General/settings/1810; type=int; label=Teaser image height: Height of teaser images
+			height = 80c
 
 			# cat=Gallery: General/settings/1820; type=int; label=Teaser image quality: Quality of teaser images
 			quality = 70

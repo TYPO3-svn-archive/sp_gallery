@@ -138,12 +138,14 @@
 			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 
 				// Order galleries according to manual sorting type
-			$extensionKey = $this->request->getControllerExtensionKey();
-			$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
-				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
-				if ($configuration['gallerySortingType'] === 'plugin') {
-					$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
+			if (key($ordering) === 'sorting') {
+				$extensionKey = $this->request->getControllerExtensionKey();
+				$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
+				if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
+					$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
+					if ($configuration['gallerySortingType'] === 'plugin') {
+						$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
+					}
 				}
 			}
 
@@ -247,7 +249,7 @@
 				// Redirect
 			if (!empty($this->settings['redirectPage'])) {
 				$this->clearPageCache((int) $this->settings['redirectPage']);
-				$this->redirectToUri((int) $this->settings['redirectPage']);
+				$this->redirectToPage((int) $this->settings['redirectPage']);
 			} else {
 				$this->redirect('new');
 			}

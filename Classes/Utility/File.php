@@ -361,14 +361,15 @@
 		 * Returns absolute path to given directory
 		 *
 		 * @param string $path Path to the file / directory
+		 * @param boolean $create Create if not exists
 		 * @return string Relative path
 		 */
-		static public function getRelativeDirectory($path) {
+		static public function getRelativeDirectory($path, $create = TRUE) {
 			if (empty($path)) {
 				return '';
 			}
 
-			$path = t3lib_div::getFileAbsFileName($path);
+			$path = self::getAbsoluteDirectory($path, $create);
 			$path = str_replace(PATH_site, '', $path);
 			return rtrim($path, '/') . '/';
 		}
