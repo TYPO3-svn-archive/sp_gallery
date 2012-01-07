@@ -24,10 +24,10 @@
 				</div>
 				<fieldset class="image-new">
 					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
-					<f:form.textfield property="name" value="{newImage.name}" /><br />
+					<f:form.textfield property="name" value="{newImage.name}" class="image-name" /><br />
 
 					<label for="description"><f:translate key="tx_spgallery_domain_model_image.description" /></label><br />
-					<f:form.textarea property="description" value="{newImage.description}" cols="30" rows="5" /><br />
+					<f:form.textarea property="description" value="{newImage.description}" cols="30" rows="5" class="image-description" /><br />
 
 					<label for="filename"><f:translate key="tx_spgallery_domain_model_image.file_name" />*</label><br />
 					<f:if condition="{newImage.fileName}">
@@ -37,7 +37,7 @@
 							<spgallery:cropImage elementId="crop-{plugin.uid}" formId="crop-form-{plugin.uid}">{newImage}</spgallery:cropImage>
 						</div>
 					</f:if>
-					<f:form.upload name="uploadFile" /><br />
+					<f:form.upload name="uploadFile" class="image-file" /><br />
 
 					<hr />
 					<f:if condition="{newImage.fileName}">

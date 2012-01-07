@@ -36,19 +36,39 @@
 		 * @return string
 		 */
 		public function renderEmptyImagesMessage(array $setup, $parent) {
-			$message = 'No images found';
-			if (!empty($setup['fieldConf']['config']['message'])) {
-				$message = $GLOBALS['LANG']->sL($setup['fieldConf']['config']['message']);
+			if (TYPO3_MODE != 'BE') {
+				return '';
 			}
 
-			$content = '<div style="padding: 18px 0;">' . $message . '</div>';
+			$extensionConfiguration = array();
+			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery'])) {
+				$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery']);
+			}
+
+			$message = $setup['fieldConf']['config']['labels']['message_disabled'];
+
+				// Check if scheduler task is running
+			if (t3lib_extMgm::isLoaded('scheduler')) {
+				$table = 'tx_scheduler_task';
+				$where = 'disable=0 AND classname="Tx_SpGallery_Task_DirectoryObserver" AND lastexecution_time > 0';
+				if ($GLOBALS['TYPO3_DB']->exec_SELECTcountRows('1', $table, $where)) {
+					$message = $setup['fieldConf']['config']['labels']['message_scheduler'];
+				}
+			}
+
+				// Check if generate by saving is active
+			if (!empty($extensionConfiguration['generateWhenSaving'])) {
+				$message = $setup['fieldConf']['config']['labels']['message_saving'];
+			}
+
+			$content = '<div style="padding: 0 0 18px 0;">' . $GLOBALS['LANG']->sL($message) . '</div>';
 
 				// Hook to modify the content
 			$this->callHook('renderEmptyImagesMessage', array(
-				'content' => &$content,
-				'message' => $message,
-				'setup'   => $setup,
-				'parent'  => $parent,
+				'parent'   => &$parent,
+				'content'  => &$content,
+				'setup'    => $setup,
+				'extConf'  => $extensionConfiguration,
 			));
 
 			return $content;
@@ -63,7 +83,7 @@
 		 * @return string
 		 */
 		public function renderImageInformation(array $setup, $parent) {
-			if (empty($setup['fieldConf']['config']['labels'])) {
+			if (TYPO3_MODE != 'BE' || empty($setup['fieldConf']['config']['labels'])) {
 				return '';
 			}
 
@@ -90,10 +110,10 @@
 
 				// Hook to modify the content
 			$this->callHook('renderImageInformation', array(
+				'parent'  => &$parent,
 				'content' => &$content,
 				'labels'  => $labels,
 				'setup'   => $setup,
-				'parent'  => $parent,
 			));
 
 			return $content;

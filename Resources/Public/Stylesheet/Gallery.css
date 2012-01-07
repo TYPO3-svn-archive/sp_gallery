@@ -1,3 +1,6 @@
+/**
+ * Teaser
+ */
 div.tx-sp-gallery div.teaser-images :focus,
 div.tx-sp-gallery li.teaser-images :focus {
 	outline: none;
@@ -29,15 +32,28 @@ div.tx-sp-gallery ul {
 	list-style-type: none;
 }
 
-/**
- * Activate CSS shadow for gallery
- *
-div.gallery-window {
-	border: 9px solid #ffffff;
-	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
-}
-*/
 
+/**
+ * Gallery
+ */
+div.gallery-info {
+	padding: 9px 0 0 0;
+}
+
+div.gallery-info table th {
+	padding: 2px 6px 2px 0;
+}
+
+div.gallery-info table th,
+div.gallery-info table td {
+	text-align: left;
+	font-size: 0.8em;
+}
+
+
+/**
+ * Upload form
+ */
 div.tx-sp-gallery div.form-errors ul {
 	list-style-type: square;
 	padding: 12px 0 0 24px;
@@ -45,6 +61,19 @@ div.tx-sp-gallery div.form-errors ul {
 
 div.tx-sp-gallery div.form-errors ul li {
 	color: #FF0000;
+}
+
+div.tx-sp-gallery fieldset.image-new {
+	background: #EFEFEF;
+	border: 3px solid #FFFFFF;
+	padding: 12px 12px 0 12px;
+	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
+	background-image: linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
+	background-image: -o-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
+	background-image: -moz-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
+	background-image: -webkit-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
+	background-image: -ms-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
+	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0.49, #F3F3F3),color-stop(0.75, #EBEBEB));
 }
 
 div.tx-sp-gallery label {
@@ -64,6 +93,12 @@ div.tx-sp-gallery textarea {
 	font-family: Arial;
 }
 
+div.tx-sp-gallery input.image-name,
+div.tx-sp-gallery textarea.image-description,
+div.tx-sp-gallery input.image-file {
+	width: 280px;
+}
+
 div.tx-sp-gallery hr {
 	border: none;
 	border-top: 1px solid #CCCCCC;
@@ -81,35 +116,7 @@ div.tx-sp-gallery span.button-div {
 
 div.tx-sp-gallery span.crop-info {
 	background: url(../Images/Information.gif) left 3px no-repeat;
-	padding: 3px 0 9px 20px;
+	padding: 4px 0 9px 20px;
 	display: block;
-	font-size: 0.8em;
-}
-
-div.tx-sp-gallery fieldset.image-new,
-div.tx-sp-gallery fieldset.image-edit {
-	background: #EFEFEF;
-	border: 3px solid #FFFFFF;
-	padding: 12px 12px 0 12px;
-	box-shadow: 0px 2px 5px rgba(128,128,128,0.5);
-	background-image: linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
-	background-image: -o-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
-	background-image: -moz-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
-	background-image: -webkit-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
-	background-image: -ms-linear-gradient(top, #F3F3F3 49%, #EBEBEB 75%);
-	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0.49, #F3F3F3),color-stop(0.75, #EBEBEB));
-}
-
-div.gallery-info {
-	padding: 9px 0 0 0;
-}
-
-div.gallery-info table th {
-	padding: 2px 6px 2px 0;
-}
-
-div.gallery-info table th,
-div.gallery-info table td {
-	text-align: left;
 	font-size: 0.8em;
 }
