@@ -7,7 +7,6 @@ plugin.tx_spgallery {
 		themesPath                = {$plugin.tx_spgallery.settings.themesPath}
 		theme                     = {$plugin.tx_spgallery.settings.theme}
 		pages                     = {$plugin.tx_spgallery.settings.pages}
-		galleryUid                = {$plugin.tx_spgallery.settings.galleryUid}
 		width                     = {$plugin.tx_spgallery.settings.width}
 		height                    = {$plugin.tx_spgallery.settings.height}
 		teaserImageCount          = {$plugin.tx_spgallery.settings.teaserImageCount}
@@ -15,6 +14,7 @@ plugin.tx_spgallery {
 		singlePage                = {$plugin.tx_spgallery.settings.singlePage}
 		redirectPage              = {$plugin.tx_spgallery.settings.redirectPage}
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
+		galleryUid                = {$plugin.tx_spgallery.settings.galleryUid}
 		uploadFileSize            = {$plugin.tx_spgallery.settings.uploadFileSize}
 
 		galleries {

@@ -166,7 +166,7 @@
 				return;
 			}
 
-				// Load TypoScript settings
+				// Load TypoScript settings (required for the image generation)
 			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
 			$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
 

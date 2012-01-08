@@ -12,29 +12,29 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/1030; type=int; label=Storage page: Default storage PID
 		pages = 0
 
-		# cat=Gallery: General/settings/1040; type=int; label=Gallery UID: Create new images in this gallery
-		galleryUid = 0
-
-		# cat=Gallery: General/settings/1050; type=int; label=Width: Default gallery element width
+		# cat=Gallery: General/settings/1040; type=int; label=Width: Default gallery element width
 		width = 500
 
-		# cat=Gallery: General/settings/1060; type=int; label=Height: Default gallery element height
+		# cat=Gallery: General/settings/1050; type=int; label=Height: Default gallery element height
 		height = 400
 
-		# cat=Gallery: General/settings/1070; type=int; label=Teaser image count: Default teaser image count
+		# cat=Gallery: General/settings/1060; type=int; label=Teaser image count: Default teaser image count
 		teaserImageCount = 5
 
-		# cat=Gallery: General/settings/1080; type=int; label=List page: Page ID of the list view page
+		# cat=Gallery: General/settings/1070; type=int; label=List page: Page ID of the list view page
 		listPage = 0
 
-		# cat=Gallery: General/settings/1090; type=int; label=Single page: Page ID of the single view page
+		# cat=Gallery: General/settings/1080; type=int; label=Single page: Page ID of the single view page
 		singlePage = 0
 
-		# cat=Gallery: General/settings/1100; type=int; label=Redirect page: Redirect to this page after uploading
+		# cat=Gallery: General/settings/1090; type=int; label=Redirect page: Redirect to this page after uploading
 		redirectPage = 0
 
-		# cat=Gallery: General/settings/1110; type=boolean; label=Show image info: Show detailed image info below gallery
+		# cat=Gallery: General/settings/1100; type=boolean; label=Show image info: Show detailed image info below gallery
 		showImageInfo = 0
+
+		# cat=Gallery: General/settings/1110; type=int; label=Gallery UID: Create new images in this gallery
+		galleryUid = 0
 
 		# cat=Gallery: General/settings/1120; type=int; label=Upload file size: Maximal size of uploaded file in bytes
 		uploadFileSize = 10485760
