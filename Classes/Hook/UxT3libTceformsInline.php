@@ -103,9 +103,9 @@
 			$iconImg = t3lib_iconWorks::getSpriteIconForRecord($foreign_table, $rec, array('title' => htmlspecialchars($altText), 'id' => $objectId . '_icon'));
 
 				// Use thumbnail instead of sprite icon in header
-				if (!empty($config['appearance']['renderItemImage']) && !empty($config['itemImage'])) {
-					$iconImg = $this->getHeaderImage($foreign_table, $rec, $config['itemImage'], $altText);
-				}
+			if (!empty($config['appearance']['renderItemImage']) && !empty($config['itemImage'])) {
+				$iconImg = $this->getHeaderImage($foreign_table, $rec, $config['itemImage'], $altText);
+			}
 
 			$label = '<span id="' . $objectId . '_label">' . $recTitle . '</span>';
 			if (!$isVirtualRecord) {
