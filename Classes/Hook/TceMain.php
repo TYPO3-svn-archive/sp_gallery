@@ -88,15 +88,12 @@
 				return;
 			}
 
-				// Return if image_directory has not been changed
-			if (empty($fields['image_directory']) || empty($fields['tstamp'])) {
-				return;
-			}
-
-				// Return if no valid directory is defined
-			$fileName = t3lib_div::getFileAbsFileName($fields['image_directory']);
-			if (!Tx_SpGallery_Utility_File::fileExists($fileName)) {
-				return;
+				// Return if no valid directory was found
+			if (!empty($fields['image_directory']) && !empty($fields['tstamp'])) {
+				$fileName = t3lib_div::getFileAbsFileName($fields['image_directory']);
+				if (!Tx_SpGallery_Utility_File::fileExists($fileName)) {
+					return;
+				}
 			}
 
 				// Get record uid
