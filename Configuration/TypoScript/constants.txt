@@ -342,6 +342,9 @@ plugin.tx_spgallery {
 		backend {
 			# cat=Gallery: General/settings/2800; type=string; label=Backend stylesheet: Additional stylesheet file for the plugin configuration in backend
 			stylesheet = EXT:sp_gallery/Resources/Public/Stylesheet/Backend.css
+
+			# cat=Gallery: General/settings/2810; type=string; label=Empty image: This image will be shown if a gallery image was not found in file system
+			emptyImage = EXT:sp_gallery/Resources/Public/Images/Empty.png
 		}
 	}
 

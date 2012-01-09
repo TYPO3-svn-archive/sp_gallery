@@ -68,6 +68,7 @@
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
 			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
 			$formats = array_unique(t3lib_div::trimExplode(',', $formats, TRUE));
+			$checkedFiles = array();
 			$imageFiles = array();
 			$result = array();
 
@@ -77,14 +78,17 @@
 				}
 
 				foreach ($images as $image) {
-						// Add file for current format
-					if ($image instanceof Tx_SpGallery_Domain_Model_Image) {
-						$fileName = $image->getFileName();
-						$uid = $image->getUid();
-					} elseif (is_array($image)) {
-						$fileName = $image['file_name'];
-						$uid = $image['uid'];
+					$fileName = $image->getFileName();
+					$uid = $image->getUid();
+
+						// Check if file exists
+					if (!isset($checkedFiles[$uid])) {
+						$checkedFiles[$uid] = (bool) @file_exists(PATH_site . $fileName);
 					}
+					if ($checkedFiles[$uid] === FALSE) {
+						continue;
+					}
+
 					$imageFiles[$uid] = $fileName;
 
 						// Prepare result array

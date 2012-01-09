@@ -337,6 +337,7 @@ plugin.tx_spgallery {
 		## Backend options
 		backend {
 			stylesheet              = {$plugin.tx_spgallery.settings.backend.stylesheet}
+			emptyImage              = {$plugin.tx_spgallery.settings.backend.emptyImage}
 		}
 	}
 

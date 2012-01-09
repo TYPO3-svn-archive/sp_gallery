@@ -30,9 +30,9 @@
 	class ux_t3lib_TCEforms_inline extends t3lib_TCEforms_inline {
 
 		/**
-		 * @var boolean
+		 * @var array
 		 */
-		protected $isLoaded = FALSE;
+		protected $gallerySettings = array();
 
 
 		/**
@@ -147,6 +147,11 @@
 			$filename = $record[$configuration['foreign_field']];
 			unset($configuration['foreign_field']);
 
+				// Check if file exists
+			if (!(@file_exists(PATH_site . $filename))) {
+				$filename = $this->gallerySettings['emptyImage'];
+			}
+
 				// Convert image
 			$result = Tx_SpGallery_Utility_Image::convert(array($filename), $configuration, FALSE);
 			$filename = reset($result);
@@ -162,22 +167,28 @@
 		 * @return void
 		 */
 		protected function addGalleryStyles() {
-			if ($this->isLoaded) {
+			if (!empty($this->gallerySettings)) {
 				return;
 			}
 
 				// Load TypoScript settings (required for the image generation)
-			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
-			$settings = Tx_SpGallery_Utility_TypoScript::parse($settings, FALSE);
+			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings.backend');
+			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::parse($this->gallerySettings, FALSE);
 
 				// Add stylesheet file
-			if (!empty($settings['backend']['stylesheet'])) {
-				$stylesheet = t3lib_div::getFileAbsFilename($settings['backend']['stylesheet']);
+			if (!empty($this->gallerySettings['stylesheet'])) {
+				$stylesheet = t3lib_div::getFileAbsFilename($this->gallerySettings['stylesheet']);
 				$stylesheet = t3lib_div::resolveBackPath(str_replace(PATH_site, $this->backPath . '../', $stylesheet));
 				$GLOBALS['SOBE']->doc->getPageRenderer()->addCssFile($stylesheet);
 			}
 
-			$this->isLoaded = TRUE;
+				// Get empty image file
+			$emptyImage = 'EXT:sp_gallery/Resources/Public/Images/Empty.png';
+			if (!empty($this->gallerySettings['emptyImage'])) {
+				$emptyImage = $this->gallerySettings['emptyImage'];
+			}
+			$emptyImage = str_replace(PATH_site, '', t3lib_div::getFileAbsFilename($emptyImage));
+			$this->gallerySettings['emptyImage'] = $emptyImage;
 		}
 
 	}
