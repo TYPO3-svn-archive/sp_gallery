@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "sp_gallery".
 #
-# Auto generated 09-01-2012 20:31
+# Auto generated 10-01-2012 09:51
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Image gallery',
-	'description' => 'An image gallery based on extbase, fluid, jQuery and the Galleria plugin. It provides a teaser view, lightbox, fullscreen view, touch-screen support and a directory observer for new or changed image files.',
+	'description' => 'An image gallery based on Extbase, Fluid, jQuery, the Galleria gallery and the Jcrop plugin. It provides a teaser view, lightbox, fullscreen view, touch-screen support, a file system observer and a frontend upload form with cropping functionality.',
 	'category' => 'plugin',
 	'author' => 'Kai Vogel',
 	'author_email' => 'kai.vogel@speedprogs.de',
