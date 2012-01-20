@@ -54,12 +54,13 @@
 		/**
 		 * Return an instance of the gallery service
 		 *
+		 * @param integer $pid Current page id
 		 * @return Tx_SpGallery_Service_GalleryService
 		 */
-		protected function getGalleryService() {
+		protected function getGalleryService($pid) {
 			if ($this->galleryService === NULL) {
 				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-				$configuration = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
+				$configuration = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
 				$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 				$configurationManager->setConfiguration($configuration);
 				$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
@@ -101,10 +102,10 @@
 				$uid = $parent->substNEWwithIDs[$uid];
 			}
 
-			$galleryService = $this->getGalleryService();
+			$pid = (int) $parent->getPID($table, $uid);
+			$galleryService = $this->getGalleryService($pid);
 
 				// Set storagePid for new images to current pid
-			$pid = $parent->getPID($table, $uid);
 			if (!empty($pid)) {
 				$galleryService->setStoragePid($pid);
 			}

@@ -172,7 +172,8 @@
 			}
 
 				// Load TypoScript settings (required for the image generation)
-			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings.backend');
+			$pid = Tx_SpGallery_Utility_Backend::getPageId();
+			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery.settings.backend');
 			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::parse($this->gallerySettings, FALSE);
 
 				// Add stylesheet file

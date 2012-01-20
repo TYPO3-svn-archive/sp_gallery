@@ -43,6 +43,11 @@
 		 */
 		static protected $configurationManager;
 
+		/**
+		 * @var array
+		 */
+		static protected $configuration;
+
 
 		/**
 		 * Initialize configuration manager and content object
@@ -87,14 +92,14 @@
 				$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 			}
 
+			if (empty($GLOBALS['TT'])) {
+				$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
+			}
+
 			if (empty($GLOBALS['TSFE']->tmpl)) {
 				$GLOBALS['TSFE']->tmpl = t3lib_div::makeInstance('t3lib_TStemplate');
 				$GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 				$GLOBALS['TSFE']->tmpl->init();
-			}
-
-			if (empty($GLOBALS['TT'])) {
-				$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
 			}
 
 			if (empty($GLOBALS['TSFE']->config)) {
@@ -121,16 +126,19 @@
 		 * Returns unparsed TypoScript setup
 		 *
 		 * @param string $typoScriptPath TypoScript path
+		 * @param array $$setup Optional TypoScript setup array
 		 * @return array TypoScript setup
 		 */
-		static public function getSetup($typoScriptPath = '') {
+		static public function getSetup($typoScriptPath = '', array $setup = array()) {
 			if (empty(self::$configurationManager)) {
 				self::initialize();
 			}
 
-			$setup = self::$configurationManager->getConfiguration(
-				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
-			);
+			if (empty($setup)) {
+				$setup = self::$configurationManager->getConfiguration(
+					Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+				);
+			}
 			if (empty($typoScriptPath)) {
 				return $setup;
 			}
@@ -144,6 +152,31 @@
 			}
 
 			return $setup;
+		}
+
+
+		/**
+		 * Returns unparsed TypoScript setup collected from the rootline
+		 * 
+		 * @param integer $pid The pid to start with
+		 * @param string $typoScriptPath TypoScript path
+		 * @return array TypoScript setup
+		 */
+		static public function getSetupForPid($pid, $typoScriptPath = '') {
+			if (empty($pid)) {
+				return self::getSetup($typoScriptPath);
+			}
+
+			if (empty(self::$configuration[$pid])) {
+				if (empty($GLOBALS['TSFE']->sys_page)) {
+					self::initialize();
+				}
+				$rootLine = $GLOBALS['TSFE']->sys_page->getRootLine((int) $pid);
+				$GLOBALS['TSFE']->tmpl->start($rootLine);
+				self::$configuration[$pid] = $GLOBALS['TSFE']->tmpl->setup;
+			}
+
+			return self::getSetup($typoScriptPath, self::$configuration[$pid]);
 		}
 
 
