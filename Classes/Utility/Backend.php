@@ -34,19 +34,19 @@
 		 * @return integer UID of current page
 		 */
 		static public function getPageId() {
-			if (isset($GLOBALS['SOBE'])) {
+			if (!empty($GLOBALS['SOBE']) && !empty($GLOBALS['SOBE']->viewId)) {
 				return (int) $GLOBALS['SOBE']->viewId;
 			}
 
-				// Find UID in "id"
+				// Find UID in "id" param
 			$pageId = t3lib_div::_GP('id');
-			if ($pageId) {
+			if (!empty($pageId)) {
 				return (int) $pageId;
 			}
 
-				// Find UID in "returnUrl"
+				// Find UID in "returnUrl" param
 			$url = urldecode(t3lib_div::_GP('returnUrl'));
-			if ($url) {
+			if (!empty($url)) {
 				preg_match('/id=([0-9]*)/', $url, $parts);
 				if (!empty($parts[1])) {
 					return (int) $parts[1];
