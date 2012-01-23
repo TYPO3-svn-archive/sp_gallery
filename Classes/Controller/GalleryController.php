@@ -73,6 +73,15 @@
 
 
 		/**
+		 * @param Tx_Extbase_Persistence_Manager $persistenceManager
+		 * @return void
+		 */
+		public function injectPersistenceManager(Tx_Extbase_Persistence_Manager $persistenceManager) {
+			$this->persistenceManager = $persistenceManager;
+		}
+
+
+		/**
 		 * Initialize the controller
 		 *
 		 * @return void
@@ -80,8 +89,7 @@
 		protected function initializeController() {
 				// Get UIDs and PIDs of the configured galleries
 			$action = $this->request->getControllerActionName();
-			$showActions = array('show', 'list', 'teaser', 'teaserList');
-			if (in_array($action, $showActions)) {
+			if ($action !== 'create' && $action !== 'update') {
 				if (empty($this->settings['pages'])) {
 					$this->addMessage('no_galleries_defined');
 				}
@@ -130,12 +138,7 @@
 			}
 
 				// Load galleries from persistance
-			$uids      = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
-			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
-			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
-			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-			$ordering  = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
-			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
+			$galleries = $this->getGalleries();
 
 				// Order galleries according to manual sorting type
 			if (key($ordering) === 'sorting') {
@@ -188,8 +191,16 @@
 		 * @dontvalidate $coordinates
 		 */
 		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, $coordinates = NULL) {
+				// Load galleries from persistance
+			$galleries = array();
+			if (!empty($this->ids['uids']) || !empty($this->ids['pids'])) {
+				$galleries = $this->getGalleries();
+			}
+
+			$this->view->assign('galleries', $galleries);
 			$this->view->assign('newImage', $newImage);
 			$this->view->assign('coordinates', $coordinates);
+			$this->view->assign('enableSelect', count($galleries) > 1);
 		}
 
 
@@ -202,12 +213,8 @@
 		 * @dontvalidate $coordinates
 		 */
 		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage, $coordinates = NULL) {
-			if (empty($this->settings['galleryUid'])) {
-				$this->forwardWithMessage('no_gallery_defined', 'new');
-			}
-
 				// Get gallery for new images
-			$gallery = $this->galleryRepository->findByUid((int) $this->settings['galleryUid']);
+			$gallery = $newImage->getGallery();
 			if (empty($gallery)) {
 				$this->forwardWithMessage('gallery_not_found', 'new');
 			}
@@ -248,10 +255,12 @@
 
 				// Redirect
 			if (!empty($this->settings['redirectPage'])) {
-				$this->clearPageCache((int) $this->settings['redirectPage']);
-				$this->redirectToPage((int) $this->settings['redirectPage']);
+				$this->clearPageCache($this->settings['redirectPage']);
+				$this->persistenceManager->persistAll();
+				$parameters = (!empty($this->settings['redirectWithParameters']) ? array('gallery' => $gallery, 'image' => $newImage) : array());
+				$this->redirectToPage($this->settings['redirectPage'], $parameters);
 			} else {
-				$this->redirect('new');
+				$this->redirectWithMessage('image_created', 'new', NULL, NULL, NULL, 'ok');
 			}
 		}
 
@@ -277,6 +286,21 @@
 		 */
 		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL) {
 			$this->redirect('new');
+		}
+
+
+		/**
+		 * Load galleries from persistance
+		 *
+		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 */
+		protected function getGalleries() {
+			$uids      = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
+			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
+			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
+			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
+			$ordering  = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
+			return $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 		}
 
 
@@ -395,7 +419,7 @@
 		 */
 		protected function addImageToGallery(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image, $tempName) {
 			if (empty($tempName)) {
-				$this->forwardWithMessage('file_invalid', 'new');
+				$this->forwardWithMessage('file_empty', 'new');
 			}
 
 				// Get gallery directory

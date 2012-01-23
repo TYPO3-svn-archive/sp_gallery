@@ -54,15 +54,6 @@ div.gallery-info table td {
 /**
  * Upload form
  */
-div.tx-sp-gallery div.form-errors ul {
-	list-style-type: square;
-	padding: 12px 0 0 24px;
-}
-
-div.tx-sp-gallery div.form-errors ul li {
-	color: #FF0000;
-}
-
 div.tx-sp-gallery fieldset.image-new {
 	background: #EFEFEF;
 	border: 3px solid #FFFFFF;
@@ -83,6 +74,7 @@ div.tx-sp-gallery label {
 
 div.tx-sp-gallery input,
 div.tx-sp-gallery textarea,
+div.tx-sp-gallery select,
 div.tx-sp-gallery hr {
 	margin: 0 0 9px 0;
 	outline: 0;
@@ -119,4 +111,34 @@ div.tx-sp-gallery span.crop-info {
 	padding: 4px 0 9px 20px;
 	display: block;
 	font-size: 0.8em;
+}
+
+
+/**
+ * Flash messages
+ */
+div.tx-sp-gallery ul.flash-messages {
+	list-style-type: square;
+	padding: 12px 0 0 24px;
+}
+
+div.tx-sp-gallery li.message-ok {
+	color: #007100;
+}
+
+div.tx-sp-gallery li.message-error {
+	color: #C10404;
+}
+
+
+/**
+ * Form errors
+ */
+div.tx-sp-gallery div.form-errors ul {
+	list-style-type: square;
+	padding: 12px 0 0 24px;
+}
+
+div.tx-sp-gallery div.form-errors ul li {
+	color: #C10404;
 }

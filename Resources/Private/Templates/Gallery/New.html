@@ -3,12 +3,12 @@
 <f:layout name="Default" />
 
 <f:section name="main">
+	<spgallery:flashMessages renderMode="ul" class="flash-messages" />
 	<div class="form-errors">
-		<f:flashMessages />
 		<f:render partial="FormErrors" />
 	</div>
 
-	<f:if condition="{settings.galleryUid}">
+	<f:if condition="{galleries}">
 		<f:then>
 			<f:form method="post" enctype="multipart/form-data" action="create" name="newImage" object="{newImage}"  id="crop-form-{plugin.uid}">
 				<div style="display: none;">
@@ -23,6 +23,16 @@
 					<f:form.hidden property="fileName" value="{newImage.fileName}" class="fileName" />
 				</div>
 				<fieldset class="image-new">
+					<f:if condition="{enableSelect}">
+						<f:then>
+							<label for="gallery"><f:translate key="tx_spgallery_domain_model_image.gallery" /></label><br />
+							<f:form.select property="gallery" options="{galleries}" value="{newImage.gallery}" class="image-gallery" /><br />
+						</f:then>
+						<f:else>
+							<f:form.hidden property="gallery" value="{galleries.first}" />
+						</f:else>
+					</f:if>
+
 					<label for="name"><f:translate key="tx_spgallery_domain_model_image.name" /></label><br />
 					<f:form.textfield property="name" value="{newImage.name}" class="image-name" /><br />
 
@@ -52,7 +62,7 @@
 			</f:form>
 		</f:then>
 		<f:else>
-			<p><f:translate key="no_gallery_pid_defined"/></p>
+			<p><f:translate key="no_galleries_defined_new"/></p>
 		</f:else>
 	</f:if>
 </f:section>

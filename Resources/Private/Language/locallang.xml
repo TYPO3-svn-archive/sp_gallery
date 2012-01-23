@@ -18,6 +18,7 @@
 			<label index="tx_spgallery_domain_model_image.file_type">Filetype</label>
 			<label index="tx_spgallery_domain_model_image.image_height">Image height</label>
 			<label index="tx_spgallery_domain_model_image.image_width">Image width</label>
+			<label index="tx_spgallery_domain_model_image.gallery">Gallery</label>
 
 			<label index="tx_spgallery_task_directoryobserver.name">Image Gallery Directory Observer</label>
 			<label index="tx_spgallery_task_directoryobserver.description">Finds changed gallery datasets and genereates images from defined directories.</label>
@@ -34,9 +35,10 @@
 			<label index="no_images_found">No images found in gallery</label>
 			<label index="no_galleries_defined">No galleries defined to show</label>
 			<label index="no_gallery_defined">No gallery defined to show</label>
-			<label index="no_gallery_pid_defined">No gallery defined to create new images</label>
+			<label index="no_galleries_defined_new">No galleries defined to create new images</label>
 			<label index="gallery_not_found">Gallery not found</label>
 			<label index="image_not_found">Image not found</label>
+			<label index="image_created">Image successfully created</label>
 			<label index="directory_invalid">Gallery directory is invalid</label>
 			<label index="file_invalid">Uploaded file is invalid</label>
 			<label index="file_empty">No image selected</label>
@@ -65,6 +67,7 @@
 			<label index="tx_spgallery_domain_model_image.file_type">Dateityp</label>
 			<label index="tx_spgallery_domain_model_image.image_height">Bildhöhe</label>
 			<label index="tx_spgallery_domain_model_image.image_width">Bildbreite</label>
+			<label index="tx_spgallery_domain_model_image.gallery">Galerie</label>
 
 			<label index="tx_spgallery_task_directoryobserver.name">Bildergalerie Verzeichnis-Überwacher</label>
 			<label index="tx_spgallery_task_directoryobserver.description">Erkennt geänderte Galerie-Datensätze und generiert Bilder aus den angegebenen Verzeichnissen.</label>
@@ -81,9 +84,10 @@
 			<label index="no_images_found">Keine Bilder in der Galerie gefunden</label>
 			<label index="no_galleries_defined">Keine Galerien zur Anzeige definiert</label>
 			<label index="no_gallery_defined">Keine Galerie zur Anzeige definiert</label>
-			<label index="no_gallery_pid_defined">Keine Galerie für neue Bilder definiert</label>
+			<label index="no_galleries_defined_new">Keine Galerien für neue Bilder definiert</label>
 			<label index="gallery_not_found">Galerie nicht gefunden</label>
 			<label index="image_not_found">Bild nicht gefunden</label>
+			<label index="image_created">Bild erfolgreich erstellt</label>
 			<label index="directory_invalid">Galerie-Verzeichnis ist nicht valide</label>
 			<label index="file_invalid">Die hochgeladene Datei ist nicht valide</label>
 			<label index="file_empty">Kein Bild ausgewählt</label>

@@ -108,10 +108,17 @@
 		 *
 		 * @param string $message Identifier of the message
 		 * @param array $arguments Optional array of arguments
+		 * @param string $severity optional severity code
 		 * @return void
 		 */
-		protected function addMessage($message, array $arguments = NULL) {
-			$this->flashMessageContainer->add($this->translate($message, $arguments));
+		protected function addMessage($message, array $arguments = NULL, $severity = 'error') {
+			$constant = 't3lib_FlashMessage::' . strtoupper(trim($severity));
+			if (!empty($severity) && defined($constant)) {
+				$severity = constant($constant);
+			} else {
+				$severity = t3lib_FlashMessage::ERROR;
+			}
+			$this->flashMessageContainer->add($this->translate($message, $arguments), '', $severity);
 		}
 
 
@@ -123,10 +130,11 @@
 		 * @param string $controller Optional name of the controller
 		 * @param array $arguments Optional array of arguments
 		 * @param integer $pageUid Optional UID of the page to redirect to
+		 * @param string $severity optional severity code
 		 * @return void
 		 */
-		protected function redirectWithMessage($message, $action, $controller = NULL, array $arguments = NULL, $pageUid = NULL) {
-			$this->addMessage($message);
+		protected function redirectWithMessage($message, $action, $controller = NULL, array $arguments = NULL, $pageUid = NULL, $severity = 'error') {
+			$this->addMessage($message, NULL, $severity);
 			$this->redirect($action, $controller, NULL, $arguments, $pageUid);
 		}
 
@@ -138,10 +146,11 @@
 		 * @param string $action Name of the action
 		 * @param string $controller Optional name of the controller
 		 * @param array $arguments Optional array of arguments
+		 * @param string $severity optional severity code
 		 * @return void
 		 */
-		protected function forwardWithMessage($message, $action, $controller = NULL, array $arguments = NULL) {
-			$this->addMessage($message);
+		protected function forwardWithMessage($message, $action, $controller = NULL, array $arguments = NULL, $severity = 'error') {
+			$this->addMessage($message, NULL, $severity);
 			$this->forward($action, $controller, NULL, $arguments, $pageUid);
 		}
 
@@ -150,17 +159,14 @@
 		 * Redirect to internal page
 		 *
 		 * @param integer $uid UID of the page
+		 * @param array $arguments Arguments to pass to the target page
 		 * @return void
 		 */
-		protected function redirectToPage($uid) {
-			$configuration = array(
-				'parameter' => (int) $uid,
-			);
-			$contentObject = $this->configurationManager->getContentObject();
-			$uri = $contentObject->typoLink_URL($configuration);
-			if (!empty($uri)) {
-				$this->redirectToUri($uri);
-			}
+		protected function redirectToPage($uid, array $arguments = array()) {
+			$this->uriBuilder->reset();
+			$this->uriBuilder->setTargetPageUid((int) $uid);
+			$uri = $this->uriBuilder->uriFor(NULL, $arguments);
+			$this->redirectToUri($uri);
 		}
 
 	}

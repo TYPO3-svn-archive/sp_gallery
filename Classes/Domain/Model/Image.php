@@ -277,5 +277,15 @@
 			}
 		}
 
+
+		/**
+		 * Return human-readable identifier of the object
+		 *
+		 * @return string
+		 */
+		public function __toString() {
+			return $this->getName();
+		}
+
 	}
 ?>

@@ -30,11 +30,11 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/1090; type=int; label=Redirect page: Redirect to this page after uploading
 		redirectPage = 0
 
-		# cat=Gallery: General/settings/1100; type=boolean; label=Show image info: Show detailed image info below gallery
-		showImageInfo = 0
+		# cat=Gallery: General/settings/1100; type=int; label=Redirect with parameters: Add gallery and image parameters to the redirect url
+		redirectWithParameters = 1
 
-		# cat=Gallery: General/settings/1110; type=int; label=Gallery UID: Create new images in this gallery
-		galleryUid = 0
+		# cat=Gallery: General/settings/1110; type=boolean; label=Show image info: Show detailed image info below gallery
+		showImageInfo = 0
 
 		# cat=Gallery: General/settings/1120; type=int; label=Upload file size: Maximal size of uploaded file in bytes
 		uploadFileSize = 10485760

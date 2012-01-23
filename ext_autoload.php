@@ -29,6 +29,7 @@
 		'tx_spgallery_viewHelpers_caseviewhelper'                    => $extensionClassesPath . 'ViewHelpers/CaseViewHelper.php',
 		'tx_spgallery_viewHelpers_cropimageviewhelper'               => $extensionClassesPath . 'ViewHelpers/CropImageViewHelper.php',
 		'tx_spgallery_viewhelpers_filesizeviewhelper'                => $extensionClassesPath . 'ViewHelpers/FileSizeViewHelper.php',
+		'tx_spgallery_viewhelpers_flashmessagesviewhelper'           => $extensionClassesPath . 'ViewHelpers/FlashMessagesViewHelper.php',
 		'tx_spgallery_viewhelpers_galleryviewhelper'                 => $extensionClassesPath . 'ViewHelpers/GalleryViewHelper.php',
 		'tx_spgallery_viewhelpers_locationviewhelper'                => $extensionClassesPath . 'ViewHelpers/LocationViewHelper.php',
 		'tx_spgallery_viewhelpers_rawviewhelper'                     => $extensionClassesPath . 'ViewHelpers/RawViewHelper.php',

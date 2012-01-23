@@ -183,8 +183,8 @@
 					),
 					'itemImage'      => array(
 						'foreign_field'  => 'file_name',
-						'height'         => '80m',
-						'width'          => '100m',
+						'height'         => '70c',
+						'width'          => '100c',
 					),
 				),
 			),

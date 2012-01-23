@@ -50,7 +50,7 @@
 
 					<settings.pages>
 						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:!=:Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
+							<!-- <displayCond></displayCond> -->
 							<exclude>1</exclude>
 							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.pages</label>
 							<config>
@@ -98,23 +98,6 @@
 							</config>
 						</TCEforms>
 					</settings.singlePage>
-
-					<settings.galleryUid>
-						<TCEforms>
-							<displayCond>FIELD:switchableControllerActions:=:Gallery->new;Gallery->create;Gallery->edit;Gallery->update;Gallery->list;Gallery->teaserList;Gallery->teaser;Gallery->show</displayCond>
-							<exclude>1</exclude>
-							<label>LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tt_content.flexform_pi1.s_def.galleryUid</label>
-							<config>
-								<type>group</type>
-								<internal_type>db</internal_type>
-								<allowed>tx_spgallery_domain_model_gallery</allowed>
-								<size>1</size>
-								<maxitems>1</maxitems>
-								<minitems>0</minitems>
-								<show_thumbs>0</show_thumbs>
-							</config>
-						</TCEforms>
-					</settings.galleryUid>
 
 					<settings.redirectPage>
 						<TCEforms>
