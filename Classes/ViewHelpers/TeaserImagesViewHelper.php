@@ -31,16 +31,12 @@
 		/**
 		 * Renders the teaser images of a gallery
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery Gallery to render
+		 * @param mixed $gallery Gallery to render
 		 * @param string $index The name of the template variable for the index
 		 * @param string $element The name of the template variable for the image element
 		 * @return string Rendered output
 		 */
-		public function render(Tx_SpGallery_Domain_Model_Gallery $gallery, $index = 'uid', $element = 'image') {
-			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
-				throw new Exception('No valid gallery given to render');
-			}
-
+		public function render($gallery, $index = 'uid', $element = 'image') {
 				// Get images
 			$imageCount = 5;
 			if (!empty($this->settings['teaserImageCount'])) {
@@ -51,6 +47,7 @@
 			}
 			$images = $this->getGalleryImages($gallery, 'teaser', FALSE, $imageCount);
 
+				// Render content
 			$content = '';
 			foreach ($images as $uid => $image) {
 				$this->templateVariableContainer->add($index, $uid);

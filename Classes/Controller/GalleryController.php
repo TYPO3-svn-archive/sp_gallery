@@ -89,10 +89,7 @@
 		protected function initializeController() {
 				// Get UIDs and PIDs of the configured galleries
 			$action = $this->request->getControllerActionName();
-			if ($action !== 'create' && $action !== 'update') {
-				if (empty($this->settings['pages']) && $action !== 'new') {
-					$this->addMessage('no_galleries_defined');
-				}
+			if ($action !== 'create' && $action !== 'update' && !empty($this->settings['pages'])) {
 				$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
 			}
 		}
@@ -133,27 +130,7 @@
 		 * @return void
 		 */
 		public function listAction() {
-			if (empty($this->ids['uids']) && empty($this->ids['pids'])) {
-				$this->addMessage('no_galleries_defined');
-			}
-
-				// Load galleries from persistance
-			$galleries = $this->getGalleries();
-
-				// Order galleries according to manual sorting type
-			if (key($ordering) === 'sorting') {
-				$extensionKey = $this->request->getControllerExtensionKey();
-				$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-				if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
-					$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
-					if ($configuration['gallerySortingType'] === 'plugin') {
-						$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
-					}
-				}
-			}
-
-				// Set template variables
-			$this->view->assign('galleries',  $galleries);
+			$this->view->assign('galleries',  $this->getGalleries());
 			$this->view->assign('settings',   $this->settings);
 			$this->view->assign('plugin',     $this->plugin);
 			$this->view->assign('singlePage', $this->getPageId('singlePage'));
@@ -191,18 +168,11 @@
 		 * @dontvalidate $coordinates
 		 */
 		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, $coordinates = NULL) {
-				// Load galleries from persistance
-			$galleries = array();
-			if (!empty($this->ids['uids'][0]) || !empty($this->ids['pids'][0])) {
-				$galleries = $this->getGalleries();
-			} else if (!empty($this->settings['allGalleriesWhenEmpty'])) {
-				$galleries = $this->galleryRepository->findAll();
-			}
-
+			$galleries = $this->getGalleries();
 			$this->view->assign('galleries', $galleries);
+			$this->view->assign('enableSelect', count($galleries) > 1);
 			$this->view->assign('newImage', $newImage);
 			$this->view->assign('coordinates', $coordinates);
-			$this->view->assign('enableSelect', count($galleries) > 1);
 		}
 
 
@@ -294,15 +264,38 @@
 		/**
 		 * Load galleries from persistance
 		 *
-		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 * @return array Galleries
 		 */
 		protected function getGalleries() {
-			$uids      = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
-			$pids      = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
-			$offset    = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
-			$limit     = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-			$ordering  = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
-			return $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
+			$galleries = array();
+
+				// Get configuration
+			$uids     = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
+			$pids     = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
+			$offset   = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
+			$limit    = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
+			$ordering = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
+
+				// Find galleries according to configuration
+			if (!empty($uids[0]) || !empty($pids[0])) {
+				$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
+			} else if (!empty($this->settings['allGalleriesWhenEmpty'])) {
+				$galleries = $this->galleryRepository->findAll($offset, $limit, $ordering);
+			}
+
+				// Order galleries according to manual sorting type
+			if (!empty($galleries) && key($ordering) === 'sorting') {
+				$extensionKey = $this->request->getControllerExtensionKey();
+				$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
+				if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
+					$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
+					if ($configuration['gallerySortingType'] === 'plugin') {
+						$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
+					}
+				}
+			}
+
+			return $galleries;
 		}
 
 

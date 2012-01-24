@@ -46,13 +46,13 @@
 		/**
 		 * Returns all gallery images
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The Gallery
+		 * @param mixed $gallery The Gallery
 		 * @param string $formats Image formats to render
 		 * @param boolean $tag Returns images with complete tag
 		 * @param integer $count Image count
 		 * @return array Image arrays
 		 */
-		protected function getGalleryImages(Tx_SpGallery_Domain_Model_Gallery $gallery, $formats = 'thumb, small, large', $tag = FALSE, $count = 0) {
+		protected function getGalleryImages($gallery, $formats = 'thumb, small, large', $tag = FALSE, $count = 0) {
 			if (empty($gallery) || empty($formats)) {
 				return array();
 			}
