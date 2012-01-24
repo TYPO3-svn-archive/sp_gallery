@@ -90,7 +90,7 @@
 				// Get UIDs and PIDs of the configured galleries
 			$action = $this->request->getControllerActionName();
 			if ($action !== 'create' && $action !== 'update') {
-				if (empty($this->settings['pages'])) {
+				if (empty($this->settings['pages']) && $action !== 'new') {
 					$this->addMessage('no_galleries_defined');
 				}
 				$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
@@ -193,8 +193,10 @@
 		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, $coordinates = NULL) {
 				// Load galleries from persistance
 			$galleries = array();
-			if (!empty($this->ids['uids']) || !empty($this->ids['pids'])) {
+			if (!empty($this->ids['uids'][0]) || !empty($this->ids['pids'][0])) {
 				$galleries = $this->getGalleries();
+			} else if (!empty($this->settings['allGalleriesWhenEmpty'])) {
+				$galleries = $this->galleryRepository->findAll();
 			}
 
 			$this->view->assign('galleries', $galleries);

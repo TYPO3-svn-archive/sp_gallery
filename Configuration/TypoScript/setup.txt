@@ -16,6 +16,7 @@ plugin.tx_spgallery {
 		redirectWithParameters    = {$plugin.tx_spgallery.settings.redirectWithParameters}
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
 		uploadFileSize            = {$plugin.tx_spgallery.settings.uploadFileSize}
+		allGalleriesWhenEmpty     = {$plugin.tx_spgallery.settings.allGalleriesWhenEmpty}
 
 		galleries {
 			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}
