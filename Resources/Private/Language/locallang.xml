@@ -101,7 +101,7 @@
 			<label index="image">Bild</label>
 			<label index="back">« Zurück</label>
 			<label index="crop_info">Einen Bereich auswählen um das Bild auszuschneiden</label>
-			<label index="move_failed">Verschieben der hogeladenen Datei ins Galerie-Verzeichnis fehlgeschlagen</label>
+			<label index="move_failed">Verschieben der hochgeladenen Datei ins Galerie-Verzeichnis fehlgeschlagen</label>
 		</languageKey>
 	</data>
 </T3locallang>

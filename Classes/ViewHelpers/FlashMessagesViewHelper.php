@@ -48,7 +48,7 @@
 		 */
 		protected function renderUl(array $flashMessages) {
 			$this->tag->setTagName('ul');
-			if ($this->hasArgument('class')) {
+			if (!empty($this->arguments['class'])) {
 				$this->tag->addAttribute('class', $this->arguments['class']);
 			}
 			$tagContent = '';
