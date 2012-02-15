@@ -17,6 +17,7 @@ plugin.tx_spgallery {
 		showImageInfo             = {$plugin.tx_spgallery.settings.showImageInfo}
 		uploadFileSize            = {$plugin.tx_spgallery.settings.uploadFileSize}
 		allGalleriesWhenEmpty     = {$plugin.tx_spgallery.settings.allGalleriesWhenEmpty}
+		uploadReview              = {$plugin.tx_spgallery.settings.uploadReview}
 
 		galleries {
 			offset                  = {$plugin.tx_spgallery.settings.galleries.offset}

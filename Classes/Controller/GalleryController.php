@@ -229,7 +229,13 @@
 			if (!empty($this->settings['redirectPage'])) {
 				$this->clearPageCache($this->settings['redirectPage']);
 				$this->persistenceManager->persistAll();
-				$parameters = (!empty($this->settings['redirectWithParameters']) ? array('gallery' => $gallery, 'image' => $newImage) : array());
+				$parameters = array();
+				if (!empty($this->settings['redirectWithParameters'])) {
+					$parameters['gallery'] = $gallery;
+					if (empty($this->settings['uploadReview'])) {
+						$parameters['image'] = $newImage;
+					}
+				}
 				$this->redirectToPage($this->settings['redirectPage'], $parameters);
 			} else {
 				$this->redirectWithMessage('image_created', 'new', NULL, NULL, NULL, 'ok');
@@ -437,6 +443,11 @@
 			}
 			$this->imageRepository->add($image);
 			$gallery->generateDirectoryHash();
+
+				// Hide image in frontend and use admin review
+			if (!empty($this->settings['uploadReview'])) {
+				$image->setHidden(TRUE);
+			}
 
 				// Generate image files
 			Tx_SpGallery_Utility_Image::generate(array($newFileName), $this->settings);

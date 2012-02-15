@@ -157,7 +157,14 @@
 			$filename = reset($result);
 
 			$filename = t3lib_div::resolveBackPath($this->backPath . '../' . $filename);
-			return '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($altText) . '" class="gallery-image" />';
+			$image = '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($altText) . '" />';
+
+				// Image is hidden
+			if (!empty($record['hidden'])) {
+				$image .= '<span class="gallery-image-hidden">' . t3lib_iconWorks::getSpriteIcon('extensions-spgallery-hidden') . '</span>';
+			}
+
+			return '<div class="gallery-image">' . $image . '</div>';
 		}
 
 

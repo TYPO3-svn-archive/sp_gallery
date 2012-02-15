@@ -42,6 +42,9 @@ plugin.tx_spgallery {
 		# cat=Gallery: General/settings/1130; type=boolean; label=All galleries when empty: Show all galleries when no one is selected in plugin
 		allGalleriesWhenEmpty = 0
 
+		# cat=Gallery: General/settings/1140; type=boolean; label=Upload Review: Hide uploaded images in frontend to allow an admin review
+		uploadReview = 0
+
 		libraries {
 				# cat=Gallery: General/settings/1200; type=boolean; label=Load jQuery: Load jQuery library
 			jquery = 1

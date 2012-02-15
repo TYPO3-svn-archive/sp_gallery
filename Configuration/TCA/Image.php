@@ -6,11 +6,11 @@
 	$GLOBALS['TCA']['tx_spgallery_domain_model_image'] = array(
 		'ctrl'      => $GLOBALS['TCA']['tx_spgallery_domain_model_image']['ctrl'],
 		'interface' => array(
-			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, name, description, information',
+			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, information',
 		),
 		'types' => array(
 			'1'     => array(
-				'showitem' => 'name, description, information',
+				'showitem' => 'hidden, name, description, information',
 			),
 		),
 		'palettes' => array(
@@ -37,6 +37,13 @@
 			't3ver_label' => array(
 				'config'      => array(
 					'type'        => 'passthrough',
+				),
+			),
+			'hidden' => array(
+				'exclude' => 1,
+				'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+				'config'  => array(
+					'type'    => 'check',
 				),
 			),
 			'name' => array(

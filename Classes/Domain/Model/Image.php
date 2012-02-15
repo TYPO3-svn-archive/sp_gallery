@@ -36,6 +36,13 @@
 		protected $deleted;
 
 		/**
+		 * Hidden state
+		 *
+		 * @var boolean
+		 */
+		protected $hidden;
+
+		/**
 		 * Name of the image
 		 *
 		 * @var string
@@ -106,6 +113,23 @@
 		 */
 		public function getDeleted() {
 			return (bool) $this->deleted;
+		}
+
+
+		/**
+		 * @param boolean $hidden
+		 * @return void
+		 */
+		public function setHidden($hidden) {
+			$this->hidden = (bool) $hidden;
+		}
+
+
+		/**
+		 * @return boolean
+		 */
+		public function getHidden() {
+			return (bool) $this->hidden;
 		}
 
 
