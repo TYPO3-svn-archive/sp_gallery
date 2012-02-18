@@ -73,10 +73,10 @@
 			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
 
 				// Load plugin settings
-			$configuration = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($configuration['settings.'], FALSE);
+			$setup = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
+			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($setup['settings.'], FALSE);
 			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
-			$configurationManager->setConfiguration($configuration);
+			$configurationManager->setConfiguration($setup);
 
 				// Load required objects
 			$this->registry = $objectManager->get('Tx_SpGallery_Persistence_Registry');

@@ -40,11 +40,7 @@
 				return '';
 			}
 
-			$extensionConfiguration = array();
-			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery'])) {
-				$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery']);
-			}
-
+			$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
 			$message = $setup['fieldConf']['config']['labels']['message_disabled'];
 
 				// Check if scheduler task is running
@@ -57,7 +53,7 @@
 			}
 
 				// Check if generate by saving is active
-			if (!empty($extensionConfiguration['generateWhenSaving'])) {
+			if (!empty($configuration['generateWhenSaving'])) {
 				$message = $setup['fieldConf']['config']['labels']['message_saving'];
 			}
 
@@ -68,7 +64,7 @@
 				'parent'   => &$parent,
 				'content'  => &$content,
 				'setup'    => $setup,
-				'extConf'  => $extensionConfiguration,
+				'extConf'  => $configuration,
 			));
 
 			return $content;

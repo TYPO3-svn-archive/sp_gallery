@@ -293,11 +293,9 @@
 			if (!empty($galleries) && key($ordering) === 'sorting') {
 				$extensionKey = $this->request->getControllerExtensionKey();
 				$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-				if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
-					$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
-					if ($configuration['gallerySortingType'] === 'plugin') {
-						$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
-					}
+				$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration($extensionKey);
+				if ($configuration['gallerySortingType'] === 'plugin') {
+					$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
 				}
 			}
 
@@ -355,11 +353,11 @@
 			}
 
 				// Override storagePid
-			$configuration = $this->configurationManager->getConfiguration(
+			$setup = $this->configurationManager->getConfiguration(
 				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
 			);
-			$configuration['persistence']['storagePid'] = (int) $gallery->getPid();
-			$this->configurationManager->setConfiguration($configuration);
+			$setup['persistence']['storagePid'] = (int) $gallery->getPid();
+			$this->configurationManager->setConfiguration($setup);
 
 				// Complete image object
 			$image->setGallery($gallery);

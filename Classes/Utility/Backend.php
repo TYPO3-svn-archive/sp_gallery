@@ -73,5 +73,19 @@
 			return '';
 		}
 
+
+		/**
+		 * Returns the configuration for an extension
+		 *
+		 * @param string $extensionKey The extension
+		 * @return array Configuration
+		 */
+		static public function getExtensionConfiguration($extensionKey) {
+			if (empty($extensionKey) || empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey])) {
+				return array();
+			}
+			return unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$extensionKey]);
+		}
+
 	}
 ?>

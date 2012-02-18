@@ -31,7 +31,7 @@
 		/**
 		 * @var array
 		 */
-		protected $extensionConfiguration = array();
+		protected $configuration = array();
 
 		/**
 		 * @var Tx_SpGallery_Service_GalleryService
@@ -45,9 +45,7 @@
 		 * @return void
 		 */
 		public function __construct() {
-			if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery'])) {
-				$this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sp_gallery']);
-			}
+			$this->configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
 		}
 
 
@@ -60,9 +58,9 @@
 		protected function getGalleryService($pid) {
 			if ($this->galleryService === NULL) {
 				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-				$configuration = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
+				$setup = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
 				$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
-				$configurationManager->setConfiguration($configuration);
+				$configurationManager->setConfiguration($setup);
 				$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
 			}
 			return $this->galleryService;
@@ -80,7 +78,7 @@
 		 * @return void
 		 */
 		public function processDatamap_afterDatabaseOperations($status, $table, $uid, &$fields, &$parent) {
-			if (empty($this->extensionConfiguration['generateWhenSaving'])) {
+			if (empty($this->configuration['generateWhenSaving'])) {
 				return;
 			}
 
@@ -111,7 +109,7 @@
 			}
 
 				// Process gallery by uid
-			$generateNames = !empty($this->extensionConfiguration['generateNameWhenSaving']);
+			$generateNames = !empty($this->configuration['generateNameWhenSaving']);
 			$galleryService->processByUid($uid, $generateNames);
 		}
 

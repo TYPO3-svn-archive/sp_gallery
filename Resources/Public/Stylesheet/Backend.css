@@ -10,6 +10,6 @@ div.gallery-image img {
 
 span.gallery-image-hidden {
 	position: absolute;
-	left: 2px;
-	bottom: 0px;
+	left: 1px;
+	bottom: -1px;
 }

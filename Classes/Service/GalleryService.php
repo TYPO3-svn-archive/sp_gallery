@@ -118,12 +118,12 @@
 		 * @return void
 		 */
 		public function setStoragePid($storagePid) {
-			$configuration = $this->configurationManager->getConfiguration(
+			$setup = $this->configurationManager->getConfiguration(
 				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
 			);
-			$configuration = Tx_Extbase_Utility_TypoScript::convertPlainArrayToTypoScriptArray($configuration);
-			$configuration['persistence.']['storagePid'] = (int) $storagePid;
-			$this->configurationManager->setConfiguration($configuration);
+			$setup = Tx_Extbase_Utility_TypoScript::convertPlainArrayToTypoScriptArray($setup);
+			$setup['persistence.']['storagePid'] = (int) $storagePid;
+			$this->configurationManager->setConfiguration($setup);
 		}
 
 
@@ -183,7 +183,7 @@
 			$directory = $gallery->getImageDirectory();
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
 			$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
-			$hash = md5(serialize($files));
+			$hash = $this->buildHash($files);
 
 			if ($hash !== $gallery->getImageDirectoryHash()) {
 					// Generate image files
@@ -325,6 +325,32 @@
 			if ($modified) {
 				$this->persistenceManager->persistAll();
 			}
+		}
+
+
+		/**
+		 * Build the hash to recognize directory changes
+		 *
+		 * @param array $files All files in the directory
+		 * @return string The hash
+		 */
+		protected function buildHash(array $files) {
+				// Add file names
+			$text = serialize($files);
+
+				// Add image configuration
+			$imageSizes = array('teaser', 'thumb', 'small', 'large');
+			foreach ($imageSizes as $size) {
+				if (!empty($this->settings[$size . 'Image'])) {
+					$text .= serialize($this->settings[$size . 'Image']);
+				}
+			}
+
+				// Add extension configuration
+			$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
+			$text .= (!empty($configuration['generateWhenSaving']) ? 'true' : 'false');
+
+			return md5($text);
 		}
 
 	}

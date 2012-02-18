@@ -20,10 +20,7 @@
 	t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Gallery Configuration');
 
 		// Load extension configuration
-	$configuration = array();
-	if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY])) {
-		$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY]);
-	}
+	$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration($_EXTKEY);
 
 	foreach (array('gallery', 'image') as $model) {
 			// Add help text to the backend form
