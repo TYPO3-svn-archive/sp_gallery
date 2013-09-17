@@ -63,7 +63,7 @@ class Template {
 		// Get template file
 		$templateFile = \TYPO3\CMS\Core\Utility\GenralUtility::getFileAbsFileName($templateFile);
 		// Create Fluid view
-		$view = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('Tx_Fluid_View_StandaloneView');
+		$view = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
 		$view->setLayoutRootPath($layoutRootPath);
 		$view->setPartialRootPath($partialRootPath);
 		$view->setTemplatePathAndFilename($templateFile);

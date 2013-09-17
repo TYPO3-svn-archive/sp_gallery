@@ -1,4 +1,4 @@
-{namespace spgallery=Tx_SpGallery_ViewHelpers}
+{namespace spgallery=Speedprogs\SpGallery\ViewHelpers}
 
 jQuery(document).ready(function($) {
   var $image = $('#{elementId}');
