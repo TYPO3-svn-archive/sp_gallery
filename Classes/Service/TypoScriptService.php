@@ -42,7 +42,7 @@ class TypoScriptService implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $contentObject;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\ConfigurationManager
+	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
 	 * @inject
 	 */
 	protected $configurationManager;
