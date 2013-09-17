@@ -5,7 +5,7 @@
 
 		// Add plugin to list
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-		'Speedprogs.'.$_EXTKEY,
+		'Speedprogs.' . $_EXTKEY,
 		'Gallery',
 		'Gallery'
 	);

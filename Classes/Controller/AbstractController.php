@@ -113,7 +113,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 	 * @return void
 	 */
 	protected function addMessage($message, array $arguments = NULL, $severity = 'error') {
-		$constant = '\TYPO3\CMS\Core\Messaging\FlashMessage::' . strtoupper(trim($severity));
+		$constant = 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage::' . strtoupper(trim($severity));
 		if (!empty($severity) && defined($constant)) {
 			$severity = constant($constant);
 		} else {

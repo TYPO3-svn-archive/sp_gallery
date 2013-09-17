@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Controller;
 /**
  * Controller for the Gallery object
  */
-class GalleryController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractController {
+class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractController {
 
 	/**
 	 * @var \Speedprogs\SpGallery\Domain\Repository\GalleryRepository
@@ -80,7 +80,6 @@ class GalleryController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractContro
 	 * @return string The rendered view
 	 */
 	public function showAction($gallery = NULL, $image = NULL) {
-		print_r($this->settings);die("text");
 		if ($gallery === NULL) {
 			if (empty($this->ids['uids'][0])) {
 				$this->addMessage('no_gallery_defined');
@@ -105,7 +104,6 @@ class GalleryController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractContro
 	 * @return void
 	 */
 	public function listAction() {
-		print_r($this->settings);die("text");
 		$this->view->assign('galleries',  $this->getGalleries());
 		$this->view->assign('settings',   $this->settings);
 		$this->view->assign('plugin',     $this->plugin);
@@ -118,7 +116,6 @@ class GalleryController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractContro
 	 * @return void
 	 */
 	public function teaserAction() {
-		print_r($this->settings);die("text");
 		$this->showAction();
 		$this->view->assign('singlePage', $this->getPageId('singlePage'));
 	}
