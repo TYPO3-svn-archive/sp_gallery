@@ -45,7 +45,7 @@ class Tca implements \TYPO3\CMS\Core\SingletonInterface {
 		$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
 		$message = $setup['fieldConf']['config']['labels']['message_disabled'];
 		// Check if scheduler task is running
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility\ExtensionManagementUtility::isLoaded('scheduler')) {
+		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {
 			$table = 'tx_scheduler_task';
 			$where = 'disable=0 AND classname="Tx_SpGallery_Task_DirectoryObserver" AND lastexecution_time > 0';
 			if ($GLOBALS['TYPO3_DB']->exec_SELECTcountRows('1', $table, $where)) {

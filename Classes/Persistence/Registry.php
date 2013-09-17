@@ -120,7 +120,7 @@ class Registry implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function load() {
 		if (!$this->isLoaded()) {
-			$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\TYPO3\\CMS\\Core\\Registry');
+			$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
 			$this->content  = $this->registry->get($this->name, 'content');
 			$this->setIsLoaded(TRUE);
 		}
@@ -133,7 +133,7 @@ class Registry implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function save() {
 		if (empty($this->registry)) {
-			$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\TYPO3\\CMS\\Core\\Registry');
+			$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
 		}
 		$this->registry->set($this->name, 'content', $this->content);
 	}

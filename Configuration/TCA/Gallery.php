@@ -196,8 +196,7 @@
 				'displayCond'  => 'FIELD:images:REQ:false', // Show if images field is empty
 				'config'       => array(
 					'type'         => 'user',
-					'userFunc' => '\\Speedprogs\\SpGallery\\Hook\\Tca->renderEmptyImagesMessage',
-					//'userFunc'     => 'Tx_SpGallery_Hook_Tca->renderEmptyImagesMessage',
+					'userFunc' => 'Speedprogs\\SpGallery\\Hook\\Tca->renderEmptyImagesMessage',
 					'labels'       => array(
 						'message_disabled'  => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.message_disabled',
 						'message_scheduler' => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.message_scheduler',
