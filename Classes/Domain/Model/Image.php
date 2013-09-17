@@ -259,7 +259,7 @@ class Image extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	public function generateImageInformation() {
 		$fileName = $this->getFileName();
 		if (!empty($fileName)) {
-			$imageInfo = \Speedprogs\SpGallery\Utility\File::getImageInfo($fileName);
+			$imageInfo = \Speedprogs\SpGallery\Utility\FileUtility::getImageInfo($fileName);
 			$this->setFileSize($imageInfo['size']);
 			$this->setFileType($imageInfo['type']);
 			$this->setImageHeight($imageInfo['height']);

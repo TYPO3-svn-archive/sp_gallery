@@ -196,7 +196,7 @@ class Gallery extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 		$directory = $this->getImageDirectory();
 		if (!empty($directory)) {
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$files = \Speedprogs\SpGallery\Utility\File::getFiles($directory, TRUE, $allowedTypes);
+			$files = \Speedprogs\SpGallery\Utility\FileUtility::getFiles($directory, TRUE, $allowedTypes);
 			$hash = md5(serialize($files));
 			$this->setImageDirectoryHash($hash);
 		}

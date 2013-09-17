@@ -130,11 +130,11 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	public function process(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, $generateNames = FALSE) {
 		$directory = $gallery->getImageDirectory();
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-		$files = \Speedprogs\SpGallery\Utility\File::getFiles($directory, TRUE, $allowedTypes);
+		$files = \Speedprogs\SpGallery\Utility\FileUtility::getFiles($directory, TRUE, $allowedTypes);
 		$hash = $this->buildHash($files);
 		if ($hash !== $gallery->getImageDirectoryHash()) {
 			// Generate image files
-			$imageFiles = \Speedprogs\SpGallery\Utility\Image::generate($files, $this->settings);
+			$imageFiles = \Speedprogs\SpGallery\Utility\ImageUtility::generate($files, $this->settings);
 			$imageFiles = array_intersect_key($files, $imageFiles);
 			$imageFiles = array_unique($imageFiles);
 			// Remove old images
@@ -269,7 +269,7 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 			}
 		}
 		// Add extension configuration
-		$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
+		$configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration('sp_gallery');
 		$text .= (!empty($configuration['generateWhenSaving']) ? 'true' : 'false');
 		return md5($text);
 	}

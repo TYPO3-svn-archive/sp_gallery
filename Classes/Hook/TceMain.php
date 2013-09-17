@@ -47,7 +47,7 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return void
 	 */
 	public function __construct() {
-		$this->configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
+		$this->configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration('sp_gallery');
 	}
 
 	/**
@@ -89,7 +89,7 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 		// Return if no valid directory was found
 		if (!empty($fields['image_directory']) && !empty($fields['tstamp'])) {
 			$fileName = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($fields['image_directory']);
-			if (!\Speedprogs\SpGallery\Utility\File::fileExists($fileName)) {
+			if (!\Speedprogs\SpGallery\Utility\FileUtility::fileExists($fileName)) {
 				return;
 			}
 		}

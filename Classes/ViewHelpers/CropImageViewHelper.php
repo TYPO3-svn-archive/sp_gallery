@@ -90,7 +90,7 @@ class CropImageViewHelper extends \Speedprogs\SpGallery\ViewHelpers\AbstractTemp
 			'settings'  => $this->settings,
 		);
 		// Render template
-		$content = \Speedprogs\SpGallery\Utility\Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
+		$content = \Speedprogs\SpGallery\Utility\TemplateUtility::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
 		return str_replace('|', $content, $this->tag);
 	}
 

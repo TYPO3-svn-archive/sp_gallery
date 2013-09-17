@@ -54,7 +54,7 @@ abstract class AbstractGalleryViewHelper extends AbstractTemplateBasedViewHelper
 		$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
 		$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
 		$limit    = (!empty($count) ? (int) $count : $limit);
-		$ordering = \Speedprogs\SpGallery\Utility\Persistence::getOrdering($this->settings['images']);
+		$ordering = \Speedprogs\SpGallery\Utility\PersistenceUtility::getOrdering($this->settings['images']);
 		$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 		// Get attributes
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
@@ -87,7 +87,7 @@ abstract class AbstractGalleryViewHelper extends AbstractTemplateBasedViewHelper
 				}
 			}
 			// Convert images
-			$processedFiles = \Speedprogs\SpGallery\Utility\Image::convert($imageFiles, $settings[$format . 'Image.'], $tag);
+			$processedFiles = \Speedprogs\SpGallery\Utility\ImageUtility::convert($imageFiles, $settings[$format . 'Image.'], $tag);
 			foreach ($processedFiles as $uid => $file) {
 				$result[$uid]['converted'][$format] = $file;
 			}

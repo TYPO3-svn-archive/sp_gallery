@@ -42,7 +42,7 @@ class Tca implements \TYPO3\CMS\Core\SingletonInterface {
 		if (TYPO3_MODE != 'BE') {
 			return '';
 		}
-		$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
+		$configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration('sp_gallery');
 		$message = $setup['fieldConf']['config']['labels']['message_disabled'];
 		// Check if scheduler task is running
 		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {

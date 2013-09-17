@@ -68,7 +68,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		// Get UIDs and PIDs of the configured galleries
 		$action = $this->request->getControllerActionName();
 		if ($action !== 'create' && $action !== 'update' && !empty($this->settings['pages'])) {
-			$this->ids = \Speedprogs\SpGallery\Utility\Persistence::getIds($this->settings['pages']);
+			$this->ids = \Speedprogs\SpGallery\Utility\PersistenceUtility::getIds($this->settings['pages']);
 		}
 	}
 
@@ -163,7 +163,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		// Get arguments from request
 		$arguments = $this->request->getArguments();
 		$fileName = $newImage->getFileName();
-		$fileInfo = \Speedprogs\SpGallery\Utility\File::getFileInfo('tx_spgallery_gallery.uploadFile');
+		$fileInfo = \Speedprogs\SpGallery\Utility\FileUtility::getFileInfo('tx_spgallery_gallery.uploadFile');
 		// Upload image to temp directory and go back to preview
 		if (!empty($fileInfo['tmp_name']) && $this->isValidImage($fileInfo)) {
 			$fileName = $this->uploadImage($gallery, $newImage, $fileInfo);
@@ -240,7 +240,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		$pids     = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
 		$offset   = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
 		$limit    = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-		$ordering = \Speedprogs\SpGallery\Utility\Persistence::getOrdering($this->settings['galleries']);
+		$ordering = \Speedprogs\SpGallery\Utility\PersistenceUtility::getOrdering($this->settings['galleries']);
 		// Find galleries according to configuration
 		if (!empty($uids[0]) || !empty($pids[0])) {
 			$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
@@ -251,9 +251,9 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		if (!empty($galleries) && key($ordering) === 'sorting') {
 			$extensionKey = $this->request->getControllerExtensionKey();
 			$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-			$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration($extensionKey);
+			$configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration($extensionKey);
 			if ($configuration['gallerySortingType'] === 'plugin') {
-				$galleries = \Speedprogs\SpGallery\Utility\Persistence::sortBySelector($galleries, $uids, $direction);
+				$galleries = \Speedprogs\SpGallery\Utility\PersistenceUtility::sortBySelector($galleries, $uids, $direction);
 			}
 		}
 		return $galleries;
@@ -272,7 +272,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		}
 		// Check type
 		$types = trim(strtolower($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']));
-		$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileInfo['name']);
+		$fileType = \Speedprogs\SpGallery\Utility\FileUtility::getFileType($fileInfo['name']);
 		if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($types, $fileType)) {
 			$this->forwardWithMessage('file_type_invalid', 'new');
 		}
@@ -296,9 +296,9 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 	 */
 	protected function uploadImage(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, \Speedprogs\SpGallery\Domain\Model\Image $image, array $fileInfo) {
 		// Get temporary directory
-		$directory = \Speedprogs\SpGallery\Utility\File::getRelativeDirectory($this->tempDirectory);
+		$directory = \Speedprogs\SpGallery\Utility\FileUtility::getRelativeDirectory($this->tempDirectory);
 		// Move uploaded image to gallery directory
-		$fileName = \Speedprogs\SpGallery\Utility\File::moveUploadedFile($fileInfo['tmp_name'], $fileInfo['name'], $directory);
+		$fileName = \Speedprogs\SpGallery\Utility\FileUtility::moveUploadedFile($fileInfo['tmp_name'], $fileInfo['name'], $directory);
 		if (empty($fileName)) {
 			$this->forwardWithMessage('file_invalid', 'new');
 		}
@@ -339,7 +339,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		// Crop image
 		$fileName = $image->getFileName();
 		if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
-			$fileName = \Speedprogs\SpGallery\Utility\Image::crop($fileName, $x, $y, $w, $h);
+			$fileName = \Speedprogs\SpGallery\Utility\ImageUtility::crop($fileName, $x, $y, $w, $h);
 			if (!empty($fileName)) {
 				$image->setFileName($fileName);
 				$image->generateImageInformation();
@@ -368,9 +368,9 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 		if (empty($directory)) {
 			$this->forwardWithMessage('directory_invalid', 'new');
 		}
-		$directory = \Speedprogs\SpGallery\Utility\File::getRelativeDirectory($directory);
+		$directory = \Speedprogs\SpGallery\Utility\FileUtility::getRelativeDirectory($directory);
 		$newFileName = $directory . basename($tempName);
-		if (!\Speedprogs\SpGallery\Utility\File::moveFile($tempName, $newFileName)) {
+		if (!\Speedprogs\SpGallery\Utility\FileUtility::moveFile($tempName, $newFileName)) {
 			$this->forwardWithMessage('move_failed', 'new');
 		}
 		// Complete image and gallery
@@ -387,7 +387,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 			$image->setHidden(TRUE);
 		}
 		// Generate image files
-		\Speedprogs\SpGallery\Utility\Image::generate(array($newFileName), $this->settings);
+		\Speedprogs\SpGallery\Utility\ImageUtility::generate(array($newFileName), $this->settings);
 	}
 
 }
