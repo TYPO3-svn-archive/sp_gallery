@@ -53,8 +53,8 @@ class Image {
 	 */
 	static protected function getContentObject() {
 		if (self::$contentObject === NULL) {
-			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
+			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+			$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
 			self::$contentObject = $configurationManager->getContentObject();
 		}
 		return self::$contentObject;
