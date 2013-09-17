@@ -20,7 +20,7 @@
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Gallery Configuration');
 
 		// Load extension configuration
-	$configuration = \Speedprogs\SpGallery\Utility\BackendUtiliy::getExtensionConfiguration($_EXTKEY);
+	$configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration($_EXTKEY);
 
 	foreach (array('gallery', 'image') as $model) {
 			// Add help text to the backend form
