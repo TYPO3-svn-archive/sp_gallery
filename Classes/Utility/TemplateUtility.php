@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage templates
  */
-class Template {
+class TemplateUtility {
 
 	/**
 	 * Renders a template

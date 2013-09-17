@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage the backend
  */
-class Backend {
+class BackendUtility {
 
 	/**
 	 * Get current page ID within backend

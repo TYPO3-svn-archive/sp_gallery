@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage files
  */
-class File {
+class FileUtility {
 
 	/**
 	 * Get a list of all files in a directory
