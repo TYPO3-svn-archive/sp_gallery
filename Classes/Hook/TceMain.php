@@ -58,8 +58,9 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	protected function getGalleryService($pid) {
 		if ($this->galleryService === NULL) {
-			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Extbase_Object_ObjectManager');
-			$setup = \Speedprogs\SpGallery\Utility\TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
+			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+			$typoScriptService = $objectManager->get('Speedprogs\\SpGallery\\Service\\TypoScriptService');
+			$setup = $typoScriptService->getSetupForPid($pid, 'plugin.tx_spgallery');
 			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 			$configurationManager->setConfiguration($setup);
 			$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');

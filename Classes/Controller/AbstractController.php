@@ -38,6 +38,12 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 	protected $cacheService;
 
 	/**
+	 * @var \Speedprogs\SpGallery\Service\TypoScriptService
+	 * @inject
+	 */
+	protected $typoScriptService;
+
+	/**
 	 * @var array
 	 */
 	protected $plugin;
@@ -49,7 +55,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 	 */
 	protected function initializeAction() {
 		// Pre-parse TypoScript setup
-		$this->settings = \Speedprogs\SpGallery\Utility\TypoScript::parse($this->settings);
+		$this->settings = $this->typoScriptService->parse($this->settings);
 		// Get information about current plugin
 		$contentObject = $this->configurationManager->getContentObject();
 		$this->plugin = (!empty($contentObject->data) ? $contentObject->data : array());

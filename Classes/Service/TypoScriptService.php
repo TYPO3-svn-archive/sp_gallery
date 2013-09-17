@@ -1,5 +1,5 @@
 <?php
-namespace Speedprogs\SpGallery\Utility;
+namespace Speedprogs\SpGallery\Service;
 
 /*********************************************************************
  *  Copyright notice
@@ -29,46 +29,53 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage and convert Typoscript Code
  */
-class TypoScript {
+class TypoScriptService implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
-	 * @var object
+	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
 	 */
-	static protected $frontend;
+	protected $frontend;
 
 	/**
-	 * @var tslib_cObj
+	 * @var \TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer
 	 */
-	static protected $contentObject;
+	protected $contentObject;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\ConfigurationManager
+	 * @inject
 	 */
-	static protected $configurationManager;
+	protected $configurationManager;
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Service\TypoScriptService
+	 * @inject
+	 */
+	protected $typoScriptService;
 
 	/**
 	 * @var array
 	 */
-	static protected $configuration;
+	protected $configuration;
 
 	/**
 	 * Initialize configuration manager and content object
 	 *
 	 * @return void
 	 */
-	static protected function initialize() {
+	protected function initialize() {
 		// Get configuration manager
 		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-		self::$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
+		$this->configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
 		// Simulate Frontend
 		if (TYPO3_MODE != 'FE') {
-			self::simulateFrontend();
-			self::$configurationManager->setContentObject($GLOBALS['TSFE']->cObj);
+			$this->simulateFrontend();
+			$this->configurationManager->setContentObject($GLOBALS['TSFE']->cObj);
 		}
 		// Get content object
-		self::$contentObject = self::$configurationManager->getContentObject();
-		if (empty(self::$contentObject)) {
-			self::$contentObject = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance(
+		$this->contentObject = $this->configurationManager->getContentObject();
+		if (empty($this->contentObject)) {
+			$this->contentObject = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance(
 				'TYPO3\\CMS\\Core\\Utility\\GeneralUtility\\ContentObjectRenderer'
 			);
 		}
@@ -80,9 +87,9 @@ class TypoScript {
 	 * @param \TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer $cObj Instance of an content object
 	 * @return void
 	 */
-	static public function simulateFrontend(\TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer $cObj = NULL) {
+	public function simulateFrontend(\TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer $cObj = NULL) {
 		// Make backup of current frontend
-		self::$frontend = (!empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : NULL);
+		$this->frontend = (!empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : NULL);
 		// Create new frontend instance
 		$GLOBALS['TSFE'] = new stdClass();
 		$GLOBALS['TSFE']->cObjectDepthCounter = 100;
@@ -107,7 +114,7 @@ class TypoScript {
 			$GLOBALS['TSFE']->tmpl->init();
 		}
 		if (empty($GLOBALS['TSFE']->config)) {
-			$GLOBALS['TSFE']->config = \TYPO3\CMS\Core\Utility\GeneralUtility::removeDotsFromTS(self::getSetup());
+			$GLOBALS['TSFE']->config = \TYPO3\CMS\Core\Utility\GeneralUtility::removeDotsFromTS($this->getSetup());
 		}
 	}
 
@@ -117,8 +124,8 @@ class TypoScript {
 	 * @param object $frontend Instance of a frontend environemnt
 	 * @return void
 	 */
-	static public function resetFrontend($frontend = NULL) {
-		$frontend = (!empty($frontend) ? $frontend : self::$frontend);
+	public function resetFrontend($frontend = NULL) {
+		$frontend = (!empty($frontend) ? $frontend : $this->frontend);
 		if (!empty($frontend)) {
 			$GLOBALS['TSFE'] = $frontend;
 		}
@@ -131,12 +138,12 @@ class TypoScript {
 	 * @param array $$setup Optional TypoScript setup array
 	 * @return array TypoScript setup
 	 */
-	static public function getSetup($typoScriptPath = '', array $setup = array()) {
-		if (empty(self::$configurationManager)) {
-			self::initialize();
+	public function getSetup($typoScriptPath = '', array $setup = array()) {
+		if (empty($this->configurationManager)) {
+			$this->initialize();
 		}
 		if (empty($setup)) {
-			$setup = self::$configurationManager->getConfiguration(
+			$setup = $this->configurationManager->getConfiguration(
 				\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
 			);
 		}
@@ -160,19 +167,19 @@ class TypoScript {
 	 * @param string $typoScriptPath TypoScript path
 	 * @return array TypoScript setup
 	 */
-	static public function getSetupForPid($pid, $typoScriptPath = '') {
+	public function getSetupForPid($pid, $typoScriptPath = '') {
 		if (empty($pid)) {
-			return self::getSetup($typoScriptPath);
+			return $this->getSetup($typoScriptPath);
 		}
-		if (empty(self::$configuration[$pid])) {
+		if (empty($this->configuration[$pid])) {
 			if (empty($GLOBALS['TSFE']->sys_page)) {
-				self::initialize();
+				$this->initialize();
 			}
 			$rootLine = $GLOBALS['TSFE']->sys_page->getRootLine((int) $pid);
 			$GLOBALS['TSFE']->tmpl->start($rootLine);
-			self::$configuration[$pid] = $GLOBALS['TSFE']->tmpl->setup;
+			$this->configuration[$pid] = $GLOBALS['TSFE']->tmpl->setup;
 		}
-		return self::getSetup($typoScriptPath, self::$configuration[$pid]);
+		return $this->getSetup($typoScriptPath, $this->configuration[$pid]);
 	}
 
 	/**
@@ -182,16 +189,16 @@ class TypoScript {
 	 * @param boolean $isPlain Is a plain "Fluid like" configuration array
 	 * @return array Parsed configuration
 	 */
-	static public function parse(array $configuration, $isPlain = TRUE) {
-		if (empty(self::$contentObject)) {
-			self::initialize();
+	public function parse(array $configuration, $isPlain = TRUE) {
+		if (empty($this->contentObject)) {
+			$this->initialize();
 		}
 		// Convert to classic TypoScript array
 		if ($isPlain) {
-			$configuration = \TYPO3\CMS\Extbase\Service\TypoScriptService::convertPlainArrayToTypoScriptArray($configuration);
+			$configuration = $this->typoScriptService->convertPlainArrayToTypoScriptArray($configuration);
 		}
 		// Parse configuration
-		return self::parseTypoScriptArray($configuration);
+		return $this->parseTypoScriptArray($configuration);
 	}
 
 	/**
@@ -201,16 +208,16 @@ class TypoScript {
 	 * @return array Parsed configuration
 	 * @api
 	 */
-	static public function parseTypoScriptArray(array $configuration) {
+	public function parseTypoScriptArray(array $configuration) {
 		$typoScriptArray = array();
 		if (is_array($configuration)) {
 			foreach ($configuration as $key => $value) {
 				$ident = rtrim($key, '.');
 				if (is_array($value)) {
 					if (!empty($configuration[$ident])) {
-						$typoScriptArray[$ident] = self::$contentObject->cObjGetSingle($configuration[$ident], $value);
+						$typoScriptArray[$ident] = $this->contentObject->cObjGetSingle($configuration[$ident], $value);
 					} else {
-						$typoScriptArray[$ident] = self::parseTypoScriptArray($value);
+						$typoScriptArray[$ident] = $this->parseTypoScriptArray($value);
 					}
 					unset($configuration[$key]);
 				} else if (is_string($value) && $key === $ident) {

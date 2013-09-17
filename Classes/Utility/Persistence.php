@@ -112,10 +112,12 @@ class Persistence {
 	 * @return TRUE if a storage page was found
 	 */
 	static public function hasStoragePage($extensionKey, $modelName) {
+		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		$typoScriptService = $objectManager->get('Speedprogs\\SpGallery\\Service\\TypoScriptService');
 		$extensionName  = str_replace(' ', '', ucwords(str_replace('_', ' ', $extensionKey)));
-		$modelClassName = 'Tx_' . $extensionName . '_Domain_Model_' . ucfirst($modelName);
-		$extensionSetup = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_' . strtolower($extensionName) . '.persistence');
-		$extbaseSetup   = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('config.tx_extbase.persistence');
+		$modelClassName = 'Speedprogs\\' . $extensionName . '\\Domain\\Model\\' . ucfirst($modelName);
+		$extensionSetup = $typoScriptService->getSetup('plugin.tx_' . strtolower($extensionName) . '.persistence');
+		$extbaseSetup   = $typoScriptService->getSetup('config.tx_extbase.persistence');
 		$mergedSetup    = \TYPO3\CMS\Extbase\Utility\ArrayUtility::arrayMergeRecursiveOverrule($extbaseSetup, $extensionSetup, FALSE, FALSE);
 		if (!empty($mergedSetup['storagePid'])) {
 			return TRUE;

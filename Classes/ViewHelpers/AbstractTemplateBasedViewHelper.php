@@ -44,6 +44,12 @@ abstract class AbstractTemplateBasedViewHelper extends \TYPO3\CMS\Fluid\Core\Vie
 	protected $configurationManager;
 
 	/**
+	 * @var \Speedprogs\SpGallery\Service\TypoScriptService
+	 * @inject
+	 */
+	protected $typoScriptService;
+
+	/**
 	 * @var array
 	 */
 	protected $settings;
@@ -74,8 +80,8 @@ abstract class AbstractTemplateBasedViewHelper extends \TYPO3\CMS\Fluid\Core\Vie
 	 * @return void
 	 */
 	public function initialize() {
-		$viewSettings = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery.view');
-		$viewSettings = \Speedprogs\SpGallery\Utility\TypoScript::parse($viewSettings);
+		$viewSettings = $this->typoScriptService->getSetup('plugin.tx_spgallery.view');
+		$viewSettings = $this->typoScriptService->parse($viewSettings);
 		if (!empty($viewSettings['layoutRootPath'])) {
 			$this->layoutRootPath = $viewSettings['layoutRootPath'];
 		}

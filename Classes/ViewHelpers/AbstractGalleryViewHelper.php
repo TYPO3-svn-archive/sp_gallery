@@ -58,7 +58,7 @@ abstract class AbstractGalleryViewHelper extends AbstractTemplateBasedViewHelper
 		$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 		// Get attributes
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-		$settings = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery.settings');
+		$settings = $this->typoScriptService->getSetup('plugin.tx_spgallery.settings');
 		$formats = array_unique(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $formats, TRUE));
 		$checkedFiles = array();
 		$imageFiles = array();

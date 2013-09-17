@@ -72,10 +72,11 @@ class DirectoryObserver extends \TYPO3\CMS\Scheduler\Task {
 	 * @return void
 	 */
 	protected function initializeTask() {
-		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Extbase_Object_ObjectManager');
+		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		// Load plugin settings
-		$setup = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery');
-		$this->settings = \Speedprogs\SpGallery\Utility\TypoScript::parse($setup['settings.'], FALSE);
+		$typoScriptService = $objectManager->get('Speedprogs\\SpGallery\\Service\\TypoScriptService');
+		$setup = $typoScriptService->getSetup('plugin.tx_spgallery');
+		$this->settings = $typoScriptService->parse($setup['settings.'], FALSE);
 		$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 		$configurationManager->setConfiguration($setup);
 		// Load required objects
