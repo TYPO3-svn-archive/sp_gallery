@@ -1,5 +1,5 @@
 <?php
-namespace \Speedprogs\SpGallery\Domain\Model;
+namespace Speedprogs\SpGallery\Domain\Model;
 
 /*********************************************************************
  *  Copyright notice
