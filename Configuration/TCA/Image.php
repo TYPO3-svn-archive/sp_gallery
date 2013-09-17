@@ -106,7 +106,8 @@
 				'displayCond'  => 'FIELD:file_name:REQ:true', // Show if file name is not empty
 				'config'       => array(
 					'type'         => 'user',
-					'userFunc'     => 'Tx_SpGallery_Hook_Tca->renderImageInformation',
+					//'userFunc'     => 'Tx_SpGallery_Hook_Tca->renderImageInformation',
+					'userFunc' 	   => '\\Speedprogs\\SpGallery\\Hook\\Tca->renderImageInformation',
 					'labels'       => array(
 						'file_name'    => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_image.file_name',
 						'file_size'    => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_image.file_size',

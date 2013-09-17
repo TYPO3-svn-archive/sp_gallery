@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Domain\Repository;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -25,20 +26,20 @@
 
 
 	/**
-	 * Repository for Tx_SpGallery_Domain_Model_Image
+	 * Repository for Speedprogs\SpGallery\Domain\Model\Image
 	 */
-	class Tx_SpGallery_Domain_Repository_ImageRepository extends Tx_SpGallery_Domain_Repository_AbstractRepository {
+	class ImageRepository extends \Speedprogs\SpGallery\Domain\Repository\AbstractRepository {
 
 		/**
 		 * Find all images of a gallery
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @param string $offset Offset to start with
 		 * @param string $limit Limit of the results
 		 * @param array $ordering Ordering <-> Direction
-		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 		 */
-		public function findByGallery(Tx_SpGallery_Domain_Model_Gallery $gallery, $offset = NULL, $limit = NULL, array $ordering = NULL) {
+		public function findByGallery(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, $offset = NULL, $limit = NULL, array $ordering = NULL) {
 			$query = $this->createQuery($offset, $limit, $ordering);
 			$query->getQuerySettings()->setRespectStoragePage(FALSE);
 			$query->matching($query->equals('gallery', $gallery->getUid()));
@@ -49,12 +50,13 @@
 		/**
 		 * Find an image by gallery and filename
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @param string $fileName The filename
 		 * @param boolean $enableFields Respect enable fields
-		 * @return Tx_SpGallery_Domain_Model_Image
+		 * @return \Speedprogs\SpGallery\Domain\Model\Image
+		 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 		 */
-		public function findOneByGalleryAndFileName(Tx_SpGallery_Domain_Model_Gallery $gallery, $fileName, $enableFields = FALSE) {
+		public function findOneByGalleryAndFileName(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, $fileName, $enableFields = FALSE) {
 			$query = $this->createQuery();
 			$query->getQuerySettings()->setRespectEnableFields($enableFields);
 			$query->getQuerySettings()->setRespectStoragePage(FALSE);

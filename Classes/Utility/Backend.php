@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage the backend
 	 */
-	class Tx_SpGallery_Utility_Backend {
+	class Backend {
 
 		/**
 		 * Get current page ID within backend
@@ -38,14 +39,14 @@
 				return (int) $GLOBALS['SOBE']->viewId;
 			}
 
-				// Find UID in "id" param
-			$pageId = t3lib_div::_GP('id');
+			// Find UID in "id" param
+			$pageId = \TYPO3\CMS\Core\GenralUtility::_GP('id');
 			if (!empty($pageId)) {
 				return (int) $pageId;
 			}
 
-				// Find UID in "returnUrl" param
-			$url = urldecode(t3lib_div::_GP('returnUrl'));
+			// Find UID in "returnUrl" param
+			$url = urldecode(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('returnUrl'));
 			if (!empty($url)) {
 				preg_match('/id=([0-9]*)/', $url, $parts);
 				if (!empty($parts[1])) {
@@ -66,7 +67,7 @@
 		 */
 		static public function getUploadfolder($table, $field) {
 			global $TCA;
-			t3lib_div::loadTCA($table);
+			\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($table);
 			if (!empty($TCA[$table]['columns'][$field]['config']['uploadfolder'])) {
 				return $TCA[$table]['columns'][$field]['config']['uploadfolder'];
 			}

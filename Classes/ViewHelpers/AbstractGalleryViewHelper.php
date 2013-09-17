@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,22 +27,13 @@
 	/**
 	 * Abstract gallery view helper
 	 */
-	abstract class Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper extends Tx_SpGallery_ViewHelpers_AbstractTemplateBasedViewHelper {
+	abstract class AbstractGalleryViewHelper extends AbstractTemplateBasedViewHelper {
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 * @var \Speedprogs\SpGallery\Domain\Repository\ImageRepository
+		 * @inject
 		 */
 		protected $imageRepository;
-
-
-		/**
-		 * @param Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository
-		 * @return void
-		 */
-		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
-			$this->imageRepository = $imageRepository;
-		}
-
 
 		/**
 		 * Returns all gallery images
@@ -57,17 +49,17 @@
 				return array();
 			}
 
-				// Load images from persistence
+			// Load images from persistence
 			$offset   = (isset($this->settings['images']['offset']) ? (int) $this->settings['images']['offset'] : 0);
 			$limit    = (isset($this->settings['images']['limit'])  ? (int) $this->settings['images']['limit']  : 10);
 			$limit    = (!empty($count) ? (int) $count : $limit);
-			$ordering = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['images']);
+			$ordering = \Speedprogs\SpGallery\Utility\Persistence::getOrdering($this->settings['images']);
 			$images   = $this->imageRepository->findByGallery($gallery, $offset, $limit, $ordering);
 
-				// Get attributes
+			// Get attributes
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$settings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.settings');
-			$formats = array_unique(t3lib_div::trimExplode(',', $formats, TRUE));
+			$settings = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery.settings');
+			$formats = array_unique(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $formats, TRUE));
 			$checkedFiles = array();
 			$imageFiles = array();
 			$result = array();
@@ -81,7 +73,7 @@
 					$fileName = $image->getFileName();
 					$uid = $image->getUid();
 
-						// Check if file exists
+					// Check if file exists
 					if (!isset($checkedFiles[$uid])) {
 						$checkedFiles[$uid] = (bool) @file_exists(PATH_site . $fileName);
 					}
@@ -91,7 +83,7 @@
 
 					$imageFiles[$uid] = $fileName;
 
-						// Prepare result array
+					// Prepare result array
 					if (empty($result[$uid])) {
 						$result[$uid] = array(
 							'original'  => $image,
@@ -100,8 +92,8 @@
 					}
 				}
 
-					// Convert images
-				$processedFiles = Tx_SpGallery_Utility_Image::convert($imageFiles, $settings[$format . 'Image.'], $tag);
+				// Convert images
+				$processedFiles = \Speedprogs\SpGallery\Utility\Image::convert($imageFiles, $settings[$format . 'Image.'], $tag);
 				foreach ($processedFiles as $uid => $file) {
 					$result[$uid]['converted'][$format] = $file;
 				}

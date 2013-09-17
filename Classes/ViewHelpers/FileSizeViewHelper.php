@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * File size view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_FileSizeViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	class FileSizeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 		/**
 		 * Renders file size
@@ -40,7 +41,7 @@
 				$content = $this->renderChildren();
 			}
 
-			return t3lib_div::formatSize($content, $labels);
+			return \TYPO3\CMS\Core\Utility\General\Utility::formatSize($content, $labels);
 		}
 
 	}

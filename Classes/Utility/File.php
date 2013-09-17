@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage files
 	 */
-	class Tx_SpGallery_Utility_File {
+	class File {
 
 		/**
 		 * Get a list of all files in a directory
@@ -38,12 +39,12 @@
 		 * @return array All contained files
 		 */
 		static public function getFiles($directory, $recursive = FALSE, $fileTypes = '', $fileCount = 0) {
-			$directory = t3lib_div::getFileAbsFileName($directory);
+			$directory = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($directory);
 			if (!(@is_dir($directory))) {
 				return array();
 			}
 
-			$fileTypes = t3lib_div::trimExplode(',', $fileTypes, TRUE);
+			$fileTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $fileTypes, TRUE);
 			$result    = array();
 
 			if ($recursive) {
@@ -56,7 +57,7 @@
 				if ($file->isFile()) {
 					$fileName = $file->getPathname();
 
-						// Check file type
+					// Check file type
 					if (!empty($fileTypes)) {
 						$currentType = self::getFileType($fileName);
 						if (!in_array($currentType, $fileTypes)) {
@@ -66,7 +67,7 @@
 
 					$result[] = $fileName;
 
-						// Check file count
+					// Check file count
 					if (!empty($fileCount) && count($result) === $fileCount) {
 						break;
 					}
@@ -85,14 +86,14 @@
 		 * @return string Generated hash or an empty string if file not found
 		 */
 		static public function getFileHash($fileName) {
-			// Get md5 from local file
+		// Get md5 from local file
 			if (self::isLocalUrl($fileName)) {
 				$fileName = self::getLocalUrlPath($fileName);
 				return md5_file($fileName);
 			}
 
-			// Get md5 from external file
-			$contents = t3lib_div::getURL($fileName);
+		// Get md5 from external file
+			$contents = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($fileName);
 			if (!empty($contents)) {
 				return md5($contents);
 			}
@@ -110,7 +111,7 @@
 		 * @return integer Timestamp of the modification time
 		 */
 		static public function getModificationTime($fileName) {
-			// clearstatcache();
+		// clearstatcache();
 			return (int) @filemtime($fileName);
 		}
 
@@ -143,35 +144,35 @@
 				return FALSE;
 			}
 
-				// Check if file already exists
+			// Check if file already exists
 			$toFileExists = self::fileExists($toFileName);
 			if ($toFileExists && !$overwrite) {
 				return FALSE;
 			}
 
-				// Check if target directory exists
+			// Check if target directory exists
 			if (!self::fileExists(dirname($toFileName))) {
 				return FALSE;
 			}
 
-				// Get local url
+			// Get local url
 			if (self::isLocalUrl($fromFileName)) {
 				$fromFileName = self::getAbsolutePathFromUrl($fromFileName);
 			}
 
-				// Get file content
-			$fromFile = t3lib_div::getURL($fromFileName);
+			// Get file content
+			$fromFile = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($fromFileName);
 			if ($fromFile === FALSE) {
 				return FALSE;
 			}
 
-				// Remove existing when successfully fetched new file
+			// Remove existing when successfully fetched new file
 			if ($toFileExists) {
 				unlink($toFileName);
 			}
 
-				// Copy file to new name
-			$result = t3lib_div::writeFile($toFileName, $fromFile);
+			// Copy file to new name
+			$result = \TYPO3\CMS\Core\Utility\GeneralUtility::writeFile($toFileName, $fromFile);
 			return ($result !== FALSE);
 		}
 
@@ -183,19 +184,19 @@
 		 * @return array File information
 		 */
 		static public function getFileInfo($field) {
-			$arrayKeys = t3lib_div::trimExplode('.', $field, TRUE);
+			$arrayKeys = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('.', $field, TRUE);
 
-				// No information found
+			// No information found
 			if (empty($_FILES[$arrayKeys[0]]['tmp_name'])) {
 				return array();
 			}
 
-				// Single file structure
+			// Single file structure
 			if (is_string($_FILES[$arrayKeys[0]]['tmp_name'])) {
 				return $_FILES[$arrayKeys[0]];
 			}
 
-				// Multi file structure
+			// Multi file structure
 			if (is_array($_FILES[$arrayKeys[0]]['tmp_name'])) {
 				$fileInfo = array();
 				$fileArray = $_FILES[$arrayKeys[0]];
@@ -237,21 +238,21 @@
 				return $result;
 			}
 
-			$fileName = t3lib_div::getFileAbsFileName($fileName);
+			$fileName = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($fileName);
 			if (!self::fileExists($fileName)) {
 				return $result;
 			}
 
-				// Get basic information
+			// Get basic information
 			$result['file'] = $fileName;
 			$result['size'] = (int) filesize($fileName);
 
-				// Get image information
+			// Get image information
 			$imageInfo = getimagesize($fileName);
 			$result['height'] = (!empty($imageInfo[1]) ? (int) $imageInfo[1] : 0);
 			$result['width']  = (!empty($imageInfo[0]) ? (int) $imageInfo[0] : 0);
 
-				// Get file type
+			// Get file type
 			$result['type'] = self::getFileType($fileName);
 			if (!empty($imageInfo['mime']) && strpos($imageInfo['mime'], 'application') === FALSE) {
 				$result['type'] = str_replace('image/', '', $imageInfo['mime']);
@@ -285,7 +286,7 @@
 		 * @return boolean TRUE if given file is local
 		 */
 		static public function isLocalUrl($urlToFile) {
-			return t3lib_div::isOnCurrentHost($urlToFile);
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::isOnCurrentHost($urlToFile);
 		}
 
 
@@ -307,7 +308,7 @@
 		 * @return string Absolute path to file
 		 */
 		static public function getAbsolutePathFromUrl($url) {
-			$hostUrl = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
+			$hostUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
 			return PATH_site . str_ireplace($hostUrl, '', $url);
 		}
 
@@ -319,7 +320,7 @@
 		 * @return string Url to file
 		 */
 		static public function getUrlFromAbsolutePath($path) {
-			$hostUrl = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
+			$hostUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
 			return $hostUrl . str_replace(PATH_site, '', $path);
 		}
 
@@ -350,7 +351,7 @@
 
 			$result = TRUE;
 			if (!self::fileExists(PATH_site . $path)) {
-				$result = t3lib_div::mkdir_deep(PATH_site, $path);
+				$result = \TYPO3\CMS\Core\Utility\GeneralUtility::mkdir_deep(PATH_site, $path);
 			}
 
 			return !is_string($result);
@@ -392,7 +393,7 @@
 			}
 
 			if ($create && self::createDirectory($path)) {
-				$path = t3lib_div::getFileAbsFileName($path);
+				$path = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($path);
 				return rtrim($path, '/') . '/';
 			}
 
@@ -429,9 +430,9 @@
 		 * @return New file name
 		 */
 		static public function moveUploadedFile($tempname, $filename, $directory = 'uploads/') {
-			$basicFileFunctions = t3lib_div::makeInstance('t3lib_basicFileFunctions');
+			$basicFileFunctions = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_basicFileFunctions');
 			$newFilename = $basicFileFunctions->getUniqueName($filename, self::getAbsoluteDirectory($directory));
-			if (t3lib_div::upload_copy_move($tempname, $newFilename)) {
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility::upload_copy_move($tempname, $newFilename)) {
 				return basename($newFilename);
 			}
 

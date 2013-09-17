@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage templates
 	 */
-	class Tx_SpGallery_Utility_Template {
+	class Template {
 
 		/**
 		 * Renders a template
@@ -59,22 +60,22 @@
 				return '';
 			}
 
-				// Get template file
-			$templateFile = t3lib_div::getFileAbsFileName($templateFile);
+			// Get template file
+			$templateFile = \TYPO3\CMS\Core\Utility\GenralUtility::getFileAbsFileName($templateFile);
 
-				// Create Fluid view
-			$view = t3lib_div::makeInstance('Tx_Fluid_View_StandaloneView');
+			// Create Fluid view
+			$view = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('Tx_Fluid_View_StandaloneView');
 			$view->setLayoutRootPath($layoutRootPath);
 			$view->setPartialRootPath($partialRootPath);
 			$view->setTemplatePathAndFilename($templateFile);
 			$view->getRequest()->setControllerExtensionName($extensionKey);
 
-				// Assign variables to template
+			// Assign variables to template
 			foreach ($variables as $key => $value) {
 				$view->assign($key, $value);
 			}
 
-				// Render content
+			// Render content
 			return $view->render();
 		}
 

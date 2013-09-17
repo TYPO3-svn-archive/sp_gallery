@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Location header url view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_LocationViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	class LocationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 		/**
 		 * Disable the escaping interceptor
@@ -45,7 +46,7 @@
 				$content = $this->renderChildren();
 			}
 
-			return t3lib_div::locationHeaderUrl($content);
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($content);
 		}
 
 	}

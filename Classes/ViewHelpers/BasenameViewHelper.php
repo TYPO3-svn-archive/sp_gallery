@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Basename view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_BasenameViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	class BasenameViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 		/**
 		 * Renders the basename of a file

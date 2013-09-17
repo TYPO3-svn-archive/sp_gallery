@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Persistence;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utilities to manage registry content
 	 */
-	class Tx_SpGallery_Persistence_Registry implements t3lib_Singleton {
+	class Registry implements \TYPO3\CMS\Core\SingletonInterface {
 
 		/**
 		 * @var string
@@ -49,7 +50,7 @@
 		protected $content = array();
 
 		/**
-		 * @var t3lib_Registry
+		 * @var \TYPO3\CMS\Core\Registry
 		 */
 		protected $registry;
 
@@ -124,7 +125,7 @@
 		 */
 		public function load() {
 			if (!$this->isLoaded()) {
-				$this->registry = t3lib_div::makeInstance('t3lib_Registry');
+				$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\TYPO3\\CMS\\Core\\Registry');
 				$this->content  = $this->registry->get($this->name, 'content');
 				$this->setIsLoaded(TRUE);
 			}
@@ -138,7 +139,7 @@
 		 */
 		public function save() {
 			if (empty($this->registry)) {
-				$this->registry = t3lib_div::makeInstance('t3lib_Registry');
+				$this->registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('\\TYPO3\\CMS\\Core\\Registry');
 			}
 			$this->registry->set($this->name, 'content', $this->content);
 		}

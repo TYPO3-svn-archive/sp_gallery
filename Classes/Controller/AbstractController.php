@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Controller;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -21,12 +22,17 @@
 	 *  GNU General Public License for more details.
 	 *
 	 *  This copyright notice MUST APPEAR in all copies of the script!
-	 ********************************************************************/
-
+	 ********************************************************************
 	/**
 	 * Abstract controller
 	 */
-	abstract class Tx_SpGallery_Controller_AbstractController extends Tx_Extbase_MVC_Controller_ActionController {
+	abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+
+		/**
+		 * @var \TYPO3\CMS\Extbase\Service\CacheService
+		 * @inject
+		 */
+		protected $cacheService;
 
 		/**
 		 * @var array
@@ -40,14 +46,14 @@
 		 * @return void
 		 */
 		protected function initializeAction() {
-				// Pre-parse TypoScript setup
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
+			// Pre-parse TypoScript setup
+			$this->settings = \Speedprogs\SpGallery\Utility\TypoScript::parse($this->settings);
 
-				// Get information about current plugin
+			// Get information about current plugin
 			$contentObject = $this->configurationManager->getContentObject();
 			$this->plugin = (!empty($contentObject->data) ? $contentObject->data : array());
 
-				// Initialize concrete controller
+			// Initialize concrete controller
 			$this->initializeController();
 		}
 
@@ -84,8 +90,8 @@
 		 */
 		protected function clearPageCache($pages) {
 			if (!empty($pages)) {
-				$pages = t3lib_div::intExplode(',', $pages, TRUE);
-				Tx_Extbase_Utility_Cache::clearPageCache($pages);
+				$pages = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $pages, TRUE);
+				$this->cacheService->clearPageCache($pages);
 			}
 		}
 
@@ -99,7 +105,7 @@
 		 */
 		protected function translate($label, array $arguments = NULL) {
 			$extensionKey = $this->request->getControllerExtensionKey();
-			return Tx_Extbase_Utility_Localization::translate($label, $extensionKey, $arguments);
+			return \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($label, $extensionKey, $arguments);
 		}
 
 
@@ -112,11 +118,11 @@
 		 * @return void
 		 */
 		protected function addMessage($message, array $arguments = NULL, $severity = 'error') {
-			$constant = 't3lib_FlashMessage::' . strtoupper(trim($severity));
+			$constant = '\\TYPO3\\CMS\\Core\\Messaging\\FlashMessage::' . strtoupper(trim($severity));
 			if (!empty($severity) && defined($constant)) {
 				$severity = constant($constant);
 			} else {
-				$severity = t3lib_FlashMessage::ERROR;
+				$severity = \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR;
 			}
 			$this->flashMessageContainer->add($this->translate($message, $arguments), '', $severity);
 		}

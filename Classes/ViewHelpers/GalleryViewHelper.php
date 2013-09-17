@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Gallery view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_GalleryViewHelper extends Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper {
+	class GalleryViewHelper extends AbstractGalleryViewHelper {
 
 		/**
 		 * @var string
@@ -58,17 +59,17 @@
 				$gallery = $this->renderChildren();
 			}
 
-			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
+			if (!$gallery instanceof \Speedprogs\SpGallery\Domain\Model\Gallery) {
 				throw new Exception('No valid gallery given to render');
 			}
 
-				// Check container id
+			// Check container id
 			$elementId = trim($elementId);
 			if (empty($elementId)) {
 				throw new Exception('No valid HTML element ID given to render gallery');
 			}
 
-				// Escape options
+			// Escape options
 			$options = array();
 			if (!empty($this->settings['galleria'])) {
 				foreach ($this->settings['galleria'] as $key => $option) {
@@ -78,10 +79,10 @@
 				}
 			}
 
-				// Get image files
+			// Get image files
 			$images = $this->getGalleryImages($gallery);
 
-				// Add index of the image to show after loading
+			// Add index of the image to show after loading
 			if ($show !== NULL && !empty($images[$show])) {
 				$tempImages = array_values($images);
 				$options['show'] = (int) array_search($images[$show], $tempImages);
@@ -102,12 +103,12 @@
 		 * @return string Rendered content
 		 */
 		protected function renderTemplate($elementId, $infoId, array $images, array $options) {
-				// Get settings
+			// Get settings
 			$extensionKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 			$themeFile    = $this->getThemeFile();
 			$templateFile = $this->getTemplatePathAndFilename();
 
-				// Assign variables to template
+			// Assign variables to template
 			$variables = array(
 				'themeFile' => $themeFile,
 				'elementId' => $elementId,
@@ -117,8 +118,8 @@
 				'settings'  => $this->settings,
 			);
 
-				// Render template
-			$content = Tx_SpGallery_Utility_Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
+			// Render template
+			$content = \Speedprogs\SpGallery\Utility\Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
 			return str_replace('|', $content, $this->tag);
 		}
 
@@ -143,7 +144,7 @@
 			$themeFile = rtrim($themePath, '/') . '/' . $themeName . '/galleria.' . $themeName . '.min.js';
 			$themeFile = $GLOBALS['TSFE']->tmpl->getFileName($themeFile);
 
-			return t3lib_div::locationHeaderUrl($themeFile);
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($themeFile);
 		}
 
 	}

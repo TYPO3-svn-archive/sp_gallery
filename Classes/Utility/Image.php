@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage images
 	 */
-	class Tx_SpGallery_Utility_Image {
+	class Image {
 
 		/**
 		 * @var tslib_cObj
@@ -66,7 +67,7 @@
 		 */
 		static protected function getGraphicLibrary() {
 			if (self::$graphicLibrary === NULL) {
-				self::$graphicLibrary = t3lib_div::makeInstance('t3lib_stdGraphic');
+				self::$graphicLibrary = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_stdGraphic');
 				self::$graphicLibrary->init();
 			}
 			return self::$graphicLibrary;
@@ -93,7 +94,7 @@
 					continue;
 				}
 
-					// Generate images in filesystem
+				// Generate images in filesystem
 				$result = self::convert($files, $settings[$size . 'Image']);
 				$imageFiles = array_merge($imageFiles, $result);
 			}
@@ -119,22 +120,22 @@
 				return $files;
 			}
 
-				// Simulate working directory
+			// Simulate working directory
 			self::simulateFrontendEnvironment();
 
-				// Process images
+			// Process images
 			$contentObject = self::getContentObject();
 			foreach ($files as $key => $fileName) {
-					// Check if converting is allowed for this file type
+				// Check if converting is allowed for this file type
 				if (!self::isValidImageType($fileName)) {
 					unset($files[$key]);
 					continue;
 				}
 
-					// Get relative path
+				// Get relative path
 				$fileName = str_replace(PATH_site, '', $fileName);
 
-					// Modify image
+				// Modify image
 				if (!empty($settings) && !$tag) {
 					$info = $contentObject->getImgResource($fileName, $settings);
 					$result = (!empty($info[3]) ? $info[3] : $fileName);
@@ -145,7 +146,7 @@
 				$files[$key] = $result;
 			}
 
-				// Revert working directory
+			// Revert working directory
 			self::resetFrontendEnvironment();
 
 			return $files;
@@ -172,28 +173,28 @@
 			$w = (int) $w;
 			$h = (int) $h;
 
-				// Check if converting is allowed for this file type
+			// Check if converting is allowed for this file type
 			if (!self::isValidImageType($fileName)) {
 				return $fileName;
 			}
 
-				// Simulate working directory
+			// Simulate working directory
 			self::simulateFrontendEnvironment();
 
-				// Crop image
+			// Crop image
 			$graphicLibrary = self::getGraphicLibrary();
 			$image = $graphicLibrary->imageCreateFromFile($fileName);
 			$crop = imagecreatetruecolor($w, $h);
 			$graphicLibrary->imagecopyresized($crop, $image, 0, 0, $x, $y, $w, $h, $w, $h);
 			ImageDestroy($image);
 
-				// Write to temporary directory
-			$fileType = Tx_SpGallery_Utility_File::getFileType($fileName);
+			// Write to temporary directory
+			$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileName);
 			$tempName = $graphicLibrary->randomName() . '.' . $fileType;
 			$graphicLibrary->ImageWrite($crop, $tempName);
 			ImageDestroy($crop);
 
-				// Revert working directory
+			// Revert working directory
 			self::resetFrontendEnvironment();
 
 			return $tempName;
@@ -212,9 +213,9 @@
 			}
 
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$fileType = Tx_SpGallery_Utility_File::getFileType($fileName);
+			$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileName);
 
-			return t3lib_div::inList($allowedTypes, $fileType);
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTypes, $fileType);
 		}
 
 

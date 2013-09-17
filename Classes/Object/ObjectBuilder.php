@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Object;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,10 +27,11 @@
 	/**
 	 * Builder for domain objects
 	 */
-	class Tx_SpGallery_Object_ObjectBuilder implements t3lib_Singleton {
+	class ObjectBuilder implements \TYPO3\CMS\Core\SingletonInterface {
 
 		/**
-		 * @var Tx_Extbase_Reflection_Service
+		 * @var \TYPO3\CMS\Extbase\Reflection\ReflectionService
+		 * @inject
 		 */
 		protected $reflectionService;
 
@@ -45,39 +47,28 @@
 
 
 		/**
-		 * Injects the reflection service
-		 *
-		 * @param Tx_Extbase_Reflection_Service $reflectionService
-		 * @return void
-		 */
-		public function injectReflectionService(Tx_Extbase_Reflection_Service $reflectionService) {
-			$this->reflectionService = $reflectionService;
-		}
-
-
-		/**
 		 * Create an object from given class and attributes
 		 * 
 		 * @param string $className Name of the class
 		 * @param array $attributes Array of all class attributes
-		 * @return Tx_Extbase_DomainObject_DomainObjectInterface Stored object
+		 * @return \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface
 		 */
 		public function create($className, array $attributes) {
 			if (empty($className) || empty($attributes)) {
 				throw new Exception('No valid params given to create an object');
 			}
 
-				// Check internal cache first
+			// Check internal cache first
 			$identifier = md5($className . json_encode($attributes));
 			if (!empty($this->objects[$identifier])) {
 				return $this->objects[$identifier];
 			}
 
-				// Build object
+			// Build object
 			$object = new $className();
 			$object = $this->update($object, $attributes);
 
-				// Add object to internal cache
+			// Add object to internal cache
 			$this->objects[$identifier] = $object;
 
 			return $object;
@@ -87,15 +78,15 @@
 		/**
 		 * Update an object with given attributes
 		 * 
-		 * @param Tx_Extbase_DomainObject_DomainObjectInterface $object The object
+		 * @param \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $object The object
 		 * @param array $attributes Array of all class attributes
-		 * @return Tx_Extbase_DomainObject_DomainObjectInterface Stored object
+		 * @return \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface Stored object
 		 */
-		public function update(Tx_Extbase_DomainObject_DomainObjectInterface $object, array $attributes) {
+		public function update(\TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $object, array $attributes) {
 			$classSchema = $this->getClassSchema(get_class($object));
 
 			foreach ($attributes as $key => $value) {
-				$propertyName = t3lib_div::underscoredToLowerCamelCase($key);
+				$propertyName = \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToLowerCamelCase($key);
 				$protertyInfo = $classSchema->getProperty($propertyName);
 				if (empty($protertyInfo) || stripos($protertyInfo['type'], 'Tx_') === 0) {
 					continue;
@@ -115,7 +106,7 @@
 		 * Returns the schema of a class
 		 * 
 		 * @param string $className Name of the class
-		 * @return Tx_Extbase_Reflection_ClassSchema Class schema
+		 * @return \TYPO3\CMS\Extbase\Reflection\ClassSchema Class schema
 		 */
 		protected function getClassSchema($className) {
 			if (empty($className)) {

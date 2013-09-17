@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Domain\Model;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Gallery
 	 */
-	class Tx_SpGallery_Domain_Model_Gallery extends Tx_Extbase_DomainObject_AbstractEntity {
+	class Gallery extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 		/**
 		 * Name of the gallery
@@ -68,7 +69,7 @@
 		/**
 		 * Images
 		 *
-		 * @var Tx_Extbase_Persistence_ObjectStorage<Tx_SpGallery_Domain_Model_Image>
+		 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Speedprogs\SpGallery\Domain\Model\Image>
 		 * @lazy
 		 */
 		protected $images;
@@ -174,7 +175,7 @@
 
 
 		/**
-		 * @return Tx_Extbase_Persistence_ObjectStorage<Tx_SpGallery_Domain_Model_Image>
+		 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Speedprogs\SpGallery\Domain\Model\Image>
 		 */
 		public function getImages() {
 			return $this->images;
@@ -182,19 +183,19 @@
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Model_Image $image
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image
 		 * @return void
 		 */
-		public function addImage(Tx_SpGallery_Domain_Model_Image $image) {
+		public function addImage(\Speedprogs\SpGallery\Domain\Model\Image $image) {
 			$this->images->attach($image);
 		}
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Model_Image $tag
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $tag
 		 * @return void
 		 */
-		public function removeImage(Tx_SpGallery_Domain_Model_Image $image) {
+		public function removeImage(\Speedprogs\SpGallery\Domain\Model\Image $image) {
 			$this->images->detach($image);
 		}
 
@@ -208,7 +209,7 @@
 			$directory = $this->getImageDirectory();
 			if (!empty($directory)) {
 				$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-				$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
+				$files = \Speedprogs\SpGallery\Utility\File::getFiles($directory, TRUE, $allowedTypes);
 				$hash = md5(serialize($files));
 				$this->setImageDirectoryHash($hash);
 			}

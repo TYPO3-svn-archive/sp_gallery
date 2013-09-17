@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage persistence
 	 */
-	class Tx_SpGallery_Utility_Persistence {
+	class Persistence {
 
 		/**
 		 * @var string
@@ -41,17 +42,17 @@
 		 * @return array Ordering
 		 */
 		static public function getOrdering(array $settings) {
-				// Get order direction
-			$desc = Tx_Extbase_Persistence_QueryInterface::ORDER_DESCENDING;
-			$asc  = Tx_Extbase_Persistence_QueryInterface::ORDER_ASCENDING;
+			// Get order direction
+			$desc = \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING;
+			$asc  = \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING;
 			$direction = (!empty($settings['orderDirection']) ? $settings['orderDirection'] : 'asc');
 			$direction = ($direction === 'asc' ? $asc : $desc);
 
-				// Get order field
+			// Get order field
 			$orderBy = (!empty($settings['orderBy']) ? $settings['orderBy'] : 'crdate');
 			$orderBy = ($orderBy === 'directory' ? 'imageDirectory' : $orderBy);
 			$orderBy = (strtolower($orderBy) === 'filename' ? 'fileName' : $orderBy);
-			if (!t3lib_div::inList(self::$allowedOrderings, $orderBy)) {
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList(self::$allowedOrderings, $orderBy)) {
 				$orderBy = 'crdate';
 			}
 
@@ -62,21 +63,21 @@
 		/**
 		 * Order gallery objects by the sorting of the gallery selector in plugin
 		 *
-		 * @param Tx_Extbase_Persistence_QueryResult $galleries
+		 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $galleries
 		 * @return array
 		 */
-		static public function sortBySelector(Tx_Extbase_Persistence_QueryResult $objects, array $uids, $direction = 'asc') {
-				// Get order of the selected objects, skip folders
+		static public function sortBySelector(\TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $objects, array $uids, $direction = 'asc') {
+			// Get order of the selected objects, skip folders
 			if (empty($uids)) {
 				return (array) $objects;
 			}
 
-				// Order uids by configured direction
+			// Order uids by configured direction
 			if ($direction !== 'asc') {
 				$uids = array_reverse($uids);
 			}
 
-				// Sort galleries by the order of uids in select field
+			// Sort galleries by the order of uids in select field
 			$result = array_flip($uids);
 			foreach ($objects as $object) {
 				$result[$object->getUid()] = $object;
@@ -96,9 +97,8 @@
 			$ids = array(
 				'uids' => array(),
 				'pids' => array(),
-			);
-
-			$pages = t3lib_div::trimExplode(',', $pages);
+			);// pages_123
+			$pages = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $pages);
 			foreach($pages as $page) {
 				$id  = substr($page, strrpos($page, '_') + 1);
 				$key = 'uids';
@@ -122,9 +122,9 @@
 		static public function hasStoragePage($extensionKey, $modelName) {
 			$extensionName  = str_replace(' ', '', ucwords(str_replace('_', ' ', $extensionKey)));
 			$modelClassName = 'Tx_' . $extensionName . '_Domain_Model_' . ucfirst($modelName);
-			$extensionSetup = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_' . strtolower($extensionName) . '.persistence');
-			$extbaseSetup   = Tx_SpGallery_Utility_TypoScript::getSetup('config.tx_extbase.persistence');
-			$mergedSetup    = Tx_Extbase_Utility_Arrays::arrayMergeRecursiveOverrule($extbaseSetup, $extensionSetup, FALSE, FALSE);
+			$extensionSetup = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_' . strtolower($extensionName) . '.persistence');
+			$extbaseSetup   = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('config.tx_extbase.persistence');
+			$mergedSetup    = \TYPO3\CMS\Extbase\Utility\ArrayUtility::arrayMergeRecursiveOverrule($extbaseSetup, $extensionSetup, FALSE, FALSE);
 
 			if (!empty($mergedSetup['storagePid'])) {
 				return TRUE;

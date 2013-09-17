@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Task;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Process gallery image directories
 	 */
-	class Tx_SpGallery_Task_DirectoryObserver extends tx_scheduler_Task {
+	class DirectoryObserver extends \TYPO3\CMS\Scheduler\Task {
 
 		/**
 		 * @var integer
@@ -54,12 +55,12 @@
 		protected $settings = array();
 
 		/**
-		 * @var Tx_SpGallery_Persistence_Registry
+		 * @var \Speedprogs\SpGallery\Persistence\Registry
 		 */
 		protected $registry;
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryService
+		 * @var \Speedprogs\SpGallery\Service\GalleryService
 		 */
 		protected $galleryService;
 
@@ -70,19 +71,19 @@
 		 * @return void
 		 */
 		protected function initializeTask() {
-			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Extbase_Object_ObjectManager');
 
-				// Load plugin settings
-			$setup = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery');
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($setup['settings.'], FALSE);
+			// Load plugin settings
+			$setup = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery');
+			$this->settings = \Speedprogs\SpGallery\Utility\TypoScript::parse($setup['settings.'], FALSE);
 			$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 			$configurationManager->setConfiguration($setup);
 
-				// Load required objects
+			// Load required objects
 			$this->registry = $objectManager->get('Tx_SpGallery_Persistence_Registry');
 			$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
 
-				// Set new storagePid for persistence handling
+			// Set new storagePid for persistence handling
 			if (!empty($this->storagePid)) {
 				$this->galleryService->setStoragePid($this->storagePid);
 			}
@@ -95,19 +96,19 @@
 		 * @return boolean TRUE if success
 		 */
 		public function execute() {
-				// Get attributes
+			// Get attributes
 			$limit  = (int) $this->elementsPerRun;
 			$offset = (int) $this->registry->get('offset');
 			$names  = (bool) $this->generateNames;
 
-				// Process galleries
+			// Process galleries
 			$modified = $this->galleryService->processAll($names, $offset, $limit);
 
-				// Store new offset to registry
+			// Store new offset to registry
 			$offset = ($modified ? $offset + $limit : 0);
 			$this->registry->add('offset', $offset);
 
-				// Clear page cache
+			// Clear page cache
 			if ($modified && !empty($this->clearCachePages)) {
 				$this->clearPageCache($this->clearCachePages);
 			}
@@ -124,8 +125,8 @@
 		 */
 		protected function clearPageCache($pages) {
 			if (!empty($pages)) {
-				$pages = t3lib_div::intExplode(',', $pages, TRUE);
-				Tx_Extbase_Utility_Cache::clearPageCache($pages);
+				$pages = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $pages, TRUE);
+				\TYPO3\CMS\Extbase\Service\CacheService::clearPageCache($pages);
 			}
 		}
 
@@ -136,7 +137,7 @@
 		 * @return string
 		 */
 		public function getAdditionalInformation() {
-				// Load offset and limit
+			// Load offset and limit
 			$offset = (int) $this->registry->get('offset');
 			$limit = (int) $this->elementsPerRun;
 			$pid = (int) $this->storagePid;

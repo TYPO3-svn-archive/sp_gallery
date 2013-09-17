@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Raw view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_RawViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	class RawViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 		/**
 		 * Disable the escaping interceptor

@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Utility;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Utility to manage and convert Typoscript Code
 	 */
-	class Tx_SpGallery_Utility_TypoScript {
+	class TypoScript {
 
 		/**
 		 * @var object
@@ -39,7 +40,7 @@
 		static protected $contentObject;
 
 		/**
-		 * @var Tx_Extbase_Configuration_ConfigurationManager
+		 * @var \TYPO3\CMS\Extbase\ConfigurationManager
 		 */
 		static protected $configurationManager;
 
@@ -55,20 +56,20 @@
 		 * @return void
 		 */
 		static protected function initialize() {
-				// Get configuration manager
-			$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
+			// Get configuration manager
+			$objectManager = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('Tx_Extbase_Object_ObjectManager');
 			self::$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 
-				// Simulate Frontend
+			// Simulate Frontend
 			if (TYPO3_MODE != 'FE') {
 				self::simulateFrontend();
 				self::$configurationManager->setContentObject($GLOBALS['TSFE']->cObj);
 			}
 
-				// Get content object
+			// Get content object
 			self::$contentObject = self::$configurationManager->getContentObject();
 			if (empty(self::$contentObject)) {
-				self::$contentObject = t3lib_div::makeInstance('tslib_cObj');
+				self::$contentObject = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('tslib_cObj');
 			}
 		}
 
@@ -80,30 +81,30 @@
 		 * @return void
 		 */
 		static public function simulateFrontend(tslib_cObj $cObj = NULL) {
-				// Make backup of current frontend
+			// Make backup of current frontend
 			self::$frontend = (!empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : NULL);
 
-				// Create new frontend instance
+			// Create new frontend instance
 			$GLOBALS['TSFE'] = new stdClass();
 			$GLOBALS['TSFE']->cObjectDepthCounter = 100;
-			$GLOBALS['TSFE']->cObj = (!empty($cObj) ? $cObj: t3lib_div::makeInstance('tslib_cObj'));
+			$GLOBALS['TSFE']->cObj = (!empty($cObj) ? $cObj: \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('tslib_cObj'));
 
 			if (empty($GLOBALS['TSFE']->sys_page)) {
-				$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
+				$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance('t3lib_pageSelect');
 			}
 
 			if (empty($GLOBALS['TT'])) {
-				$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
+				$GLOBALS['TT'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TimeTrackNull');
 			}
 
 			if (empty($GLOBALS['TSFE']->tmpl)) {
-				$GLOBALS['TSFE']->tmpl = t3lib_div::makeInstance('t3lib_TStemplate');
+				$GLOBALS['TSFE']->tmpl = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TStemplate');
 				$GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 				$GLOBALS['TSFE']->tmpl->init();
 			}
 
 			if (empty($GLOBALS['TSFE']->config)) {
-				$GLOBALS['TSFE']->config = t3lib_div::removeDotsFromTS(self::getSetup());
+				$GLOBALS['TSFE']->config = \TYPO3\CMS\Core\Utility\GeneralUtility::removeDotsFromTS(self::getSetup());
 			}
 		}
 
@@ -136,7 +137,7 @@
 
 			if (empty($setup)) {
 				$setup = self::$configurationManager->getConfiguration(
-					Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+					\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
 				);
 			}
 			if (empty($typoScriptPath)) {
@@ -192,12 +193,12 @@
 				self::initialize();
 			}
 
-				// Convert to classic TypoScript array
+			// Convert to classic TypoScript array
 			if ($isPlain) {
-				$configuration = Tx_Extbase_Utility_TypoScript::convertPlainArrayToTypoScriptArray($configuration);
+				$configuration = \TYPO3\CMS\Extbase\Service\TypoScriptService::convertPlainArrayToTypoScriptArray($configuration);
 			}
 
-				// Parse configuration
+			// Parse configuration
 			return self::parseTypoScriptArray($configuration);
 		}
 

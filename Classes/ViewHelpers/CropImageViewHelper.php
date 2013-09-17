@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Crop image view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_CropImageViewHelper extends Tx_SpGallery_ViewHelpers_AbstractTemplateBasedViewHelper {
+	class CropImageViewHelper extends \Speedprogs\SpGallery\ViewHelpers\AbstractTemplateBasedViewHelper {
 
 		/**
 		 * @var string
@@ -52,11 +53,11 @@
 				$image = $this->renderChildren();
 			}
 
-			if (!$image instanceof Tx_SpGallery_Domain_Model_Image) {
+			if (!$image instanceof \Speedprogs\SpGallery\Domain\Model\Image) {
 				throw new Exception('No valid image given to render');
 			}
 
-				// Escape options
+			// Escape options
 			$options = array();
 			if (!empty($this->settings['jcrop'])) {
 				foreach ($this->settings['jcrop'] as $key => $option) {
@@ -73,18 +74,18 @@
 		/**
 		 * Renders the Javascript template as described in TypoScript
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image The image
 		 * @param string $elementId The id of the DIV container in HTML template
 		 * @param string $formId ID of the form to set coordinates
 		 * @param array $options Javascript options for the jcrop plugin
 		 * @return string Rendered content
 		 */
-		protected function renderTemplate(Tx_SpGallery_Domain_Model_Image $image, $elementId, $formId, array $options) {
-				// Get settings
+		protected function renderTemplate(\Speedprogs\SpGallery\Domain\Model\Image $image, $elementId, $formId, array $options) {
+			// Get settings
 			$extensionKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 			$templateFile = $this->getTemplatePathAndFilename();
 
-				// Assign variables to template
+			// Assign variables to template
 			$variables = array(
 				'elementId' => $elementId,
 				'formId'    => $formId,
@@ -93,8 +94,8 @@
 				'settings'  => $this->settings,
 			);
 
-				// Render template
-			$content = Tx_SpGallery_Utility_Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
+			// Render template
+			$content = \Speedprogs\SpGallery\Utility\Template::render($extensionKey, $templateFile, $variables, $this->layoutRootPath, $this->patialRootPath);
 			return str_replace('|', $content, $this->tag);
 		}
 

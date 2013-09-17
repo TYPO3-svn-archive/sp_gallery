@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Hook;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * TCA helper class
 	 */
-	class Tx_SpGallery_Hook_Tca implements t3lib_Singleton {
+	class Tca implements \TYPO3\CMS\Core\SingletonInterface {
 
 		/**
 		 * Render message for emtpy images tab
@@ -40,11 +41,11 @@
 				return '';
 			}
 
-			$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
+			$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
 			$message = $setup['fieldConf']['config']['labels']['message_disabled'];
 
-				// Check if scheduler task is running
-			if (t3lib_extMgm::isLoaded('scheduler')) {
+			// Check if scheduler task is running
+			if (\TYPO3\CMS\Core\Utility\GeneralUtility\ExtensionManagementUtility::isLoaded('scheduler')) {
 				$table = 'tx_scheduler_task';
 				$where = 'disable=0 AND classname="Tx_SpGallery_Task_DirectoryObserver" AND lastexecution_time > 0';
 				if ($GLOBALS['TYPO3_DB']->exec_SELECTcountRows('1', $table, $where)) {
@@ -52,14 +53,14 @@
 				}
 			}
 
-				// Check if generate by saving is active
+			// Check if generate by saving is active
 			if (!empty($configuration['generateWhenSaving'])) {
 				$message = $setup['fieldConf']['config']['labels']['message_saving'];
 			}
 
 			$content = '<div style="padding: 0 0 18px 0;">' . $GLOBALS['LANG']->sL($message) . '</div>';
 
-				// Hook to modify the content
+			// Hook to modify the content
 			$this->callHook('renderEmptyImagesMessage', array(
 				'parent'   => &$parent,
 				'content'  => &$content,
@@ -83,15 +84,15 @@
 				return '';
 			}
 
-				// Get labels
+			// Get labels
 			$labels = array();
 			foreach ($setup['fieldConf']['config']['labels'] as $field => $label) {
 				$labels[$field] = $GLOBALS['LANG']->sL($label);
 			}
 
-				// Get content
+			// Get content
 			$fileName = basename($setup['row']['file_name']);
-			$fileSize = t3lib_div::formatSize($setup['row']['file_size'], 'B|KB|MB|GB');
+			$fileSize = \TYPO3\CMS\Core\Utility\GeneralUtility::formatSize($setup['row']['file_size'], 'B|KB|MB|GB');
 			$fileType = strtoupper($setup['row']['file_type']);
 
 			$content = '
@@ -104,7 +105,7 @@
 				</table>
 			';
 
-				// Hook to modify the content
+			// Hook to modify the content
 			$this->callHook('renderImageInformation', array(
 				'parent'  => &$parent,
 				'content' => &$content,
@@ -130,7 +131,7 @@
 			}
 			if (is_array($hookClasses)) {
 				foreach ($hookClasses as $class) {
-					t3lib_div::callUserFunction($class, $parameters, $this);
+					\TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($class, $parameters, $this);
 				}
 			}
 		}

@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Domain\Repository;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -27,7 +28,7 @@
 	/**
 	 * Abstract repository
 	 */
-	abstract class Tx_SpGallery_Domain_Repository_AbstractRepository extends Tx_Extbase_Persistence_Repository {
+	abstract class AbstractRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 		/**
 		 * Returns a query for objects of this repository
@@ -35,7 +36,7 @@
 		 * @param string $offset Offset to start with
 		 * @param string $limit Limit of the results
 		 * @param array $ordering Ordering <-> Direction
-		 * @return Tx_Extbase_Persistence_QueryInterface
+		 * @return \TYPO3\CMS\Extbase\Persistence\QueryInterface
 		 */
 		public function createQuery($offset = NULL, $limit = NULL, array $ordering = NULL) {
 			$query = parent::createQuery();
@@ -64,7 +65,7 @@
 		 * @param string $offset Offset to start with
 		 * @param string $count Count of results
 		 * @param array $ordering Ordering <-> Direction
-		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 		 */
 		public function findAll($offset = NULL, $limit = NULL, array $ordering = NULL) {
 			$query = $this->createQuery($offset, $limit, $ordering);
@@ -81,15 +82,15 @@
 		 * @param string $offset Offset to start with
 		 * @param string $limit Limit of the results
 		 * @param array $ordering Ordering <-> Direction
-		 * @return Tx_Extbase_Persistence_QueryResultInterface
+		 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 		 */
 		public function findByUidsAndPids(array $uids, array $pids, $offset = NULL, $limit = NULL, array $ordering = NULL) {
 			$query = $this->createQuery($offset, $limit, $ordering);
 
-				// Disable default storage page handling
+			// Disable default storage page handling
 			$query->getQuerySettings()->setRespectStoragePage(FALSE);
 
-				// UIDs and PIDs
+			// UIDs and PIDs
 			if (!empty($uids) && !empty($pids)) {
 				$query->matching($query->logicalOr(
 					$query->in('uid', $uids),

@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Task;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Additional field provider for the Directory Observer
 	 */
-	class Tx_SpGallery_Task_DirectoryObserverAdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
+	class DirectoryObserverAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
 
 		/**
 		 * @var array

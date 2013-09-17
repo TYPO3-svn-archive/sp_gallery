@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Service;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,30 +27,35 @@
 	/**
 	 * Service for image galleries
 	 */
-	class Tx_SpGallery_Service_GalleryService implements t3lib_Singleton {
+	class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_GalleryRepository
+		 * @var \Speedprogs\SpGallery\Domain\Repository\GalleryRepository
+		 * @inject
 		 */
 		protected $galleryRepository;
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 * @var \Speedprogs\SpGallery\Domain\Repository\ImageRepository 
+		 * @inject
 		 */
 		protected $imageRepository;
 
 		/**
-		 * @var Tx_Extbase_Persistence_Manager
+		 * @var \TYPO3\CMS\Extbase\Persistence\Generic
+		 * @inject
 		 */
 		protected $persistenceManager;
 
 		/**
-		 * @var Tx_SpGallery_Object_ObjectBuilder
+		 * @var \Speedprogs\SpGallery\Object\ObjectBuilder
+		 * @inject
 		 */
 		protected $objectBuilder;
 
 		/**
-		 * @var Tx_Extbase_Configuration_ConfigurationManager
+		 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
+		 * @inject
 		 */
 		protected $configurationManager;
 
@@ -57,59 +63,6 @@
 		 * @var array
 		 */
 		protected $settings = array();
-
-
-		/**
-		 * @param Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository
-		 * @return void
-		 */
-		public function injectGalleryRepository(Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository) {
-			$this->galleryRepository = $galleryRepository;
-		}
-
-
-		/**
-		 * @param Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository
-		 * @return void
-		 */
-		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
-			$this->imageRepository = $imageRepository;
-		}
-
-
-		/**
-		 * @param Tx_Extbase_Persistence_Manager $persistenceManager
-		 * @return void
-		 */
-		public function injectPersistenceManager(Tx_Extbase_Persistence_Manager $persistenceManager) {
-			$this->persistenceManager = $persistenceManager;
-		}
-
-
-		/**
-		 * @param Tx_SpGallery_Object_ObjectBuilder $objectBuilder
-		 * @return void
-		 */
-		public function injectObjectBuilder(Tx_SpGallery_Object_ObjectBuilder $objectBuilder) {
-			$this->objectBuilder = $objectBuilder;
-		}
-
-
-		/**
-		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
-		 * @return void
-		 */
-		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
-			$this->configurationManager = $configurationManager;
-			$settings = $this->configurationManager->getConfiguration(
-				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_SETTINGS
-			);
-			if (!is_array($settings)) {
-				throw new Exception('Can not load settings for current plugin');
-			}
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($settings);
-		}
-
 
 		/**
 		 * Set storagePid for persisting objects
@@ -119,9 +72,9 @@
 		 */
 		public function setStoragePid($storagePid) {
 			$setup = $this->configurationManager->getConfiguration(
-				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
+				$this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK
 			);
-			$setup = Tx_Extbase_Utility_TypoScript::convertPlainArrayToTypoScriptArray($setup);
+			$setup = \TYPO3\CMS\Extbase\Service\TypoScriptService::convertPlainArrayToTypoScriptArray($setup);
 			$setup['persistence.']['storagePid'] = (int) $storagePid;
 			$this->configurationManager->setConfiguration($setup);
 		}
@@ -159,7 +112,7 @@
 		public function processAll($generateNames = FALSE, $offset = NULL, $limit = NULL) {
 			$modified = FALSE;
 
-				// Process all galleries
+			// Process all galleries
 			$galleries = $this->galleryRepository->findAll($offset, $limit);
 			foreach ($galleries as $gallery) {
 				$result = $this->process($gallery, $generateNames);
@@ -175,32 +128,32 @@
 		/**
 		 * Find changes in gallery and generate images
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @param boolean $generateNames Generate image names from file names
 		 * @return boolean TRUE if gallery was modified
 		 */
-		public function process(Tx_SpGallery_Domain_Model_Gallery $gallery, $generateNames = FALSE) {
+		public function process(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, $generateNames = FALSE) {
 			$directory = $gallery->getImageDirectory();
 			$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-			$files = Tx_SpGallery_Utility_File::getFiles($directory, TRUE, $allowedTypes);
+			$files = \Speedprogs\SpGallery\Utility\File::getFiles($directory, TRUE, $allowedTypes);
 			$hash = $this->buildHash($files);
 
 			if ($hash !== $gallery->getImageDirectoryHash()) {
-					// Generate image files
-				$imageFiles = Tx_SpGallery_Utility_Image::generate($files, $this->settings);
+				// Generate image files
+				$imageFiles = \Speedprogs\SpGallery\Utility\Image::generate($files, $this->settings);
 				$imageFiles = array_intersect_key($files, $imageFiles);
 				$imageFiles = array_unique($imageFiles);
 
-					// Remove old images
+				// Remove old images
 				$this->removeOldImages($gallery);
 
-					// Remove images without file
+				// Remove images without file
 				$this->removeDeletedImages($gallery, $imageFiles);
 
-					// Create images from new files
+				// Create images from new files
 				$this->createNewImages($gallery, $imageFiles, $generateNames);
 
-					// Set new directory
+				// Set new directory
 				$gallery->setImageDirectoryHash($hash);
 				$gallery->setLastImageDirectory($directory);
 				$this->persistenceManager->persistAll();
@@ -215,18 +168,18 @@
 		/**
 		 * Remove image records without file
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @param array $files Image files
 		 * @return void
 		 */
-		public function removeDeletedImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files) {
+		public function removeDeletedImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, array $files) {
 			if (empty($files)) {
 				return;
 			}
 
 			$modified = FALSE;
 
-				// Find records with deleted image file
+			// Find records with deleted image file
 			$images = $this->imageRepository->findByGallery($gallery);
 			foreach ($images as $image) {
 				$fileName = PATH_site . $image->getFileName();
@@ -247,23 +200,23 @@
 		/**
 		 * Remove all gallery images from old path
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @return void
 		 */
-		public function removeOldImages(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+		public function removeOldImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery) {
 			$directory = $gallery->getLastImageDirectory();
 			if (empty($directory)) {
 				return;
 			}
 
-				// Directory has not changed
+			// Directory has not changed
 			if ($directory === $gallery->getImageDirectory()) {
 				return;
 			}
 
 			$modified = FALSE;
 
-				// Find records with old image directory
+			// Find records with old image directory
 			$images = $this->imageRepository->findByGallery($gallery);
 			foreach ($images as $image) {
 				$fileName = $image->getFileName();
@@ -282,23 +235,23 @@
 		/**
 		 * Create image records from new files
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
 		 * @param array $files Image files
 		 * @param boolean $generateName Generate image name from file name
 		 * @return void
 		 */
-		public function createNewImages(Tx_SpGallery_Domain_Model_Gallery $gallery, array $files, $generateName = FALSE) {
+		public function createNewImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, array $files, $generateName = FALSE) {
 			if (empty($files)) {
 				return;
 			}
 
 			$modified = FALSE;
 
-				// Generate image records
+			// Generate image records
 			foreach ($files as $key => $file) {
 				$fileName = str_replace(PATH_site, '', $file);
 
-					// Search for an existing image or create new
+				// Search for an existing image or create new
 				$image = $this->imageRepository->findOneByGalleryAndFileName($gallery, $fileName);
 				if (!empty($image)) {
 					$image->setDeleted(FALSE);
@@ -310,13 +263,13 @@
 					$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
 				}
 
-					// Generate file information
+				// Generate file information
 				$image->generateImageInformation();
 				if ($generateName) {
 					$image->generateImageName();
 				}
 
-					// Complete gallery
+				// Complete gallery
 				$this->imageRepository->add($image);
 				$gallery->addImage($image);
 				$modified = TRUE;
@@ -335,10 +288,10 @@
 		 * @return string The hash
 		 */
 		protected function buildHash(array $files) {
-				// Add file names
+			// Add file names
 			$text = serialize($files);
 
-				// Add image configuration
+			// Add image configuration
 			$imageSizes = array('teaser', 'thumb', 'small', 'large');
 			foreach ($imageSizes as $size) {
 				if (!empty($this->settings[$size . 'Image'])) {
@@ -346,8 +299,8 @@
 				}
 			}
 
-				// Add extension configuration
-			$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
+			// Add extension configuration
+			$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
 			$text .= (!empty($configuration['generateWhenSaving']) ? 'true' : 'false');
 
 			return md5($text);

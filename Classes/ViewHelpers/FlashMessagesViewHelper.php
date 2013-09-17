@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Flash message view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_FlashMessagesViewHelper extends Tx_Fluid_ViewHelpers_FlashMessagesViewHelper {
+	class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper {
 
 		/**
 		 * @var array The message severity class names

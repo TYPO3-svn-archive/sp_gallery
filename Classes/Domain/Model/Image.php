@@ -1,4 +1,5 @@
 <?php
+namespace \Speedprogs\SpGallery\Domain\Model;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Image
 	 */
-	class Tx_SpGallery_Domain_Model_Image extends Tx_Extbase_DomainObject_AbstractEntity {
+	class Image extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 		/**
 		 * Deleted state
@@ -94,7 +95,7 @@
 		/**
 		 * The gallary
 		 *
-		 * @var Tx_SpGallery_Domain_Model_Gallery
+		 * @var \Speedprogs\SpGallery\Domain\Model\Gallery
 		 */
 		protected $gallery;
 
@@ -253,16 +254,16 @@
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery
 		 * @return void
 		 */
-		public function setGallery(Tx_SpGallery_Domain_Model_Gallery $gallery) {
+		public function setGallery(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery) {
 			$this->gallery = $gallery;
 		}
 
 
 		/**
-		 * @return Tx_SpGallery_Domain_Model_Gallery
+		 * @return \Speedprogs\SpGallery\Domain\Model\Gallery
 		 */
 		public function getGallery() {
 			return $this->gallery;
@@ -277,7 +278,7 @@
 		public function generateImageInformation() {
 			$fileName = $this->getFileName();
 			if (!empty($fileName)) {
-				$imageInfo = Tx_SpGallery_Utility_File::getImageInfo($fileName);
+				$imageInfo = \Speedprogs\SpGallery\Utility\File::getImageInfo($fileName);
 				$this->setFileSize($imageInfo['size']);
 				$this->setFileType($imageInfo['type']);
 				$this->setImageHeight($imageInfo['height']);

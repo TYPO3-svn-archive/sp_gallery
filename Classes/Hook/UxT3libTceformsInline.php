@@ -49,18 +49,18 @@
 		 * @return	string		The HTML code of the header
 		 */
 		public function renderForeignRecordHeader($parentUid, $foreign_table, $rec, $config, $isVirtualRecord = FALSE) {
-				// Init:
+			// Init:
 			$objectId = $this->inlineNames['object'] . self::Structure_Separator . $foreign_table . self::Structure_Separator . $rec['uid'];
 			$expandSingle = $config['appearance']['expandSingle'] ? 1 : 0;
-				// we need the returnUrl of the main script when loading the fields via AJAX-call (to correct wizard code, so include it as 3rd parameter)
+			// we need the returnUrl of the main script when loading the fields via AJAX-call (to correct wizard code, so include it as 3rd parameter)
 			$onClick = "return inline.expandCollapseRecord('" . htmlspecialchars($objectId) . "', $expandSingle, '" . rawurlencode(t3lib_div::getIndpEnv('REQUEST_URI')) . "')";
 
-				// Pre-Processing:
+			// Pre-Processing:
 			$isOnSymmetricSide = t3lib_loadDBGroup::isOnSymmetricSide($parentUid, $config, $rec);
 			$hasForeignLabel = !$isOnSymmetricSide && $config['foreign_label'] ? TRUE : FALSE;
 			$hasSymmetricLabel = $isOnSymmetricSide && $config['symmetric_label'] ? TRUE : FALSE;
-				// Get the record title/label for a record:
-				// render using a self-defined user function
+			// Get the record title/label for a record:
+			// render using a self-defined user function
 			if ($GLOBALS['TCA'][$foreign_table]['ctrl']['label_userFunc']) {
 				$params = array(
 					'table' => $foreign_table,
@@ -72,19 +72,19 @@
 						'config' => $config,
 					),
 				);
-				$null = NULL; // callUserFunction requires a third parameter, but we don't want to give $this as reference!
+				$null = NULL;// callUserFunction requires a third parameter, but we don't want to give $this as reference!
 				t3lib_div::callUserFunction($GLOBALS['TCA'][$foreign_table]['ctrl']['label_userFunc'], $params, $null);
 				$recTitle = $params['title'];
-					// render the special alternative title
+				// render the special alternative title
 			} elseif ($hasForeignLabel || $hasSymmetricLabel) {
 				$titleCol = $hasForeignLabel ? $config['foreign_label'] : $config['symmetric_label'];
 				$foreignConfig = $this->getPossibleRecordsSelectorConfig($config, $titleCol);
-					// Render title for everything else than group/db:
+				// Render title for everything else than group/db:
 				if ($foreignConfig['type'] != 'groupdb') {
 					$recTitle = t3lib_BEfunc::getProcessedValueExtra($foreign_table, $titleCol, $rec[$titleCol], 0, 0, FALSE);
-						// Render title for group/db:
+					// Render title for group/db:
 				} else {
-						// $recTitle could be something like: "tx_table_123|...",
+					// $recTitle could be something like: "tx_table_123|...",
 					$valueParts = t3lib_div::trimExplode('|', $rec[$titleCol]);
 					$itemParts = t3lib_div::revExplode('_', $valueParts[0], 2);
 					$recTemp = t3lib_befunc::getRecordWSOL($itemParts[0], $itemParts[1]);
@@ -94,7 +94,7 @@
 				if (!strcmp(trim($recTitle), '')) {
 					$recTitle = t3lib_BEfunc::getNoRecordTitle(TRUE);
 				}
-					// render the standard
+				// render the standard
 			} else {
 				$recTitle = t3lib_BEfunc::getRecordTitle($foreign_table, $rec, TRUE);
 			}
@@ -102,7 +102,7 @@
 			$altText = t3lib_BEfunc::getRecordIconAltText($rec, $foreign_table);
 			$iconImg = t3lib_iconWorks::getSpriteIconForRecord($foreign_table, $rec, array('title' => htmlspecialchars($altText), 'id' => $objectId . '_icon'));
 
-				// Use thumbnail instead of sprite icon in header
+			// Use thumbnail instead of sprite icon in header
 			if (!empty($config['appearance']['renderItemImage']) && !empty($config['itemImage'])) {
 				$iconImg = $this->getHeaderImage($foreign_table, $rec, $config['itemImage'], $altText);
 			}
@@ -115,7 +115,7 @@
 
 			$ctrl = $this->renderForeignRecordHeaderControl($parentUid, $foreign_table, $rec, $config, $isVirtualRecord);
 
-				// @TODO: Check the table wrapping and the CSS definitions
+			// @TODO: Check the table wrapping and the CSS definitions
 			$header =
 					'<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-right: ' . $this->inlineStyles['margin-right'] . 'px;"' .
 					($this->fObj->borderStyle[2] ? ' background="' . htmlspecialchars($this->backPath . $this->fObj->borderStyle[2]) . '"' : '') .
@@ -140,26 +140,26 @@
 				return '';
 			}
 
-				// Add the stylesheet
+			// Add the stylesheet
 			$this->addGalleryStyles();
 
-				// Get image filename
+			// Get image filename
 			$filename = $record[$configuration['foreign_field']];
 			unset($configuration['foreign_field']);
 
-				// Check if file exists
+			// Check if file exists
 			if (!(@file_exists(PATH_site . $filename))) {
 				$filename = $this->gallerySettings['emptyImage'];
 			}
 
-				// Convert image
+			// Convert image
 			$result = Tx_SpGallery_Utility_Image::convert(array($filename), $configuration, FALSE);
 			$filename = reset($result);
 
 			$filename = t3lib_div::resolveBackPath($this->backPath . '../' . $filename);
 			$image = '<img src="' . htmlspecialchars($filename) . '" alt="' . htmlspecialchars($altText) . '" />';
 
-				// Image is hidden
+			// Image is hidden
 			if (!empty($record['hidden'])) {
 				$image .= '<span class="gallery-image-hidden">' . t3lib_iconWorks::getSpriteIcon('extensions-spgallery-hidden') . '</span>';
 			}
@@ -178,19 +178,19 @@
 				return;
 			}
 
-				// Load TypoScript settings (required for the image generation)
+			// Load TypoScript settings (required for the image generation)
 			$pid = Tx_SpGallery_Utility_Backend::getPageId();
 			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery.settings.backend');
 			$this->gallerySettings = Tx_SpGallery_Utility_TypoScript::parse($this->gallerySettings, FALSE);
 
-				// Add stylesheet file
+			// Add stylesheet file
 			if (!empty($this->gallerySettings['stylesheet'])) {
 				$stylesheet = t3lib_div::getFileAbsFilename($this->gallerySettings['stylesheet']);
 				$stylesheet = t3lib_div::resolveBackPath(str_replace(PATH_site, $this->backPath . '../', $stylesheet));
 				$GLOBALS['SOBE']->doc->getPageRenderer()->addCssFile($stylesheet);
 			}
 
-				// Get empty image file
+			// Get empty image file
 			$emptyImage = 'EXT:sp_gallery/Resources/Public/Images/Empty.png';
 			if (!empty($this->gallerySettings['emptyImage'])) {
 				$emptyImage = $this->gallerySettings['emptyImage'];

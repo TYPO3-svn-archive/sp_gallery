@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Teaser images view helper
 	 */
-	class Tx_SpGallery_ViewHelpers_TeaserImagesViewHelper extends Tx_SpGallery_ViewHelpers_AbstractGalleryViewHelper {
+	class TeaserImagesViewHelper extends AbstractGalleryViewHelper {
 
 		/**
 		 * Renders the teaser images of a gallery
@@ -37,7 +38,7 @@
 		 * @return string Rendered output
 		 */
 		public function render($gallery, $index = 'uid', $element = 'image') {
-				// Get images
+			// Get images
 			$imageCount = 5;
 			if (!empty($this->settings['teaserImageCount'])) {
 				$imageCount = (int) $this->settings['teaserImageCount'];
@@ -47,7 +48,7 @@
 			}
 			$images = $this->getGalleryImages($gallery, 'teaser', FALSE, $imageCount);
 
-				// Render content
+			// Render content
 			$content = '';
 			foreach ($images as $uid => $image) {
 				$this->templateVariableContainer->add($index, $uid);

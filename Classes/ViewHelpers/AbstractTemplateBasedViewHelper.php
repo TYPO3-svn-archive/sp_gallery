@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\ViewHelpers;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,10 +27,17 @@
 	/**
 	 * Abstract view helper
 	 */
-	abstract class Tx_SpGallery_ViewHelpers_AbstractTemplateBasedViewHelper extends Tx_Fluid_Core_ViewHelper_AbstractViewHelper {
+	abstract class AbstractTemplateBasedViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 		/**
-		 * @var Tx_Extbase_Object_ObjectManager
+		 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+		 * @inject
+		 */
+		protected $objectManager;
+
+		/**
+		 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
+		 * @inject
 		 */
 		protected $objectManager;
 
@@ -60,35 +68,13 @@
 
 
 		/**
-		 * @param Tx_Extbase_Configuration_ConfigurationManager $configurationManager
-		 * @return void
-		 */
-		public function injectConfigurationManager(Tx_Extbase_Configuration_ConfigurationManager $configurationManager) {
-			$this->settings = $configurationManager->getConfiguration(Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-			if (empty($this->settings)) {
-				throw new Exception('No configuration found for gallery view helper');
-			}
-			$this->settings = Tx_SpGallery_Utility_TypoScript::parse($this->settings);
-		}
-
-
-		/**
-		 * @param Tx_Extbase_Object_ObjectManager $objectManager
-		 * @return void
-		 */
-		public function injectObjectManager(Tx_Extbase_Object_ObjectManager $objectManager) {
-			$this->objectManager = $objectManager;
-		}
-
-
-		/**
 		 * Initializes the view helper before invoking the render method
 		 *
 		 * @return void
 		 */
 		public function initialize() {
-			$viewSettings = Tx_SpGallery_Utility_TypoScript::getSetup('plugin.tx_spgallery.view');
-			$viewSettings = Tx_SpGallery_Utility_TypoScript::parse($viewSettings);
+			$viewSettings = \Speedprogs\SpGallery\Utility\TypoScript::getSetup('plugin.tx_spgallery.view');
+			$viewSettings = \Speedprogs\SpGallery\Utility\TypoScript::parse($viewSettings);
 			if (!empty($viewSettings['layoutRootPath'])) {
 				$this->layoutRootPath = $viewSettings['layoutRootPath'];
 			}
@@ -124,29 +110,29 @@
 				return 'null';
 			}
 
-			$types = t3lib_div::trimExplode(',', $types, TRUE);
+			$types = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $types, TRUE);
 
-				// Null
+			// Null
 			if (in_array('null', $types) && $value === 'null') {
 				return $value;
 			}
 
-				// Boolean
+			// Boolean
 			if (in_array('boolean', $types) && is_numeric($value)) {
 				return (!empty($value) ? 'true' : 'false');
 			}
 
-				// Integer / double
+			// Integer / double
 			if (in_array('number', $types) && is_numeric($value)) {
 				return $value;
 			}
 
-				// Array
+			// Array
 			if (in_array('array', $types) && strpos($value, '[') !== FALSE) {
 				return $value;
 			}
 
-				// String
+			// String
 			if (in_array('string', $types)) {
 				return "'" . $value . "'";
 			}

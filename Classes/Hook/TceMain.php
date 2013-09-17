@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Hook;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -26,7 +27,7 @@
 	/**
 	 * Hooks for t3lib_tcemain.php
 	 */
-	class Tx_SpGallery_Hook_TceMain implements t3lib_Singleton {
+	class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 
 		/**
 		 * @var array
@@ -34,7 +35,7 @@
 		protected $configuration = array();
 
 		/**
-		 * @var Tx_SpGallery_Service_GalleryService
+		 * @var \Speedprogs\SpGallery\Service\GalleryService
 		 */
 		protected $galleryService = NULL;
 
@@ -45,7 +46,7 @@
 		 * @return void
 		 */
 		public function __construct() {
-			$this->configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration('sp_gallery');
+			$this->configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration('sp_gallery');
 		}
 
 
@@ -53,12 +54,12 @@
 		 * Return an instance of the gallery service
 		 *
 		 * @param integer $pid Current page id
-		 * @return Tx_SpGallery_Service_GalleryService
+		 * @return \Speedprogs\SpGallery\Service\GalleryService
 		 */
 		protected function getGalleryService($pid) {
 			if ($this->galleryService === NULL) {
-				$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_ObjectManager');
-				$setup = Tx_SpGallery_Utility_TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
+				$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Extbase_Object_ObjectManager');
+				$setup = \Speedprogs\SpGallery\Utility\TypoScript::getSetupForPid($pid, 'plugin.tx_spgallery');
 				$configurationManager = $objectManager->get('Tx_Extbase_Configuration_ConfigurationManager');
 				$configurationManager->setConfiguration($setup);
 				$this->galleryService = $objectManager->get('Tx_SpGallery_Service_GalleryService');
@@ -82,20 +83,20 @@
 				return;
 			}
 
-				// Check record type
+			// Check record type
 			if ($table !== 'tx_spgallery_domain_model_gallery') {
 				return;
 			}
 
-				// Return if no valid directory was found
+			// Return if no valid directory was found
 			if (!empty($fields['image_directory']) && !empty($fields['tstamp'])) {
-				$fileName = t3lib_div::getFileAbsFileName($fields['image_directory']);
-				if (!Tx_SpGallery_Utility_File::fileExists($fileName)) {
+				$fileName = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($fields['image_directory']);
+				if (!\Speedprogs\SpGallery\Utility\File::fileExists($fileName)) {
 					return;
 				}
 			}
 
-				// Get record uid
+			// Get record uid
 			if ($status === 'new') {
 				$uid = $parent->substNEWwithIDs[$uid];
 			}
@@ -103,12 +104,12 @@
 			$pid = (int) $parent->getPID($table, $uid);
 			$galleryService = $this->getGalleryService($pid);
 
-				// Set storagePid for new images to current pid
+			// Set storagePid for new images to current pid
 			if (!empty($pid)) {
 				$galleryService->setStoragePid($pid);
 			}
 
-				// Process gallery by uid
+			// Process gallery by uid
 			$generateNames = !empty($this->configuration['generateNameWhenSaving']);
 			$galleryService->processByUid($uid, $generateNames);
 		}

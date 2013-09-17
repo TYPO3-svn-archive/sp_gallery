@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Controller;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -22,24 +23,26 @@
 	 *
 	 *  This copyright notice MUST APPEAR in all copies of the script!
 	 ********************************************************************/
-
 	/**
 	 * Controller for the Gallery object
 	 */
-	class Tx_SpGallery_Controller_GalleryController extends Tx_SpGallery_Controller_AbstractController {
+	class GalleryController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractController {
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_GalleryRepository
+		 * @var \Speedprogs\SpGallery\Domain\Repository\GalleryRepository
+		 * @inject
 		 */
 		protected $galleryRepository;
 
 		/**
-		 * @var Tx_SpGallery_Domain_Repository_ImageRepository
+		 * @var \Speedprogs\SpGallery\Domain\Repository\ImageRepository
+		 * @inject
 		 */
 		protected $imageRepository;
 
 		/**
-		 * @var Tx_Extbase_Persistence_Manager
+		 * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+		 * @inject
 		 */
 		protected $persistenceManager;
 
@@ -55,42 +58,15 @@
 
 
 		/**
-		 * @param Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository
-		 * @return void
-		 */
-		public function injectGalleryRepository(Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository) {
-			$this->galleryRepository = $galleryRepository;
-		}
-
-
-		/**
-		 * @param Tx_SpGallery_Domain_Repository_GalleryRepository $galleryRepository
-		 * @return void
-		 */
-		public function injectImageRepository(Tx_SpGallery_Domain_Repository_ImageRepository $imageRepository) {
-			$this->imageRepository = $imageRepository;
-		}
-
-
-		/**
-		 * @param Tx_Extbase_Persistence_Manager $persistenceManager
-		 * @return void
-		 */
-		public function injectPersistenceManager(Tx_Extbase_Persistence_Manager $persistenceManager) {
-			$this->persistenceManager = $persistenceManager;
-		}
-
-
-		/**
 		 * Initialize the controller
 		 *
 		 * @return void
 		 */
 		protected function initializeController() {
-				// Get UIDs and PIDs of the configured galleries
+			// Get UIDs and PIDs of the configured galleries
 			$action = $this->request->getControllerActionName();
 			if ($action !== 'create' && $action !== 'update' && !empty($this->settings['pages'])) {
-				$this->ids = Tx_SpGallery_Utility_Persistence::getIds($this->settings['pages']);
+				$this->ids = \Speedprogs\SpGallery\Utility\Persistence::getIds($this->settings['pages']);
 			}
 		}
 
@@ -103,6 +79,7 @@
 		 * @return string The rendered view
 		 */
 		public function showAction($gallery = NULL, $image = NULL) {
+			print_r($this->settings);die("text");
 			if ($gallery === NULL) {
 				if (empty($this->ids['uids'][0])) {
 					$this->addMessage('no_gallery_defined');
@@ -110,12 +87,12 @@
 				$gallery = $this->ids['uids'][0];
 			}
 
-				// Load gallery from persistance
-			if (!$gallery instanceof Tx_SpGallery_Domain_Model_Gallery) {
+			// Load gallery from persistance
+			if (!$gallery instanceof \Speedprogs\SpGallery\Domain\Model\Gallery) {
 				$gallery = $this->galleryRepository->findByUid((int) $gallery);
 			}
 
-				// Set template variables
+			// Set template variables
 			$this->view->assign('gallery',  $gallery);
 			$this->view->assign('image',    $image);
 			$this->view->assign('settings', $this->settings);
@@ -130,6 +107,7 @@
 		 * @return void
 		 */
 		public function listAction() {
+			print_r($this->settings);die("text");
 			$this->view->assign('galleries',  $this->getGalleries());
 			$this->view->assign('settings',   $this->settings);
 			$this->view->assign('plugin',     $this->plugin);
@@ -143,6 +121,7 @@
 		 * @return void
 		 */
 		public function teaserAction() {
+			print_r($this->settings);die("text");
 			$this->showAction();
 			$this->view->assign('singlePage', $this->getPageId('singlePage'));
 		}
@@ -161,13 +140,13 @@
 		/**
 		 * Display a form to create a new image
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $newImage New image object
 		 * @param array $coordinates The image size and position
 		 * @return void
 		 * @dontvalidate $newImage
 		 * @dontvalidate $coordinates
 		 */
-		public function newAction(Tx_SpGallery_Domain_Model_Image $newImage = NULL, $coordinates = NULL) {
+		public function newAction(\Speedprogs\SpGallery\Domain\Model\Image $newImage = NULL, $coordinates = NULL) {
 			$galleries = $this->getGalleries();
 			$this->view->assign('galleries', $galleries);
 			$this->view->assign('enableSelect', count($galleries) > 1);
@@ -179,24 +158,24 @@
 		/**
 		 * Create a new image and forwards to defined redirect page
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage New image object
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $newImage New image object
 		 * @param array $coordinates The image size and position
 		 * @return void
 		 * @dontvalidate $coordinates
 		 */
-		public function createAction(Tx_SpGallery_Domain_Model_Image $newImage, $coordinates = NULL) {
-				// Get gallery for new images
+		public function createAction(\Speedprogs\SpGallery\Domain\Model\Image $newImage, $coordinates = NULL) {
+		// Get gallery for new images
 			$gallery = $newImage->getGallery();
 			if (empty($gallery)) {
 				$this->forwardWithMessage('gallery_not_found', 'new');
 			}
 
-				// Get arguments from request
+		// Get arguments from request
 			$arguments = $this->request->getArguments();
 			$fileName = $newImage->getFileName();
-			$fileInfo = Tx_SpGallery_Utility_File::getFileInfo('tx_spgallery_gallery.uploadFile');
+			$fileInfo = \Speedprogs\SpGallery\Utility\File::getFileInfo('tx_spgallery_gallery.uploadFile');
 
-				// Upload image to temp directory and go back to preview
+			// Upload image to temp directory and go back to preview
 			if (!empty($fileInfo['tmp_name']) && $this->isValidImage($fileInfo)) {
 				$fileName = $this->uploadImage($gallery, $newImage, $fileInfo);
 				$arguments['newImage']['fileName'] = $fileName;
@@ -206,7 +185,7 @@
 				$this->forward('new');
 			}
 
-				// Crop image and go back to preview
+			// Crop image and go back to preview
 			if (!empty($coordinates['top']) || !empty($coordinates['left']) || !empty($coordinates['width']) || !empty($coordinates['height'])) {
 				$fileName = $this->cropImage($newImage, $coordinates);
 				$arguments['newImage']['fileName'] = $fileName;
@@ -217,15 +196,15 @@
 				$this->forward('new');
 			}
 
-				// Add image to gallery
+			// Add image to gallery
 			$this->addImageToGallery($gallery, $newImage, $fileName);
 
-				// Clear page cache
+			// Clear page cache
 			if (!empty($this->settings['clearCachePages'])) {
 				$this->clearPageCache($this->settings['clearCachePages']);
 			}
 
-				// Redirect
+			// Redirect
 			if (!empty($this->settings['redirectPage'])) {
 				$this->clearPageCache($this->settings['redirectPage']);
 				$this->persistenceManager->persistAll();
@@ -246,11 +225,11 @@
 		/**
 		 * Display a form to update an image
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image The image object
 		 * @return void
 		 * @dontvalidate $image
 		 */
-		public function editAction(Tx_SpGallery_Domain_Model_Image $image = NULL) {
+		public function editAction(\Speedprogs\SpGallery\Domain\Model\Image $image = NULL) {
 			$this->redirect('new');
 		}
 
@@ -258,11 +237,11 @@
 		/**
 		 * Update given image
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image object
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image The image object
 		 * @return void
 		 * @dontvalidate $image
 		 */
-		public function updateAction(Tx_SpGallery_Domain_Model_Image $image = NULL) {
+		public function updateAction(\Speedprogs\SpGallery\Domain\Model\Image $image = NULL) {
 			$this->redirect('new');
 		}
 
@@ -275,27 +254,27 @@
 		protected function getGalleries() {
 			$galleries = array();
 
-				// Get configuration
+			// Get configuration
 			$uids     = (!empty($this->ids['uids']) ? $this->ids['uids'] : array(0));
 			$pids     = (!empty($this->ids['pids']) ? $this->ids['pids'] : array(0));
 			$offset   = (isset($this->settings['galleries']['offset']) ? (int) $this->settings['galleries']['offset'] : 0);
 			$limit    = (isset($this->settings['galleries']['limit'])  ? (int) $this->settings['galleries']['limit']  : 10);
-			$ordering = Tx_SpGallery_Utility_Persistence::getOrdering($this->settings['galleries']);
+			$ordering = \Speedprogs\SpGallery\Utility\Persistence::getOrdering($this->settings['galleries']);
 
-				// Find galleries according to configuration
+			// Find galleries according to configuration
 			if (!empty($uids[0]) || !empty($pids[0])) {
 				$galleries = $this->galleryRepository->findByUidsAndPids($uids, $pids, $offset, $limit, $ordering);
 			} else if (!empty($this->settings['allGalleriesWhenEmpty'])) {
 				$galleries = $this->galleryRepository->findAll($offset, $limit, $ordering);
 			}
 
-				// Order galleries according to manual sorting type
+			// Order galleries according to manual sorting type
 			if (!empty($galleries) && key($ordering) === 'sorting') {
 				$extensionKey = $this->request->getControllerExtensionKey();
 				$direction = (!empty($this->settings['galleries']['orderDirection']) ? $this->settings['galleries']['orderDirection'] : 'asc');
-				$configuration = Tx_SpGallery_Utility_Backend::getExtensionConfiguration($extensionKey);
+				$configuration = \Speedprogs\SpGallery\Utility\Backend::getExtensionConfiguration($extensionKey);
 				if ($configuration['gallerySortingType'] === 'plugin') {
-					$galleries = Tx_SpGallery_Utility_Persistence::sortBySelector($galleries, $uids, $direction);
+					$galleries = \Speedprogs\SpGallery\Utility\Persistence::sortBySelector($galleries, $uids, $direction);
 				}
 			}
 
@@ -310,19 +289,19 @@
 		 * @return boolean TRUE if the image is valid
 		 */
 		protected function isValidImage(array $fileInfo) {
-				// Check if a file was uploaded
+			// Check if a file was uploaded
 			if (empty($fileInfo) || empty($fileInfo['tmp_name']) || $fileInfo['error'] != UPLOAD_ERR_OK) {
 				$this->forwardWithMessage('file_empty', 'new');
 			}
 
-				// Check type
+			// Check type
 			$types = trim(strtolower($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']));
-			$fileType = Tx_SpGallery_Utility_File::getFileType($fileInfo['name']);
-			if (!t3lib_div::inList($types, $fileType)) {
+			$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileInfo['name']);
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($types, $fileType)) {
 				$this->forwardWithMessage('file_type_invalid', 'new');
 			}
 
-				// Check size
+			// Check size
 			if (!empty($this->settings['uploadFileSize'])) {
 				$size = (int) $this->settings['uploadFileSize'];
 				if (empty($fileInfo['size']) || (int) $fileInfo['size'] > $size) {
@@ -337,29 +316,29 @@
 		/**
 		 * Upload an image to given gallery
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
-		 * @param Tx_SpGallery_Domain_Model_Image $image The  image
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image The  image
 		 * @param array $fileInfo Information about upload file
 		 * @return string Temp filename
 		 */
-		protected function uploadImage(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image, array $fileInfo) {
-				// Get temporary directory
-			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($this->tempDirectory);
+		protected function uploadImage(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, \Speedprogs\SpGallery\Domain\Model\Image $image, array $fileInfo) {
+			// Get temporary directory
+			$directory = \Speedprogs\SpGallery\Utility\File::getRelativeDirectory($this->tempDirectory);
 
-				// Move uploaded image to gallery directory
-			$fileName = Tx_SpGallery_Utility_File::moveUploadedFile($fileInfo['tmp_name'], $fileInfo['name'], $directory);
+			// Move uploaded image to gallery directory
+			$fileName = \Speedprogs\SpGallery\Utility\File::moveUploadedFile($fileInfo['tmp_name'], $fileInfo['name'], $directory);
 			if (empty($fileName)) {
 				$this->forwardWithMessage('file_invalid', 'new');
 			}
 
-				// Override storagePid
+			// Override storagePid
 			$setup = $this->configurationManager->getConfiguration(
-				Tx_Extbase_Configuration_ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
+				\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
 			);
 			$setup['persistence']['storagePid'] = (int) $gallery->getPid();
 			$this->configurationManager->setConfiguration($setup);
 
-				// Complete image object
+			// Complete image object
 			$image->setGallery($gallery);
 			$image->setFileName($directory . $fileName);
 			$image->generateImageInformation();
@@ -374,16 +353,16 @@
 		/**
 		 * Crop an image
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Image $newImage The image
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $newImage The image
 		 * @param array $coordinates The image size and position
 		 * @return string New filename
 		 */
-		protected function cropImage(Tx_SpGallery_Domain_Model_Image $image, $coordinates) {
+		protected function cropImage(\Speedprogs\SpGallery\Domain\Model\Image $image, $coordinates) {
 			if (empty($coordinates)) {
 				return '';
 			}
 
-				// Build crop settings
+			// Build crop settings
 			$factorX = (double) $coordinates['factorX'];
 			$factorY = (double) $coordinates['factorY'];
 			$y = round((int) $coordinates['top'] * $factorY);
@@ -391,10 +370,10 @@
 			$w = round((int) $coordinates['width'] * $factorY);
 			$h = round((int) $coordinates['height'] * $factorX);
 
-				// Crop image
+			// Crop image
 			$fileName = $image->getFileName();
 			if (!empty($x) || !empty($y) || !empty($w) || !empty($h)) {
-				$fileName = Tx_SpGallery_Utility_Image::crop($fileName, $x, $y, $w, $h);
+				$fileName = \Speedprogs\SpGallery\Utility\Image::crop($fileName, $x, $y, $w, $h);
 				if (!empty($fileName)) {
 					$image->setFileName($fileName);
 					$image->generateImageInformation();
@@ -411,28 +390,28 @@
 		/**
 		 * Add an image to given gallery
 		 *
-		 * @param Tx_SpGallery_Domain_Model_Gallery $gallery The gallery
-		 * @param Tx_SpGallery_Domain_Model_Image $image The image
+		 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
+		 * @param \Speedprogs\SpGallery\Domain\Model\Image $image The image
 		 * @param string $tempName Path to temporary file
 		 * @return void
 		 */
-		protected function addImageToGallery(Tx_SpGallery_Domain_Model_Gallery $gallery, Tx_SpGallery_Domain_Model_Image $image, $tempName) {
+		protected function addImageToGallery(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, \Speedprogs\SpGallery\Domain\Model\Image $image, $tempName) {
 			if (empty($tempName)) {
 				$this->forwardWithMessage('file_empty', 'new');
 			}
 
-				// Get gallery directory
+			// Get gallery directory
 			$directory = $gallery->getImageDirectory();
 			if (empty($directory)) {
 				$this->forwardWithMessage('directory_invalid', 'new');
 			}
-			$directory = Tx_SpGallery_Utility_File::getRelativeDirectory($directory);
+			$directory = \Speedprogs\SpGallery\Utility\File::getRelativeDirectory($directory);
 			$newFileName = $directory . basename($tempName);
-			if (!Tx_SpGallery_Utility_File::moveFile($tempName, $newFileName)) {
+			if (!\Speedprogs\SpGallery\Utility\File::moveFile($tempName, $newFileName)) {
 				$this->forwardWithMessage('move_failed', 'new');
 			}
 
-				// Complete image and gallery
+			// Complete image and gallery
 			$image->setGallery($gallery);
 			$image->setFileName($newFileName);
 			$image->generateImageInformation();
@@ -442,13 +421,13 @@
 			$this->imageRepository->add($image);
 			$gallery->generateDirectoryHash();
 
-				// Hide image in frontend and use admin review
+			// Hide image in frontend and use admin review
 			if (!empty($this->settings['uploadReview'])) {
 				$image->setHidden(TRUE);
 			}
 
-				// Generate image files
-			Tx_SpGallery_Utility_Image::generate(array($newFileName), $this->settings);
+			// Generate image files
+			\Speedprogs\SpGallery\Utility\Image::generate(array($newFileName), $this->settings);
 		}
 
 	}

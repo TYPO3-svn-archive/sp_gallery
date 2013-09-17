@@ -1,5 +1,5 @@
 <?php
-	$extensionClassesPath = t3lib_extMgm::extPath('sp_gallery', 'Classes/');
+	$extensionClassesPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('sp_gallery', 'Classes/');
 
 	return array(
 		'tx_spgallery_controller_abstractcontroller'                 => $extensionClassesPath . 'Controller/AbstractController.php',

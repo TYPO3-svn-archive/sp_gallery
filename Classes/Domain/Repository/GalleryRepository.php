@@ -1,4 +1,5 @@
 <?php
+namespace Speedprogs\SpGallery\Domain\Repository;
 	/*********************************************************************
 	 *  Copyright notice
 	 *
@@ -25,9 +26,9 @@
 
 
 	/**
-	 * Repository for Tx_SpGallery_Domain_Model_Gallery
+	 * Repository for Speedprogs\SpGallery\Domain\Model\Gallery
 	 */
-	class Tx_SpGallery_Domain_Repository_GalleryRepository extends Tx_SpGallery_Domain_Repository_AbstractRepository {
+	class GalleryRepository extends \Speedprogs\SpGallery\Domain\Repository\AbstractRepository {
 
 	}
 ?>
