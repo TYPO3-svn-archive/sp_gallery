@@ -44,12 +44,6 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $persistenceManager;
 
 	/**
-	 * @var \Speedprogs\SpGallery\Object\ObjectBuilder
-	 * @inject
-	 */
-	protected $objectBuilder;
-
-	/**
 	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
 	 * @inject
 	 */
@@ -78,7 +72,7 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 		);
 		$this->settings = $setup['settings'];
 		$setup = $this->typoScriptService->convertPlainArrayToTypoScriptArray($setup);
-		$setup['persistence.']['storagePid'] = (int) $storagePid;
+		//$setup['persistence.']['storagePid'] = (int) $storagePid;
 		$this->configurationManager->setConfiguration($setup);
 	}
 
@@ -93,7 +87,12 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
-		$fileCollection = $this->galleryRepository->findByUid($uid);
+		try {
+			$fileCollection = $this->galleryRepository->findByUid($uid);
+
+			\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileCollection);die();
+
+		} catch(\Exception $exception) {}
 		if (empty($fileCollection)) {
 			return FALSE;
 		}
@@ -130,126 +129,22 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return boolean TRUE if gallery was modified
 	 */
 	public function process(\TYPO3\CMS\Core\Resource\Collection\AbstractFileCollection $fileCollection, $generateNames = FALSE) {
-		
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-		
 		$fileCollection->loadContents();
 		$files = $fileCollection->getItems();
+		$imageFiles = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 		foreach($files as $file) {
 			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTypes, $fileType)){
-				$fileCollection->remove($file);
-			}	
+				$imageFiles->attach($file);
+			}
 		}
-		if (count($files) > 0) {
-			$fileCollection->setImages($files);
+		if (count($imageFiles)) {
+			$fileCollection->setImages($imageFiles);
 			$this->persistenceManager->persistAll();
 			\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileCollection);die();
 			return TRUE;
 		}
 		return FALSE;
-	}
-
-
-	/**
-	 * Remove image records without file
-	 *
-	 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
-	 * @param array $files Image files
-	 * @return void
-	 */
-	public function removeDeletedImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, array $files) {
-		if (empty($files)) {
-			return;
-		}
-		$modified = FALSE;
-		// Find records with deleted image file
-		$images = $this->imageRepository->findByGallery($gallery);
-		foreach ($images as $image) {
-			$fileName = PATH_site . $image->getFileName();
-			if (in_array($fileName, $files)) {
-				continue;
-			}
-			$this->imageRepository->remove($image);
-			$modified = TRUE;
-		}
-		if ($modified) {
-			$this->persistenceManager->persistAll();
-		}
-	}
-
-	/**
-	 * Remove all gallery images from old path
-	 *
-	 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
-	 * @return void
-	 */
-	public function removeOldImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery) {
-		$directory = $gallery->getLastImageDirectory();
-		if (empty($directory)) {
-			return;
-		}
-		// Directory has not changed
-		if ($directory === $gallery->getImageDirectory()) {
-			return;
-		}
-		$modified = FALSE;
-		// Find records with old image directory
-		$images = $this->imageRepository->findByGallery($gallery);
-		foreach ($images as $image) {
-			$fileName = $image->getFileName();
-			if (strpos($fileName, $directory) === 0) {
-				$this->imageRepository->remove($image);
-				$modified = TRUE;
-			}
-		}
-		if ($modified) {
-			$this->persistenceManager->persistAll();
-		}
-	}
-
-	/**
-	 * Create image records from new files
-	 *
-	 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
-	 * @param array $files Image files
-	 * @param boolean $generateName Generate image name from file name
-	 * @return void
-	 */
-	public function createNewImages(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, array $files, $generateName = FALSE) {
-		if (empty($files)) {
-			return;
-		}
-		$modified = FALSE;
-		// Generate image records
-		foreach ($files as $key => $file) {
-			$gallery->addImage($file);
-			$modified = TRUE;
-		}
-		if ($modified) {
-			$this->persistenceManager->persistAll();
-		}
-	}
-
-	/**
-	 * Build the hash to recognize directory changes
-	 *
-	 * @param array $files All files in the directory
-	 * @return string The hash
-	 */
-	protected function buildHash(array $files) {
-		// Add file names
-		$text = serialize($files);
-		// Add image configuration
-		$imageSizes = array('teaser', 'thumb', 'small', 'large');
-		foreach ($imageSizes as $size) {
-			if (!empty($this->settings[$size . 'Image'])) {
-				$text .= serialize($this->settings[$size . 'Image']);
-			}
-		}
-		// Add extension configuration
-		$configuration = \Speedprogs\SpGallery\Utility\BackendUtility::getExtensionConfiguration('sp_gallery');
-		$text .= (!empty($configuration['generateWhenSaving']) ? 'true' : 'false');
-		return md5($text);
 	}
 
 }

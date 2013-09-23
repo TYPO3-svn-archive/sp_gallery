@@ -34,7 +34,7 @@ class Gallery extends \TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollect
 	/**
 	 * Images
 	 *
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Core\Resource\FileInterface>
+	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Core\Resource\File>
 	 */
 	protected $images;
 
@@ -57,7 +57,7 @@ class Gallery extends \TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollect
 	 * @param \TYPO3\CMS\Core\Resource\FileInterface $image
 	 * @return void
 	 */
-	public function addImage(\TYPO3\CMS\Core\Resource\FileInterface $image) {
+	public function addImage(\TYPO3\CMS\Core\Resource\File $image) {
 		$this->images->attach($image);
 	}
 
@@ -65,7 +65,7 @@ class Gallery extends \TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollect
 	 * @param \TYPO3\CMS\Core\Resource\FileInterface $image
 	 * @return void
 	 */
-	public function removeImage(\TYPO3\CMS\Core\Resource\FileInterface $image) {
+	public function removeImage(\TYPO3\CMS\Core\Resource\File $image) {
 		$this->images->detach($image);
 	}
 

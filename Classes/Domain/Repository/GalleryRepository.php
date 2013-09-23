@@ -27,9 +27,25 @@ namespace Speedprogs\SpGallery\Domain\Repository;
  ********************************************************************/
 
 /**
- * Repository for Speedprogs\SpGallery\Domain\Model\Gallery
+ * Gallery repository
  */
-class GalleryRepository extends \TYPO3\CMS\Core\Resource\FileCollectionRepository {
+class GalleryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+
+	public function findByUid($uid) {
+		$query = $this->createQuery();
+		$query->getQuerySettings()->setRespectStoragePage(FALSE);
+		$query->matching(
+			$query->equals('uid', (int) $uid)
+		);
+		$query->setLimit(1);
+		$backend = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\StorageTypo3DbBackend');
+		$parameters = array();
+		$statementParts = $backend->parseQuery($query, $parameters);
+		$statement = $backend->buildQuery($statementParts, $parameters);
+		print_r($statement);die();
+
+		return $query->execute()->getFirst();
+	}
 
 }
 ?>

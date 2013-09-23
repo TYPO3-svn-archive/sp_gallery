@@ -357,14 +357,25 @@ plugin.tx_spgallery {
 }
 
 
+# ======================================================================
+# Extbase configuration
+# ======================================================================
 config.tx_extbase.persistence.classes {
 
-	\TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollection.subclasses {
+	TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollection.subclasses {
 		Speedprogs\SpGallery\Domain\Model\Gallery = Speedprogs\SpGallery\Domain\Model\Gallery
 	}
+
+	Speedprogs\SpGallery\Domain\Model\Gallery.mapping {
+		tableName = sys_file_collection
+	}
+
 }
 
 
+# ======================================================================
+# Library configuration
+# ======================================================================
 ## Include jQuery library
 [globalVar = LIT:1 = {$plugin.tx_spgallery.settings.libraries.jquery}]
   page.includeJSlibs.jquery = EXT:sp_gallery/Resources/Public/Javascript/jquery-1.7.1.min.js

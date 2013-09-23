@@ -64,6 +64,7 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 			$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
 			$configurationManager->setConfiguration($setup);
 			$this->galleryService = $objectManager->get('Speedprogs\\SpGallery\\Service\\GalleryService');
+			$this->galleryService->setStoragePid($pid);
 		}
 		return $this->galleryService;
 	}
@@ -86,21 +87,14 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 		if ($table !== 'sys_file_collection') {
 			return;
 		}
-		
 		// Get record uid
 		if ($status === 'new') {
 			$uid = $parent->substNEWwithIDs[$uid];
 		} else if ($status === 'copy') {
 			$uid = $parent->copyMappingArray[$table][$uid];
 		}
-		
 		$pid = (int) $parent->getPID($table, $uid);
 		$galleryService = $this->getGalleryService($pid);
-		//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($galleryService);die();
-		// Set storagePid for new images to current pid
-		if (!empty($pid)) {
-			$galleryService->setStoragePid($pid);
-		}
 		// Process gallery by uid
 		$generateNames = !empty($this->configuration['generateNameWhenSaving']);
 		$galleryService->processByUid($uid, $generateNames);
