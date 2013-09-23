@@ -353,13 +353,14 @@ plugin.tx_spgallery {
 	## Persistence specific settings
 	persistence {
 		storagePid                = {$plugin.tx_spgallery.persistence.storagePid}
+	}
+}
 
-		classes {
-			## Allow undeleting of image records
-			\Speedprogs\SpGallery\Domain\Model\Image.mapping.columns {
-				deleted.mapOnProperty = deleted
-			}
-		}
+
+config.tx_extbase.persistence.classes {
+
+	\TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollection.subclasses {
+		Speedprogs\SpGallery\Domain\Model\Gallery = Speedprogs\SpGallery\Domain\Model\Gallery
 	}
 }
 

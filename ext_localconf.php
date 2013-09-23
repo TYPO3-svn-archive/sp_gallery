@@ -24,7 +24,6 @@
 	);
 
 	// Hook implementation to generate images when saving a gallery
-  $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
-		'Speedprogs\\SpGallery\\Hook\\TceMain';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] ='Speedprogs\\SpGallery\\Hook\\TceMain';
 
 ?>

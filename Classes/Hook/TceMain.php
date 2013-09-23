@@ -78,27 +78,25 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param t3lib_TCEmain $parent Reference to calling object
 	 * @return void
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $uid, &$fields, &$parent) {
+	public function processDatamap_afterDatabaseOperations($status, $table, $uid, &$fields, $parent) {
 		if (empty($this->configuration['generateWhenSaving'])) {
 			return;
 		}
 		// Check record type
-		if ($table !== 'tx_spgallery_domain_model_gallery') {
+		if ($table !== 'sys_file_collection') {
 			return;
 		}
-		// Return if no valid directory was found
-		if (!empty($fields['image_directory']) && !empty($fields['tstamp'])) {
-			$fileName = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($fields['image_directory']);
-			if (!\Speedprogs\SpGallery\Utility\FileUtility::fileExists($fileName)) {
-				return;
-			}
-		}
+		
 		// Get record uid
 		if ($status === 'new') {
 			$uid = $parent->substNEWwithIDs[$uid];
+		} else if ($status === 'copy') {
+			$uid = $parent->copyMappingArray[$table][$uid];
 		}
+		
 		$pid = (int) $parent->getPID($table, $uid);
 		$galleryService = $this->getGalleryService($pid);
+		//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($galleryService);die();
 		// Set storagePid for new images to current pid
 		if (!empty($pid)) {
 			$galleryService->setStoragePid($pid);

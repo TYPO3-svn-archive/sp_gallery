@@ -41,36 +41,15 @@ class FileUtility {
 	 * @return array All contained files
 	 */
 	static public function getFiles($directory, $recursive = FALSE, $fileTypes = '', $fileCount = 0) {
-		$directory = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($directory);
-		if (!(@is_dir($directory))) {
-			return array();
+		list($driverName, $storageUid, $folderPath) = explode(':', $directory);
+		if ($driverName !== 'file') {
+			throw new \Exception('Storage is not of type "file"', 1379519858);
 		}
-		$fileTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $fileTypes, TRUE);
-		$result    = array();
-		if ($recursive) {
-			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-		} else {
-			$files = new DirectoryIterator($directory);
-		}
-		foreach ($files as $file) {
-			if ($file->isFile()) {
-				$fileName = $file->getPathname();
-				// Check file type
-				if (!empty($fileTypes)) {
-					$currentType = self::getFileType($fileName);
-					if (!in_array($currentType, $fileTypes)) {
-						continue;
-					}
-				}
-				$result[] = $fileName;
-				// Check file count
-				if (!empty($fileCount) && count($result) === $fileCount) {
-					break;
-				}
-			}
-		}
-		natsort($result);
-		return $result;
+		$storageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+		$storage = $storageRepository->findByUid($storageUid);
+		$files = $storage->getFolder($folderPath)->getFiles();
+
+		return $files;
 	}
 
 	/**

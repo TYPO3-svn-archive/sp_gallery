@@ -32,12 +32,6 @@ namespace Speedprogs\SpGallery\Controller;
 class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractController {
 
 	/**
-	 * @var \Speedprogs\SpGallery\Domain\Repository\GalleryRepository
-	 * @inject
-	 */
-	protected $galleryRepository;
-
-	/**
 	 * @var \Speedprogs\SpGallery\Domain\Repository\ImageRepository
 	 * @inject
 	 */
@@ -213,7 +207,7 @@ class GalleryController extends \Speedprogs\SpGallery\Controller\AbstractControl
 	 * @return void
 	 * @dontvalidate $image
 	 */
-	public function editAction(\Speedprogs\SpGallery\Domain\Model\Image $image = NULL) {
+	 function editAction(\Speedprogs\SpGallery\Domain\Model\Image $image = NULL) {
 		$this->redirect('new');
 	}
 

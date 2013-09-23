@@ -112,24 +112,23 @@ class ImageUtility {
 		if (empty($settings)) {
 			return $files;
 		}
+
 		// Simulate working directory
 		self::simulateFrontendEnvironment();
 		// Process images
 		$contentObject = self::getContentObject();
-		foreach ($files as $key => $fileName) {
+		foreach ($files as $key => $file) {
 			// Check if converting is allowed for this file type
-			if (!self::isValidImageType($fileName)) {
+			if (!self::isValidImageType($file->getName())) {
 				unset($files[$key]);
 				continue;
 			}
-			// Get relative path
-			$fileName = str_replace(PATH_site, '', $fileName);
 			// Modify image
 			if (!empty($settings) && !$tag) {
-				$info = $contentObject->getImgResource($fileName, $settings);
-				$result = (!empty($info[3]) ? $info[3] : $fileName);
+				$info = $contentObject->getImgResource($file, $settings);
+				$result = (!empty($info[3]) ? $info[3] : $file);
 			} else if ($tag) {
-				$result = $contentObject->cImage($fileName, array('file.' => $settings));
+				$result = $contentObject->cImage($file, array('file.' => $settings));
 			}
 			$files[$key] = $result;
 		}

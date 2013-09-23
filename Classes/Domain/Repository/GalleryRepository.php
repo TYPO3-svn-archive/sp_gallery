@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Domain\Repository;
 /**
  * Repository for Speedprogs\SpGallery\Domain\Model\Gallery
  */
-class GalleryRepository extends \Speedprogs\SpGallery\Domain\Repository\AbstractRepository {
+class GalleryRepository extends \TYPO3\CMS\Core\Resource\FileCollectionRepository {
 
 }
 ?>

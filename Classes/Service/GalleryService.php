@@ -38,13 +38,7 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $galleryRepository;
 
 	/**
-	 * @var \Speedprogs\SpGallery\Domain\Repository\ImageRepository
-	 * @inject
-	 */
-	protected $imageRepository;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\Generic
+	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
 	 * @inject
 	 */
 	protected $persistenceManager;
@@ -62,6 +56,12 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $configurationManager;
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Service\TypoScriptService
+	 * @inject
+	 */
+	protected $typoScriptService;
+
+	/**
 	 * @var array
 	 */
 	protected $settings = array();
@@ -76,7 +76,8 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 		$setup = $this->configurationManager->getConfiguration(
 			\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK
 		);
-		$setup = \TYPO3\CMS\Extbase\Service\TypoScriptService::convertPlainArrayToTypoScriptArray($setup);
+		$this->settings = $setup['settings'];
+		$setup = $this->typoScriptService->convertPlainArrayToTypoScriptArray($setup);
 		$setup['persistence.']['storagePid'] = (int) $storagePid;
 		$this->configurationManager->setConfiguration($setup);
 	}
@@ -92,11 +93,12 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 		if (empty($uid) || !is_numeric($uid)) {
 			return FALSE;
 		}
-		$gallery = $this->galleryRepository->findByUid($uid);
-		if (empty($gallery)) {
+		$fileCollection = $this->galleryRepository->findByUid($uid);
+		if (empty($fileCollection)) {
 			return FALSE;
 		}
-		return $this->process($gallery, $generateNames);
+		return $this->process($fileCollection, $generateNames);
+
 	}
 
 	/**
@@ -123,30 +125,25 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 	/**
 	 * Find changes in gallery and generate images
 	 *
-	 * @param \Speedprogs\SpGallery\Domain\Model\Gallery $gallery The gallery
+	 * @param \TYPO3\CMS\Core\Resource\Collection\AbstractFileCollection $fileCollection The collection
 	 * @param boolean $generateNames Generate image names from file names
 	 * @return boolean TRUE if gallery was modified
 	 */
-	public function process(\Speedprogs\SpGallery\Domain\Model\Gallery $gallery, $generateNames = FALSE) {
-		$directory = $gallery->getImageDirectory();
+	public function process(\TYPO3\CMS\Core\Resource\Collection\AbstractFileCollection $fileCollection, $generateNames = FALSE) {
+		
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-		$files = \Speedprogs\SpGallery\Utility\FileUtility::getFiles($directory, TRUE, $allowedTypes);
-		$hash = $this->buildHash($files);
-		if ($hash !== $gallery->getImageDirectoryHash()) {
-			// Generate image files
-			$imageFiles = \Speedprogs\SpGallery\Utility\ImageUtility::generate($files, $this->settings);
-			$imageFiles = array_intersect_key($files, $imageFiles);
-			$imageFiles = array_unique($imageFiles);
-			// Remove old images
-			$this->removeOldImages($gallery);
-			// Remove images without file
-			$this->removeDeletedImages($gallery, $imageFiles);
-			// Create images from new files
-			$this->createNewImages($gallery, $imageFiles, $generateNames);
-			// Set new directory
-			$gallery->setImageDirectoryHash($hash);
-			$gallery->setLastImageDirectory($directory);
+		
+		$fileCollection->loadContents();
+		$files = $fileCollection->getItems();
+		foreach($files as $file) {
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTypes, $fileType)){
+				$fileCollection->remove($file);
+			}	
+		}
+		if (count($files) > 0) {
+			$fileCollection->setImages($files);
 			$this->persistenceManager->persistAll();
+			\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileCollection);die();
 			return TRUE;
 		}
 		return FALSE;
@@ -225,26 +222,7 @@ class GalleryService implements \TYPO3\CMS\Core\SingletonInterface {
 		$modified = FALSE;
 		// Generate image records
 		foreach ($files as $key => $file) {
-			$fileName = str_replace(PATH_site, '', $file);
-			// Search for an existing image or create new
-			$image = $this->imageRepository->findOneByGalleryAndFileName($gallery, $fileName);
-			if (!empty($image)) {
-				$image->setDeleted(FALSE);
-			} else {
-				$imageRow = array(
-					'file_name' => $fileName,
-					'gallery'   => $gallery,
-				);
-				$image = $this->objectBuilder->create('Tx_SpGallery_Domain_Model_Image', $imageRow);
-			}
-			// Generate file information
-			$image->generateImageInformation();
-			if ($generateName) {
-				$image->generateImageName();
-			}
-			// Complete gallery
-			$this->imageRepository->add($image);
-			$gallery->addImage($image);
+			$gallery->addImage($file);
 			$modified = TRUE;
 		}
 		if ($modified) {
