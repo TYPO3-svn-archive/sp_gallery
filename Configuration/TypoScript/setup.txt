@@ -353,29 +353,17 @@ plugin.tx_spgallery {
 	## Persistence specific settings
 	persistence {
 		storagePid                = {$plugin.tx_spgallery.persistence.storagePid}
+
+		classes {
+			## Allow undeleting of image records
+			\Speedprogs\SpGallery\Domain\Model\Image.mapping.columns {
+				deleted.mapOnProperty = deleted
+			}
+		}
 	}
 }
 
 
-# ======================================================================
-# Extbase configuration
-# ======================================================================
-config.tx_extbase.persistence.classes {
-
-	TYPO3\CMS\Core\Resource\Collection\FolderBasedFileCollection.subclasses {
-		Speedprogs\SpGallery\Domain\Model\Gallery = Speedprogs\SpGallery\Domain\Model\Gallery
-	}
-
-	Speedprogs\SpGallery\Domain\Model\Gallery.mapping {
-		tableName = sys_file_collection
-	}
-
-}
-
-
-# ======================================================================
-# Library configuration
-# ======================================================================
 ## Include jQuery library
 [globalVar = LIT:1 = {$plugin.tx_spgallery.settings.libraries.jquery}]
   page.includeJSlibs.jquery = EXT:sp_gallery/Resources/Public/Javascript/jquery-1.7.1.min.js

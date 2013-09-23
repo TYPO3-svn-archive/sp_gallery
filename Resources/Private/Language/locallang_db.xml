@@ -9,7 +9,6 @@
 			<label index="tx_spgallery_domain_model_gallery">Image gallery</label>
 			<label index="tx_spgallery_domain_model_gallery.name">Name</label>
 			<label index="tx_spgallery_domain_model_gallery.description">Description</label>
-			<label index="tx_spgallery_domain_model_gallery.images">Images</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory">Image directory</label>
 			<label index="tx_spgallery_domain_model_gallery.image_directory_hash">Image directory content hash</label>
 			<label index="tx_spgallery_domain_model_gallery.message_disabled"><![CDATA[<h3>The gallery contains no images</h3>The images can not be generated automatically.]]></label>

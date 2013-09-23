@@ -37,7 +37,7 @@ class TypoScriptService implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $frontend;
 
 	/**
-	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+	 * @var \TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer
 	 */
 	protected $contentObject;
 
@@ -75,8 +75,8 @@ class TypoScriptService implements \TYPO3\CMS\Core\SingletonInterface {
 		// Get content object
 		$this->contentObject = $this->configurationManager->getContentObject();
 		if (empty($this->contentObject)) {
-			$this->contentObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-				'TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer'
+			$this->contentObject = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Utility\\GeneralUtility\\ContentObjectRenderer'
 			);
 		}
 	}
@@ -84,20 +84,20 @@ class TypoScriptService implements \TYPO3\CMS\Core\SingletonInterface {
 	/**
 	 * Simulate a frontend environment
 	 *
-	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj Instance of an content object
+	 * @param \TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer $cObj Instance of an content object
 	 * @return void
 	 */
-	public function simulateFrontend(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj = NULL) {
+	public function simulateFrontend(\TYPO3\CMS\Core\Utility\GeneralUtility\ContentObjectRenderer $cObj = NULL) {
 		// Make backup of current frontend
 		$this->frontend = (!empty($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : NULL);
 		// Create new frontend instance
-		$GLOBALS['TSFE'] = new \stdClass();
+		$GLOBALS['TSFE'] = new stdClass();
 		$GLOBALS['TSFE']->cObjectDepthCounter = 100;
-		$GLOBALS['TSFE']->cObj = (!empty($cObj) ? $cObj : \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer'
+		$GLOBALS['TSFE']->cObj = (!empty($cObj) ? $cObj: \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance(
+			'TYPO3\\CMS\\Core\\Utility\\GeneralUtility\\ContentObjectRenderer'
 		));
 		if (empty($GLOBALS['TSFE']->sys_page)) {
-			$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GenralUtility::makeInstance(
 				'TYPO3\\CMS\\Frontend\\Page\\PageRepository'
 			);
 		}
