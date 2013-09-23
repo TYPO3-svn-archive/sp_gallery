@@ -6,11 +6,11 @@
 	$GLOBALS['TCA']['tx_spgallery_domain_model_gallery'] = array(
 		'ctrl'      => $GLOBALS['TCA']['tx_spgallery_domain_model_gallery']['ctrl'],
 		'interface' => array(
-			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, image_directory, image_directory_hash, last_image_directory, system_message, images',
+			'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, file_storage, system_message, images',
 		),
 		'types' => array(
 			'1'     => array(
-				'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description;;2;richtext:rte_transform[flag=rte_enabled|mode=ts];4-4-4, image_directory, --div--;LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tab.images, system_message, images, --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime',
+				'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description;;2;richtext:rte_transform[flag=rte_enabled|mode=ts];4-4-4, file_storage, --div--;LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tab.images, system_message, images, --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime',
 			),
 		),
 		'palettes' => array(
@@ -115,37 +115,18 @@
 					'rows'        => 5,
 				),
 			),
-			'image_directory' => array(
+			'file_storage' => array(
 				'exclude'      => 1,
 				'l10n_mode'    => 'exclude',
 				'l10n_display' => 'defaultAsReadonly',
-				'label'        => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.image_directory',
+				'label'        => 'LLL:EXT:sp_gallery/Resources/Private/Language/locallang_db.xml:tx_spgallery_domain_model_gallery.file_storage',
 				'config'       => array(
-					'type'         => 'input',
-					'size'         => 30,
-					'eval'         => 'trim,required',
-					'wizards'      => array(
-						'_PADDING'     => 2,
-						'link'         => array(
-							'type'         => 'popup',
-							'icon'         => 'link_popup.gif',
-							'script'       => 'browse_links.php?mode=wizard&amp;act=file',
-							'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1',
-							'params'       => array(
-								'blindLinkOptions' => 'mail,page,spec,url,file',
-							),
-						),
-					),
-				),
-			),
-			'image_directory_hash' => array(
-				'config' => array(
-					'type'   => 'passthrough',
-				),
-			),
-			'last_image_directory' => array(
-				'config' => array(
-					'type'   => 'passthrough',
+					'type'                => 'select',
+					'foreign_table'       => 'sys_file_storage',
+					'foreign_table_where' => 'AND sys_file_storage.deleted = 0 AND sys_file_storage.hidden = 0',
+					'size'                => 1,
+					'minitems'            => 1,
+					'maxitems'            => 1,
 				),
 			),
 			'images' => array(

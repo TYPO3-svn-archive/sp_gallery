@@ -7,9 +7,7 @@ CREATE TABLE tx_spgallery_domain_model_gallery (
 
 	name varchar(255) DEFAULT '' NOT NULL,
 	description text,
-	image_directory varchar(255) DEFAULT '' NOT NULL,
-	image_directory_hash varchar(255) DEFAULT '' NOT NULL,
-	last_image_directory varchar(255) DEFAULT '' NOT NULL,
+	file_storage int(11) unsigned DEFAULT '0' NOT NULL,
 	images int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
