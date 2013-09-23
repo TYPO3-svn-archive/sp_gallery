@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage images
  */
-class Image {
+class ImageUtility {
 
 	/**
 	 * @var tslib_cObj
@@ -67,7 +67,7 @@ class Image {
 	 */
 	static protected function getGraphicLibrary() {
 		if (self::$graphicLibrary === NULL) {
-			self::$graphicLibrary = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_stdGraphic');
+			self::$graphicLibrary = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\GraphicalFunctions');
 			self::$graphicLibrary->init();
 		}
 		return self::$graphicLibrary;
@@ -170,7 +170,7 @@ class Image {
 		$graphicLibrary->imagecopyresized($crop, $image, 0, 0, $x, $y, $w, $h, $w, $h);
 		ImageDestroy($image);
 		// Write to temporary directory
-		$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileName);
+		$fileType = \Speedprogs\SpGallery\Utility\FileUtility::getFileType($fileName);
 		$tempName = $graphicLibrary->randomName() . '.' . $fileType;
 		$graphicLibrary->ImageWrite($crop, $tempName);
 		ImageDestroy($crop);
@@ -190,7 +190,7 @@ class Image {
 			return FALSE;
 		}
 		$allowedTypes = $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'];
-		$fileType = \Speedprogs\SpGallery\Utility\File::getFileType($fileName);
+		$fileType = \Speedprogs\SpGallery\Utility\FileUtility::getFileType($fileName);
 		return \TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedTypes, $fileType);
 	}
 

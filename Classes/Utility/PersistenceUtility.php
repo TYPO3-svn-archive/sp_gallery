@@ -29,7 +29,7 @@ namespace Speedprogs\SpGallery\Utility;
 /**
  * Utility to manage persistence
  */
-class Persistence {
+class PersistenceUtility {
 
 	/**
 	 * @var string
