@@ -64,6 +64,7 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 			$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
 			$configurationManager->setConfiguration($setup);
 			$this->galleryService = $objectManager->get('Speedprogs\\SpGallery\\Service\\GalleryService');
+			$this->galleryService->setStoragePid($pid);
 		}
 		return $this->galleryService;
 	}
@@ -87,22 +88,18 @@ class TceMain implements \TYPO3\CMS\Core\SingletonInterface {
 			return;
 		}
 		// Return if no valid directory was found
-		if (!empty($fields['image_directory']) && !empty($fields['tstamp'])) {
-			$fileName = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($fields['image_directory']);
-			if (!\Speedprogs\SpGallery\Utility\FileUtility::fileExists($fileName)) {
-				return;
-			}
+		if (!empty($fields['file_storage'])) {
+
+			// TODO
+
 		}
 		// Get record uid
 		if ($status === 'new') {
 			$uid = $parent->substNEWwithIDs[$uid];
+		} else if ($status === 'copy') {
+			$uid = $parent->copyMappingArray[$table][$uid];
 		}
-		$pid = (int) $parent->getPID($table, $uid);
-		$galleryService = $this->getGalleryService($pid);
-		// Set storagePid for new images to current pid
-		if (!empty($pid)) {
-			$galleryService->setStoragePid($pid);
-		}
+		$galleryService = $this->getGalleryService((int) $parent->getPID($table, $uid));
 		// Process gallery by uid
 		$generateNames = !empty($this->configuration['generateNameWhenSaving']);
 		$galleryService->processByUid($uid, $generateNames);
